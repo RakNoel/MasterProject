@@ -13,5 +13,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 13
-    - name: Build with Maven
-      run: mvn -B clean install test package --file pom.xml
+    - name: Test
+      run: mvn -B clean test --file pom.xml
+    -name: Build
+      run: mn -B package --file pom.xml
