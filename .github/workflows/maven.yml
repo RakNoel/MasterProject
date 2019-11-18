@@ -16,4 +16,4 @@ jobs:
     - name: Test
       run: mvn -B clean test --file pom.xml
     - name: Build
-      run: mn -B package --file pom.xml
+      run: mvn -B package --file pom.xml
