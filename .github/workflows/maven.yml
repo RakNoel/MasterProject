@@ -15,5 +15,5 @@ jobs:
         java-version: 13
     - name: Test
       run: mvn -B clean test --file pom.xml
-    -name: Build
+    - name: Build
       run: mn -B package --file pom.xml
