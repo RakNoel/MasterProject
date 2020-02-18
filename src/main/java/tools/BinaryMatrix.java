@@ -5,9 +5,9 @@ import java.util.*;
 /**
  * This will create a system where the columns are faster to extract than the rows.
  */
-public class BinaryMatrix {
-    BitSet[] columns;
-    int width, height;
+public class BinaryMatrix implements Iterable<BitSet>{
+    private BitSet[] columns;
+    private int width, height;
 
     public BinaryMatrix(int width, int height) {
         columns = new BitSet[width];
@@ -15,6 +15,14 @@ public class BinaryMatrix {
             this.columns[i] = new BitSet();
         this.width = width;
         this.height = height;
+    }
+
+    public BinaryMatrix(ArrayList<BitSet> columns, int height) {
+        this.columns = new BitSet[columns.size()];
+        this.width = columns.size();
+        this.height = height;
+
+        for (int i = 0; i < columns.size(); i++) this.columns[i] = columns.get(i);
     }
 
     public boolean getBit(int x, int y) {
@@ -76,6 +84,11 @@ public class BinaryMatrix {
             bld.append(System.lineSeparator());
         }
         return bld.toString();
+    }
+
+    @Override
+    public Iterator<BitSet> iterator() {
+        return Arrays.asList(this.columns).iterator();
     }
 
     private boolean validPos(int x, int y) {
