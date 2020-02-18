@@ -1,8 +1,6 @@
 package tools;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This will create a system where the columns are faster to extract than the rows.
@@ -59,12 +57,25 @@ public class BinaryMatrix {
         this.columns[x] = bts;
     }
 
-    public int getWidth(){
+    public int getWidth() {
         return this.width;
     }
 
-    public int getHeight(){
+    public int getHeight() {
         return this.height;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder bld = new StringBuilder();
+        Set<Integer> s = new HashSet<>(width);
+        for (int i = 0; i < height; i++) s.add(i);
+        for (var row : getRows(s)) {
+            for (int bit = 0; bit < this.width; bit++)
+                bld.append(row.get(bit) ? '1' : '0');
+            bld.append(System.lineSeparator());
+        }
+        return bld.toString();
     }
 
     private boolean validPos(int x, int y) {

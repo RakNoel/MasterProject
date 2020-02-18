@@ -26,6 +26,8 @@ public class BinaryMatrixFactoryTest {
 
         for (int i = 0; i < 5; i++)
             assertTrue(bnm.getBit(i, i));
+
+        System.out.println(bnm);
     }
 
     @Test
