@@ -1,8 +1,11 @@
 package extra;
 
+import tools.BinaryMatrix;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -33,5 +36,62 @@ public class MatrixGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static BinaryMatrix generateRandomMatrix(int width, int height, int seed) {
+        BinaryMatrix bnm = new BinaryMatrix(width, height);
+        Random rnd = new Random(seed);
+
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
+                bnm.setBit(i, j, rnd.nextBoolean());
+
+        return bnm;
+    }
+
+    public static BinaryMatrix generateDiagonalMatrix(int width, int height) {
+        BinaryMatrix bnm = new BinaryMatrix(width, height);
+        for (int i = 0; i < width; i++) bnm.setBit(i, i, true);
+        return bnm;
+    }
+
+    public static BinaryMatrix generateMatrixEqualColumns(int width, int height, int equals, int seed) {
+        if (width < equals) throw new IllegalArgumentException("Equals must be smaller than or equal to width");
+
+        Random rnd = new Random(seed);
+        BinaryMatrix bnm = generateDiagonalMatrix(width, height);
+
+        int original = rnd.nextInt(width);
+        var col = bnm.getColumn(original);
+        HashSet<Integer> touched = new HashSet<>();
+        touched.add(original);
+
+        for (int i = 0; i < equals; ) {
+            int next = rnd.nextInt(width);
+            if (!touched.contains(next)) {
+                bnm.setColumn(next, col);
+                touched.add(next);
+                i++;
+            }
+        }
+
+        return bnm;
+    }
+
+    public static BinaryMatrix generateMatrixReducibleRows(int width, int height, int reduce, int seed) {
+        Random rnd = new Random(seed);
+        BinaryMatrix bnm = generateDiagonalMatrix(width, height);
+        HashSet<Integer> touched = new HashSet<>();
+        for (int i = 0; i < reduce; ) {
+            int next = rnd.nextInt(height);
+            if (!touched.contains(next)) {
+                boolean b = rnd.nextBoolean();
+                for (int c = 0; c < width; c++) bnm.setBit(c, next, b);
+                touched.add(next);
+                i++;
+            }
+        }
+
+        return bnm;
     }
 }
