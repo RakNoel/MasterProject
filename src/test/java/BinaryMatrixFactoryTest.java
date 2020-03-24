@@ -20,7 +20,7 @@ public class BinaryMatrixFactoryTest {
 
     @Test
     public void ReadSmallFileCorrectly() throws FileNotFoundException {
-        var bnm = factory.readFromFile(new File(testPath + "smallMatrix.txt"));
+        var bnm = factory.readFromFile(new File(testPath + "smallMatrix.bnm"));
         assertEquals(6, bnm.getHeight());
         assertEquals(5, bnm.getWidth());
 
@@ -32,7 +32,7 @@ public class BinaryMatrixFactoryTest {
 
     @Test
     public void ReadLargeFileCorrectly() throws FileNotFoundException {
-        var bnm = factory.readFromFile(new File(testPath + "largeMatrix.txt"));
+        var bnm = factory.readFromFile(new File(testPath + "largeMatrix.bnm"));
         System.out.println("Finished");
     }
 }

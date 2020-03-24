@@ -1,0 +1,6 @@
+language: java
+
+dist: xenial
+
+jdk:
+  - oraclejdk14

@@ -1,13 +1,19 @@
 import extra.MatrixGenerator;
 import org.junit.jupiter.api.Test;
 import tools.BinaryMatrix;
+import tools.BinaryMatrixFactory;
+import tools.BinaryMatrixNoInstanceException;
 import tools.Kernel;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class KernelTest {
 
     public static final int SEED = 123;
+    public static final String testPath = "target/test-classes/";
 
     @Test
     public void ColumnReduceTest() {
@@ -43,5 +49,20 @@ public class KernelTest {
 
         assertEquals(cantReduce.getOriginalHeight(), cantReduce.getHeight());
         assertEquals(canReduce.getOriginalHeight() - 5, canReduce.getHeight());
+    }
+
+    @Test
+    public void TestKernelOnKnownMatrix() throws FileNotFoundException, BinaryMatrixNoInstanceException {
+        BinaryMatrix bnm = BinaryMatrixFactory
+                .BuildBinaryMatrixFactory()
+                .readFromFile(new File(testPath + "3partitionsMatrix.bnm"));
+
+        System.out.println(bnm);
+
+        var res = new Kernel(1, 3).Kernelize(bnm);
+
+        for (var a : res) System.out.println(a);
+
+        assertEquals(3, res.size());
     }
 }

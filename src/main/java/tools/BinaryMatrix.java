@@ -2,11 +2,9 @@ package tools;
 
 import java.util.*;
 
-/**
- * This will create a system where the columns are faster to extract than the rows.
- */
 public class BinaryMatrix {
-    private BitSet[] columns;
+    private final BitSet[] columns;
+
     private ArrayList<Integer> rowsCount;
     private ArrayList<Integer> columnsCount;
 
@@ -36,7 +34,7 @@ public class BinaryMatrix {
     }
 
     public boolean getBit(int x, int y) {
-        if (!validPos(x, y)) throw new IndexOutOfBoundsException();
+        if (invalidPos(x, y)) throw new IndexOutOfBoundsException();
 
         var i = columnsCount.get(x);
         var j = columnsCount.get(y);
@@ -44,13 +42,13 @@ public class BinaryMatrix {
     }
 
     public BitSet getColumn(int n) {
-        if (!validPos(n, 0)) throw new IndexOutOfBoundsException();
+        if (invalidPos(n, 0)) throw new IndexOutOfBoundsException();
         var i = columnsCount.get(n);
         return this.columns[i];
     }
 
     public BitSet getRow(int n) {
-        if (!validPos(0, n)) throw new IndexOutOfBoundsException();
+        if (invalidPos(0, n)) throw new IndexOutOfBoundsException();
         BitSet holder = new BitSet();
         n = rowsCount.get(n);
         for (int i = 0, j = 0; i < columnsCount.size(); i++) {
@@ -82,14 +80,14 @@ public class BinaryMatrix {
     }
 
     public void setBit(int x, int y, boolean value) {
-        if (!validPos(x, y))
+        if (invalidPos(x, y))
             throw new IndexOutOfBoundsException(String.format("x: %d y: %d is outside of bounds", x, y));
 
         this.getColumn(x).set(y, value);
     }
 
     public void setColumn(int x, BitSet bts) {
-        if (!validPos(x, 0)) throw new IndexOutOfBoundsException();
+        if (invalidPos(x, 0)) throw new IndexOutOfBoundsException();
         this.columns[x] = bts;
     }
 
@@ -117,14 +115,14 @@ public class BinaryMatrix {
         for (int i = 0; i < this.rowsCount.size(); i++) s.add(i);
         for (var row : getRows(s)) {
             for (int bit = 0; bit < getWidth(); bit++)
-                bld.append(row.get(bit) ? '1' : '0');
+                bld.append(row.get(bit) ? '1' : '0').append(" ");
             bld.append(System.lineSeparator());
         }
         return bld.toString();
     }
 
-    private boolean validPos(int x, int y) {
-        return x >= 0 && y >= 0 && x < this.getOriginalWidth() && y < this.getOriginalHeight();
+    private boolean invalidPos(int x, int y) {
+        return x < 0 || y < 0 || x >= this.getOriginalWidth() || y >= this.getOriginalHeight();
     }
 
     private void setupHeightWidth(int width, int height) {
