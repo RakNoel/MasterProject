@@ -1,64 +1,72 @@
 package tools;
 
 import java.util.ArrayList;
-import java.util.BitSet;
+import java.util.List;
+
+import static tools.HammingDistance.hammingDistance;
 
 public class Kernel {
-    private int r, k;
+    private final int r;
+    private final int k;
 
     public Kernel(int k, int r) {
         this.k = k;
         this.r = r;
     }
 
-    public void ColumnReduce(BinaryMatrix bnm) {
-        for (int i = 0, eq = 0; i < bnm.getWidth(); i++, eq = 0)
-            for (int j = i + 1; j < bnm.getWidth(); j++)
-                if (BinaryMatrix.hammingDistance(bnm.getColumn(i), bnm.getColumn(j)) == 0)
-                    if (++eq > k + 2)
-                        bnm.deleteColumn(j--);
+    public void columnReduce(BinarySubMatrix colReducedMatrix) {
+        for (int i = 0; i < colReducedMatrix.getWidth(); i++) {
+            int eq = 0;
+            for (int j = i + 1; j < colReducedMatrix.getWidth(); j++)
+                if (hammingDistance(colReducedMatrix.getColumn(i), colReducedMatrix.getColumn(j)) == 0) {
+                    eq++;
+                    if (eq > k + 2)
+                        colReducedMatrix.deleteColumn(j--);
+                }
+        }
     }
 
-    public void RowReduce(BinaryMatrix bnm) {
+    public void rowReduce(BinarySubMatrix bnm) {
         for (int i = 0; i < bnm.getHeight(); i++)
             if (bnm.getRow(i).cardinality() == 0 || bnm.getRow(i).cardinality() == bnm.getWidth())
                 bnm.deleteRow(i--);
     }
 
-    public ArrayList<BinaryMatrix> Partition(BinaryMatrix bnm) throws BinaryMatrixNoInstanceException {
-        ArrayList<ArrayList<BitSet>> S = new ArrayList<>();
+    public List<BinarySubMatrix> partition(BinarySubMatrix bnm) throws BinaryMatrixNoInstanceException {
+        ArrayList<BinarySubMatrix> result = new ArrayList<>();
         while (bnm.getWidth() > 0) {
-            if (S.size() > r) throw new BinaryMatrixNoInstanceException("t -ge r");
+            if (result.size() > r) throw new BinaryMatrixNoInstanceException("t -ge r");
 
-            var working = new ArrayList<BitSet>();
+            var working = new ArrayList<Integer>();
             var tmp = bnm.getColumn(0);
-            working.add(tmp);
+            working.add(bnm.getColumnID(0));
             bnm.deleteColumn(0);
 
             for (int i = 0; i < bnm.getWidth(); i++)
-                if (BinaryMatrix.hammingDistance(bnm.getColumn(i), tmp) <= k) {
-                    working.add(bnm.getColumn(i));
+                if (hammingDistance(bnm.getColumn(i), tmp) <= k) {
+                    working.add(bnm.getColumnID(i));
                     bnm.deleteColumn(i);
                 }
 
-            S.add(working);
+            result.add(new BinarySubMatrix(bnm.getParent(), working));
         }
 
-        ArrayList<BinaryMatrix> result = new ArrayList<>(S.size());
-        for (var s : S) result.add(new BinaryMatrix(s, bnm.getHeight()));
         return result;
     }
 
-    public ArrayList<BinaryMatrix> Kernelize(BinaryMatrix bnm) throws BinaryMatrixNoInstanceException {
-        ArrayList<BinaryMatrix> res = new ArrayList<>();
+    public List<BinarySubMatrix> kernelize(BinaryMatrix bnm) throws BinaryMatrixNoInstanceException {
+        var reducedMatrix = new BinarySubMatrix(bnm);
+        this.columnReduce(reducedMatrix);
 
-        this.ColumnReduce(bnm);
-        var partitions = Partition(bnm);
+        var partitions = partition(reducedMatrix);
+
         for (var a_t : partitions) {
-            RowReduce(a_t);
-            if (a_t.getHeight() > 0) res.add(a_t); //TODO: Should this be done?
+            rowReduce(a_t);
+            //if (a_t.getHeight() > 0) res.add(a_t);
+            //TODO: These are all equal so pick one as center
         }
-        return res;
+
+        return partitions;
     }
 }
 

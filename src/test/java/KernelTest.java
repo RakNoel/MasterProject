@@ -1,9 +1,6 @@
 import extra.MatrixGenerator;
 import org.junit.jupiter.api.Test;
-import tools.BinaryMatrix;
-import tools.BinaryMatrixFactory;
-import tools.BinaryMatrixNoInstanceException;
-import tools.Kernel;
+import tools.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,13 +21,13 @@ public class KernelTest {
 
         System.out.println(hasEquals);
 
-        kernel.ColumnReduce(hasEquals);
-        kernel.ColumnReduce(hasNoEquals);
+        kernel.columnReduce(new BinarySubMatrix(hasEquals));
+        kernel.columnReduce(new BinarySubMatrix(hasNoEquals));
 
         System.out.println(hasEquals);
 
-        assertEquals(hasNoEquals.getWidth(), hasNoEquals.getOriginalWidth());
-        assertEquals(hasEquals.getWidth(), hasEquals.getOriginalWidth() - 1);
+        assertEquals(hasNoEquals.getWidth(), hasNoEquals.getWidth());
+        assertEquals(hasEquals.getWidth(), hasEquals.getWidth() - 1);
     }
 
     @Test
@@ -42,13 +39,13 @@ public class KernelTest {
 
         System.out.println(canReduce);
 
-        kernel.RowReduce(cantReduce);
-        kernel.RowReduce(canReduce);
+        kernel.rowReduce(new BinarySubMatrix(cantReduce));
+        kernel.rowReduce(new BinarySubMatrix(canReduce));
 
         System.out.println(canReduce);
 
-        assertEquals(cantReduce.getOriginalHeight(), cantReduce.getHeight());
-        assertEquals(canReduce.getOriginalHeight() - 5, canReduce.getHeight());
+        assertEquals(cantReduce.getHeight(), cantReduce.getHeight());
+        assertEquals(canReduce.getHeight() - 5, canReduce.getHeight());
     }
 
     @Test
@@ -59,7 +56,7 @@ public class KernelTest {
 
         System.out.println(bnm);
 
-        var res = new Kernel(1, 3).Kernelize(bnm);
+        var res = new Kernel(1, 3).kernelize(bnm);
 
         for (var a : res) System.out.println(a);
 
