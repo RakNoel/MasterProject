@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.Random;
 
+import static com.raknoel.bma.extra.BinaryMatrixFactory.generateRandomMatrix;
 import static generators.MatrixFileReader.readMatrixFromFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -59,5 +61,25 @@ class KernelTest {
             System.out.println(a);
 
         assertEquals(4, partitions.size());
+    }
+
+    @Test
+    void TestPartitionOnRandomMatrices() throws BinaryMatrixNoInstanceException {
+        var rnd = new Random();
+        for (int i = 0; i < 10; i++) {
+            System.out.printf("Testing %d", i);
+
+            var width = rnd.nextInt(30) + 10;
+            var height = rnd.nextInt(30) + 10;
+
+            var r = rnd.nextInt(width / rnd.nextInt(width - 1) + 1);
+            var k = rnd.nextInt(9) + 1;
+
+            var bnm = generateRandomMatrix(rnd, width, height, k, r);
+
+            var kernel = new Kernel(k, r);
+            var res = kernel.kernelize(bnm);
+            assertEquals(r, res.size());
+        }
     }
 }

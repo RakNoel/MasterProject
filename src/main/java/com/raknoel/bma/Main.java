@@ -5,11 +5,11 @@ import com.raknoel.bma.tools.Kernel;
 
 import java.util.Random;
 
-import static com.raknoel.bma.extra.BinaryMatrixFactory.generateRandom;
+import static com.raknoel.bma.extra.BinaryMatrixFactory.generateRandomMatrix;
 
 public class Main {
     public static void main(String[] args) {
-        var binaryMatrix = generateRandom(new Random(), 100, 100, 7, 8);
+        var binaryMatrix = generateRandomMatrix(new Random(), 100, 100, 7, 8);
 
         Kernel a = new Kernel(7, 8);
         try {

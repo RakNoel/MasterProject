@@ -13,7 +13,7 @@ public class BinaryMatrixFactory {
     private BinaryMatrixFactory() {
     }
 
-    public static BinaryMatrix generateRandom(Random random, int width, int height, int k, int r) {
+    public static BinaryMatrix generateRandomMatrix(Random random, int width, int height, int k, int r) {
         var resulting = getVectorsFromCenters(random, width, height, k, generateCenters(random, height, k, r));
         return new BinaryMatrix(resulting, height);
     }
