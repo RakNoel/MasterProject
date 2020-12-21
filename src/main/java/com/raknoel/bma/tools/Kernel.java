@@ -39,7 +39,7 @@ public class Kernel {
     public List<BinarySubMatrix> partition(BinarySubMatrix bnm) throws BinaryMatrixNoInstanceException {
         ArrayList<BinarySubMatrix> result = new ArrayList<>();
         while (bnm.getWidth() > 0) {
-            if (result.size() > r) throw new BinaryMatrixNoInstanceException("t -ge r");
+            if (result.size() > r - 1) throw new BinaryMatrixNoInstanceException("t -ge r");
 
             var working = new ArrayList<Integer>();
             var tmp = bnm.getColumn(0);

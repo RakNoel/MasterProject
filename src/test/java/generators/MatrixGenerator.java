@@ -1,4 +1,4 @@
-package com.raknoel.bma.extra;
+package generators;
 
 import com.raknoel.bma.structures.BinaryMatrix;
 
@@ -21,8 +21,7 @@ public class MatrixGenerator {
         System.out.printf("Generating new matrix. W:%d H:%d output:%s %n", x, y, name);
 
         File file = new File(name);
-        try {
-            FileOutputStream fout = new FileOutputStream(file);
+        try (FileOutputStream fout = new FileOutputStream(file)) {
             fout.write((x + " " + y + System.lineSeparator()).getBytes());
             Random rnd = new Random();
             for (int i = 0; i < y; i++) {
@@ -32,7 +31,6 @@ public class MatrixGenerator {
                 row.append(System.lineSeparator());
                 fout.write(row.toString().getBytes());
             }
-            fout.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

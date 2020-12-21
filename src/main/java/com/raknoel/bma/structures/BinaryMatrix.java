@@ -88,6 +88,10 @@ public class BinaryMatrix implements Iterable<BitSet> {
         return bld.toString();
     }
 
+    public BinarySubMatrix getChild() {
+        return new BinarySubMatrix(this);
+    }
+
     public boolean invalidPos(int x, int y) {
         return x < 0 || y < 0 || x >= this.getWidth() || y >= this.getHeight();
     }

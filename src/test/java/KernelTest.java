@@ -1,13 +1,13 @@
 import com.raknoel.bma.exceptions.BinaryMatrixNoInstanceException;
-import com.raknoel.bma.extra.BinaryMatrixFactory;
-import com.raknoel.bma.extra.MatrixGenerator;
-import com.raknoel.bma.structures.BinaryMatrix;
 import com.raknoel.bma.structures.BinarySubMatrix;
 import com.raknoel.bma.tools.Kernel;
+import generators.MatrixGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Objects;
 
+import static generators.MatrixFileReader.readMatrixFromFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class KernelTest {
@@ -17,52 +17,47 @@ class KernelTest {
 
     @Test
     void ColumnReduceTest() {
-        BinaryMatrix hasEquals = MatrixGenerator.generateMatrixEqualColumns(10, 10, 5, SEED);
-        BinaryMatrix hasNoEquals = MatrixGenerator.generateDiagonalMatrix(1000, 1000);
+        BinarySubMatrix hasEquals = MatrixGenerator.generateMatrixEqualColumns(10, 10, 5, SEED).getChild();
+        BinarySubMatrix hasNoEquals = MatrixGenerator.generateDiagonalMatrix(1000, 1000).getChild();
 
         Kernel kernel = new Kernel(2, 2);
 
-        System.out.println(hasEquals);
+        kernel.columnReduce(hasEquals);
+        kernel.columnReduce(hasNoEquals);
 
-        kernel.columnReduce(new BinarySubMatrix(hasEquals));
-        kernel.columnReduce(new BinarySubMatrix(hasNoEquals));
-
-        System.out.println(hasEquals);
-
-        assertEquals(hasNoEquals.getWidth(), hasNoEquals.getWidth());
-        assertEquals(hasEquals.getWidth(), hasEquals.getWidth() - 1);
+        assertEquals(hasNoEquals.getWidth(), hasNoEquals.getParent().getWidth());
+        assertEquals(hasEquals.getWidth(), hasEquals.getParent().getWidth() - 1);
     }
 
     @Test
     void RowReduceTest() {
-        BinaryMatrix cantReduce = MatrixGenerator.generateDiagonalMatrix(1000, 1000);
-        BinaryMatrix canReduce = MatrixGenerator.generateMatrixReducibleRows(10, 10, 5, SEED);
+        var cantReduce = MatrixGenerator.generateDiagonalMatrix(1000, 1000).getChild();
+        var canReduce = MatrixGenerator.generateMatrixReducibleRows(10, 10, 5, SEED).getChild();
 
         Kernel kernel = new Kernel(3, 2);
 
-        System.out.println(canReduce);
+        kernel.rowReduce(cantReduce);
+        kernel.rowReduce(canReduce);
 
-        kernel.rowReduce(new BinarySubMatrix(cantReduce));
-        kernel.rowReduce(new BinarySubMatrix(canReduce));
-
-        System.out.println(canReduce);
-
-        assertEquals(cantReduce.getHeight(), cantReduce.getHeight());
-        assertEquals(canReduce.getHeight() - 5, canReduce.getHeight());
+        assertEquals(cantReduce.getHeight(), cantReduce.getParent().getHeight());
+        assertEquals(canReduce.getParent().getHeight() - 5, canReduce.getHeight());
     }
 
     @Test
-    void TestKernelOnKnownMatrix() throws BinaryMatrixNoInstanceException {
-        BinaryMatrix bnm = BinaryMatrixFactory
-                .buildBinaryMatrixFactory()
-                .readFromFile(new File(testPath + "3partitionsMatrix.bnm"));
+    void TestPartitionOnKnownMatrix() throws BinaryMatrixNoInstanceException {
+        var bnm = Objects.requireNonNull(
+                readMatrixFromFile(
+                        new File(testPath + "4partitionsMatrix.bnm")
+                )
+        ).getChild();
 
-        System.out.println(bnm);
+        var kernel = new Kernel(1, 4);
+        kernel.columnReduce(bnm);
+        var partitions = kernel.partition(bnm);
 
-        var res = new Kernel(1, 3).kernelize(bnm);
+        for (var a : partitions)
+            System.out.println(a);
 
-        for (var a : res) System.out.println(a);
-
-        assertEquals(3, res.size());
+        assertEquals(4, partitions.size());
     }
 }

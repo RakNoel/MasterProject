@@ -3,46 +3,22 @@ package com.raknoel.bma.extra;
 import com.raknoel.bma.structures.BinaryMatrix;
 import com.raknoel.bma.tools.HammingDistance;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.Random;
 
 public class BinaryMatrixFactory {
-    private static BinaryMatrixFactory self;
 
-    public static BinaryMatrixFactory buildBinaryMatrixFactory() {
-        if (self == null) self = new BinaryMatrixFactory();
-        return self;
+    private BinaryMatrixFactory() {
     }
 
-    public BinaryMatrix readFromFile(File file) {
-        try (Scanner scn = new Scanner(file)) {
-            var fLine = scn.nextLine().split(" ");
-            int x = Integer.parseInt(fLine[0]);
-            int y = Integer.parseInt(fLine[1]);
-
-            var bnm = new BinaryMatrix(x, y);
-            char[][] tmp = new char[y][x];
-
-            for (int i = 0; i < y; i++)
-                tmp[i] = scn.nextLine().toCharArray();
-
-            for (int i = 0; i < x; i++)
-                for (int j = 0; j < y; j++)
-                    bnm.setBit(i, j, tmp[j][i] == '1');
-
-            return bnm;
-        } catch (FileNotFoundException e) {
-            return null;
-        }
-    }
-
-    public BinaryMatrix generateRandom(Random random, int width, int height, int k, int r) {
+    public static BinaryMatrix generateRandom(Random random, int width, int height, int k, int r) {
         var resulting = getVectorsFromCenters(random, width, height, k, generateCenters(random, height, k, r));
         return new BinaryMatrix(resulting, height);
     }
 
-    private List<BitSet> getVectorsFromCenters(Random random, int width, int height, int k, List<BitSet> distancedCenters) {
+    private static List<BitSet> getVectorsFromCenters(Random random, int width, int height, int k, List<BitSet> distancedCenters) {
         var resulting = new ArrayList<BitSet>(width);
         resulting.addAll(distancedCenters);
 
@@ -55,7 +31,7 @@ public class BinaryMatrixFactory {
         return resulting;
     }
 
-    private List<BitSet> generateCenters(Random random, int height, int k, int r) {
+    private static List<BitSet> generateCenters(Random random, int height, int k, int r) {
         ArrayList<BitSet> centers;
         do {
             centers = new ArrayList<>(r);
@@ -70,7 +46,7 @@ public class BinaryMatrixFactory {
         return centers;
     }
 
-    private boolean validCenters(List<BitSet> centers, int k) {
+    private static boolean validCenters(List<BitSet> centers, int k) {
         for (int i = 0; i < centers.size() - 1; i++) {
             for (int j = i; j < centers.size(); j++) {
                 if (HammingDistance.hammingDistance(centers.get(i), centers.get(j)) <= k) return false;
