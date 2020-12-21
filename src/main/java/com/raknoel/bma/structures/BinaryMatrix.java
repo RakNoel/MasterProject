@@ -1,8 +1,8 @@
-package tools;
+package com.raknoel.bma.structures;
 
 import java.util.*;
 
-public class BinaryMatrix {
+public class BinaryMatrix implements Iterable<BitSet> {
     private final BitSet[] columns;
 
     private final int width;
@@ -88,8 +88,15 @@ public class BinaryMatrix {
         return bld.toString();
     }
 
-    private boolean invalidPos(int x, int y) {
+    public boolean invalidPos(int x, int y) {
         return x < 0 || y < 0 || x >= this.getWidth() || y >= this.getHeight();
     }
 
+    @Override
+    public Iterator<BitSet> iterator() {
+        ArrayList<BitSet> holder = new ArrayList<>(this.getWidth());
+        for (int i = 0; i < this.getWidth(); i++)
+            holder.add(this.getColumn(i));
+        return holder.iterator();
+    }
 }

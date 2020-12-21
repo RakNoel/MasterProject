@@ -1,15 +1,18 @@
-package tools;
+package com.raknoel.bma.structures;
 
 import java.util.*;
 
-public class BinarySubMatrix {
+public class BinarySubMatrix implements Iterable<BitSet> {
     private final BinaryMatrix parent;
 
     private List<Integer> rowsCount;
     private List<Integer> columnsCount;
 
+    private boolean finished;
+
     public BinarySubMatrix(BinaryMatrix parent) {
         this.parent = parent;
+        this.finished = false;
         setupHeightWidth(parent.getWidth(), parent.getHeight());
     }
 
@@ -17,6 +20,7 @@ public class BinarySubMatrix {
         this.parent = parent;
         setupHeightWidth(parent.getWidth(), parent.getHeight());
         this.columnsCount = columnsCount;
+        this.finished = false;
     }
 
     public int getWidth() {
@@ -106,5 +110,21 @@ public class BinarySubMatrix {
 
     public BinaryMatrix getParent() {
         return this.parent;
+    }
+
+    @Override
+    public Iterator<BitSet> iterator() {
+        ArrayList<BitSet> holder = new ArrayList<>(this.getWidth());
+        for (int i = 0; i < this.getWidth(); i++)
+            holder.add(this.getColumn(i));
+        return holder.iterator();
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished() {
+        this.finished = true;
     }
 }

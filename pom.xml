@@ -50,7 +50,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Main</mainClass>
+                            <mainClass>com.raknoel.bma.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

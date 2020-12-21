@@ -1,19 +1,22 @@
-import extra.MatrixGenerator;
+import com.raknoel.bma.exceptions.BinaryMatrixNoInstanceException;
+import com.raknoel.bma.extra.BinaryMatrixFactory;
+import com.raknoel.bma.extra.MatrixGenerator;
+import com.raknoel.bma.structures.BinaryMatrix;
+import com.raknoel.bma.structures.BinarySubMatrix;
+import com.raknoel.bma.tools.Kernel;
 import org.junit.jupiter.api.Test;
-import tools.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class KernelTest {
+class KernelTest {
 
     public static final int SEED = 123;
     public static final String testPath = "target/test-classes/";
 
     @Test
-    public void ColumnReduceTest() {
+    void ColumnReduceTest() {
         BinaryMatrix hasEquals = MatrixGenerator.generateMatrixEqualColumns(10, 10, 5, SEED);
         BinaryMatrix hasNoEquals = MatrixGenerator.generateDiagonalMatrix(1000, 1000);
 
@@ -31,7 +34,7 @@ public class KernelTest {
     }
 
     @Test
-    public void RowReduceTest() {
+    void RowReduceTest() {
         BinaryMatrix cantReduce = MatrixGenerator.generateDiagonalMatrix(1000, 1000);
         BinaryMatrix canReduce = MatrixGenerator.generateMatrixReducibleRows(10, 10, 5, SEED);
 
@@ -49,9 +52,9 @@ public class KernelTest {
     }
 
     @Test
-    public void TestKernelOnKnownMatrix() throws FileNotFoundException, BinaryMatrixNoInstanceException {
+    void TestKernelOnKnownMatrix() throws BinaryMatrixNoInstanceException {
         BinaryMatrix bnm = BinaryMatrixFactory
-                .BuildBinaryMatrixFactory()
+                .buildBinaryMatrixFactory()
                 .readFromFile(new File(testPath + "3partitionsMatrix.bnm"));
 
         System.out.println(bnm);

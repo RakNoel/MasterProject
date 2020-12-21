@@ -1,6 +1,6 @@
+import com.raknoel.bma.extra.BinaryMatrixFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import tools.BinaryMatrixFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +15,7 @@ public class BinaryMatrixFactoryTest {
 
     @BeforeAll
     static void beforeAll(){
-        factory = BinaryMatrixFactory.BuildBinaryMatrixFactory();
+        factory = BinaryMatrixFactory.buildBinaryMatrixFactory();
     }
 
     @Test

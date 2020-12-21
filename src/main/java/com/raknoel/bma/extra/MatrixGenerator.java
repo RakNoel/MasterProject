@@ -1,6 +1,6 @@
-package extra;
+package com.raknoel.bma.extra;
 
-import tools.BinaryMatrix;
+import com.raknoel.bma.structures.BinaryMatrix;
 
 import java.io.File;
 import java.io.FileOutputStream;

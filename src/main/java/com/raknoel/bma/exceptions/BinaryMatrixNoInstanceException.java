@@ -1,4 +1,4 @@
-package tools;
+package com.raknoel.bma.exceptions;
 
 public class BinaryMatrixNoInstanceException extends Exception {
     public BinaryMatrixNoInstanceException(String message, Throwable cause) {

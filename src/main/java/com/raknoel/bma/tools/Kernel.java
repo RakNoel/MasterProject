@@ -1,9 +1,13 @@
-package tools;
+package com.raknoel.bma.tools;
+
+import com.raknoel.bma.exceptions.BinaryMatrixNoInstanceException;
+import com.raknoel.bma.structures.BinaryMatrix;
+import com.raknoel.bma.structures.BinarySubMatrix;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static tools.HammingDistance.hammingDistance;
+import static com.raknoel.bma.tools.HammingDistance.hammingDistance;
 
 public class Kernel {
     private final int r;
@@ -45,7 +49,7 @@ public class Kernel {
             for (int i = 0; i < bnm.getWidth(); i++)
                 if (hammingDistance(bnm.getColumn(i), tmp) <= k) {
                     working.add(bnm.getColumnID(i));
-                    bnm.deleteColumn(i);
+                    bnm.deleteColumn(i--);
                 }
 
             result.add(new BinarySubMatrix(bnm.getParent(), working));
@@ -62,8 +66,8 @@ public class Kernel {
 
         for (var a_t : partitions) {
             rowReduce(a_t);
-            //if (a_t.getHeight() > 0) res.add(a_t);
-            //TODO: These are all equal so pick one as center
+            if (a_t.getHeight() > 0)
+                a_t.setFinished();
         }
 
         return partitions;
