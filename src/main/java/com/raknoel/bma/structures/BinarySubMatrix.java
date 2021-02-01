@@ -70,10 +70,16 @@ public class BinarySubMatrix implements Iterable<BitSet> {
         return holder;
     }
 
-    public List<BitSet> getColumns(Set<Integer> x) {
+    public List<BitSet> getColumns(Collection<Integer> x) {
         ArrayList<BitSet> holder = new ArrayList<>(x.size());
         for (var c : x) holder.add(this.getColumn(c));
 
+        return holder;
+    }
+
+    public List<BitSet> getColumns() {
+        ArrayList<BitSet> holder = new ArrayList<>(this.getWidth());
+        for (int i = 0; i < this.getWidth(); i++) holder.add(this.getColumn(i));
         return holder;
     }
 
