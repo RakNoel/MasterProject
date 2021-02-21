@@ -79,7 +79,19 @@ class BMASolver implements Runnable {
             }
 
             if (h <= d / I.size()) {
-                //TODO Recurse
+                for (var columnSelector : I){
+                    var column = bsm.getColumn(columnSelector);
+                    var s = GenerateCloseNeighbours.generateCloseNeighbours(column, bsm.getHeight(), h);
+                    for (var distVector : s) {
+                        var tmpList = new ArrayList<>(S);
+                        tmpList.add(distVector);
+                        try {
+                            return findCenters(I, tmpList, d);
+                        }catch (BinaryMatrixNoInstanceException e){
+                            //Ignore
+                        }
+                    }
+                }
             }
         }
         throw new BinaryMatrixNoInstanceException("");
