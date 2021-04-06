@@ -50,7 +50,8 @@ public class BinaryMatrix implements Iterable<BitSet> {
 
     public List<BitSet> getRows(Set<Integer> x) {
         ArrayList<BitSet> holder = new ArrayList<>(x.size());
-        for (int c : x) holder.add(this.getRow(c));
+        for (int c : x)
+            holder.add(this.getRow(c));
         return holder;
     }
 
@@ -79,7 +80,7 @@ public class BinaryMatrix implements Iterable<BitSet> {
         StringBuilder bld = new StringBuilder();
 
         Set<Integer> s = new HashSet<>();
-        for (int i = 0; i < this.getWidth(); i++) s.add(i);
+        for (int i = 0; i < this.getHeight(); i++) s.add(i);
         for (var row : getRows(s)) {
             for (int bit = 0; bit < getWidth(); bit++)
                 bld.append(row.get(bit) ? '1' : '0').append(" ");

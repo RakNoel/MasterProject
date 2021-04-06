@@ -48,7 +48,7 @@ public class BinarySubMatrix implements Iterable<BitSet> {
     }
 
     public BitSet getColumn(int n) {
-        if (invalidPos(n, 0)) throw new IndexOutOfBoundsException();
+        if (invalidPos(n)) throw new IndexOutOfBoundsException();
         var i = columnsCount.get(n);
         return this.parent.getColumn(i);
     }
@@ -98,6 +98,10 @@ public class BinarySubMatrix implements Iterable<BitSet> {
 
     private boolean invalidPos(int x, int y) {
         return x < 0 || y < 0 || x >= this.getWidth() || y >= this.getHeight();
+    }
+
+    private boolean invalidPos(int x) {
+        return x < 0 || x >= this.getWidth();
     }
 
     @Override

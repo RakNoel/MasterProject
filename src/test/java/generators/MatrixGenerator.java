@@ -1,13 +1,12 @@
 package generators;
 
 import com.raknoel.bma.structures.BinaryMatrix;
+import com.raknoel.bma.structures.BinarySubMatrix;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class MatrixGenerator {
     public static void main(String[] args) {
@@ -45,6 +44,28 @@ public class MatrixGenerator {
                 bnm.setBit(i, j, rnd.nextBoolean());
 
         return bnm;
+    }
+
+    public static BinaryMatrix generateRKMatrix(int width, int height, int k, int r, int seed) {
+        var rnd = new Random(seed);
+        var centers = new ArrayList<BitSet>();
+
+        for (int i = 0; i < r; i++){
+            var tmp = new BitSet(height);
+            for (int b = 0; b < height; b++)
+                tmp.set(b, rnd.nextBoolean());
+            centers.add(tmp);
+        }
+        var matrixLayout = new ArrayList<BitSet>();
+        for (int i = 0; i < width; i++)
+            matrixLayout.add(centers.get(rnd.nextInt(centers.size())));
+
+        for (int i = 0; i < k; i++){
+            var pointer = matrixLayout.get(rnd.nextInt(matrixLayout.size()));
+            pointer.flip(rnd.nextInt(height));
+        }
+
+        return new BinaryMatrix(matrixLayout, height);
     }
 
     public static BinaryMatrix generateDiagonalMatrix(int width, int height) {
