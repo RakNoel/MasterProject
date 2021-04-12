@@ -66,7 +66,7 @@ public class Kernel {
 
         for (var a_t : partitions) {
             rowReduce(a_t);
-            if (a_t.getHeight() <= 0)
+            if (a_t.getHeight() == 0)
                 a_t.setFinished();
         }
 
