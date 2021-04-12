@@ -50,16 +50,20 @@ public class MatrixGenerator {
         var rnd = new Random(seed);
         var centers = new ArrayList<BitSet>();
 
+        //Produce r center
         for (int i = 0; i < r; i++){
             var tmp = new BitSet(height);
             for (int b = 0; b < height; b++)
                 tmp.set(b, rnd.nextBoolean());
             centers.add(tmp);
         }
+
+        //From centers pick width columns from centers
         var matrixLayout = new ArrayList<BitSet>();
         for (int i = 0; i < width; i++)
             matrixLayout.add(centers.get(rnd.nextInt(centers.size())));
 
+        //Flips k bits
         for (int i = 0; i < k; i++){
             var pointer = matrixLayout.get(rnd.nextInt(matrixLayout.size()));
             pointer.flip(rnd.nextInt(height));

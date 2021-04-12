@@ -68,6 +68,8 @@ public class Kernel {
             rowReduce(a_t);
             if (a_t.getHeight() == 0)
                 a_t.setFinished();
+
+            System.out.println(a_t);
         }
 
         return partitions;

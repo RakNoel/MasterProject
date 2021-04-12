@@ -20,7 +20,7 @@ public class BMA {
         this.bsms = new Kernel(k, r).kernelize(bnm);
     }
 
-    public synchronized BinaryMatrix Approximate() {
+    public synchronized BinaryMatrix Approximate() throws BinaryMatrixNoInstanceException {
         var solvers = new BMASolver[this.bsms.size()];
         var res = new ArrayList<BitSet>();
         var i = 0;
@@ -28,6 +28,7 @@ public class BMA {
             solvers[i] = new BMASolver(bsm, k, r);
             solvers[i].run();
             res.addAll(solvers[i++].centers);
+            if (res.size() > r) throw new BinaryMatrixNoInstanceException("");
             //System.out.println(new BinaryMatrix(solvers[i++].centers, bsm.getParent().getHeight()));
         }
 
