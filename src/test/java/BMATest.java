@@ -27,7 +27,7 @@ public class BMATest {
 
     @Test
     void KnownMatrixApproximation() throws BinaryMatrixNoInstanceException {
-        int k = 4;
+        int k = 2;
         int r = 2;
 
         var binaryMatrix = readMatrixFromFile(new File(testPath + "manualMatrixNoKernelBMA.bnm"));

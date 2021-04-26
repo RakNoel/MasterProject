@@ -41,6 +41,9 @@ public class Partition<T> extends ArrayList<List<T>> {
     }
 
     public List<Partition<T>> Partition(int k, List<T> A) {
+        if (k <= 0) {
+            return new ArrayList<>();
+        }
         if (k == 1) {
             var res = new ArrayList<Partition<T>>();
             var tmp = new Partition<T>();

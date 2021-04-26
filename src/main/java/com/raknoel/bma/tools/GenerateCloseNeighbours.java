@@ -16,7 +16,7 @@ public class GenerateCloseNeighbours {
             numbers.add(i);
 
         Generator.combination(numbers).simple(distance).stream().forEach(bitsToFlip -> {
-            var tmpVector = new BitSet(length);
+            var tmpVector = new BitSet();
             for (int i : bitsToFlip) tmpVector.set(i);
             tmpVector.xor(vector);
             result.add(tmpVector);

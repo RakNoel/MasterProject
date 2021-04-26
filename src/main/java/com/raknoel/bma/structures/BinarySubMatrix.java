@@ -70,6 +70,11 @@ public class BinarySubMatrix implements Iterable<BitSet> {
         return holder;
     }
 
+    public int getRowID(int n) {
+        if (invalidPos(0, n)) throw new IndexOutOfBoundsException();
+        return rowsCount.get(n);
+    }
+
     public List<BitSet> getColumns(Collection<Integer> x) {
         ArrayList<BitSet> holder = new ArrayList<>(x.size());
         for (var c : x) holder.add(this.getColumn(c));

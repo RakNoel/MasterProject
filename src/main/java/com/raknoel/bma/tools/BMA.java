@@ -72,7 +72,7 @@ class BMASolver implements Runnable {
     }
 
     public List<BitSet> findCenters(List<Integer> I, List<BitSet> S, int d) throws BinaryMatrixNoInstanceException {
-        var PartitionGenerator = new Partition<BitSet>();
+        var PartitionGenerator = new Partition<Integer>();
 
         if (!S.isEmpty() && totalHammingDist(S) <= d) return S;
         if (S.size() == this.r) {
@@ -84,18 +84,20 @@ class BMASolver implements Runnable {
 
             if (d >= 0 && I.size() < magicNumber(d)) {
                 for (int p = 1; p < (Math.min(I.size(), r - S.size())); p++) {
-                    var partitions = PartitionGenerator.PartitionFirstEmpty(p, S);
+                    var partitions = PartitionGenerator.PartitionFirstEmpty(p, I);
                     for (var partition : partitions) {
                         List<BitSet> optimalCenter = new ArrayList<>();
                         for (var cluster : partition) {
                             int[] position = new int[bsm.getHeight()];
                             for (int i = 0; i < position.length; i++)
-                                for (BitSet col : cluster)
-                                    position[i] += col.get(i) ? 1 : -1;
+                                for (Integer col : cluster)
+                                    position[i] += bsm.getBit(col, i) ? 1 : -1;
 
                             var center = new BitSet();
-                            for (int i = 0; i < position.length; i++)
-                                center.set(i, position[i] > 0);
+                            center.or(bsm.getColumn(cluster.get(0)));
+                            for (int i = 0; i < position.length; i++) {
+                                center.set(bsm.getRowID(i), position[i] > 0);
+                            }
 
                             optimalCenter.add(center);
                         }
