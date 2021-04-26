@@ -25,11 +25,12 @@ public class BMA {
         var res = new ArrayList<BitSet>();
         var i = 0;
         for (var bsm : this.bsms) {
-            solvers[i] = new BMASolver(bsm, k, r);
-            solvers[i].run();
-            res.addAll(solvers[i++].centers);
-            if (res.size() > r) throw new BinaryMatrixNoInstanceException("");
-            //System.out.println(new BinaryMatrix(solvers[i++].centers, bsm.getParent().getHeight()));
+            solvers[i] = new BMASolver(bsm, k, r - this.bsms.size() + 1);
+            solvers[i++].run();
+        }
+
+        for (var solution : solvers) {
+            solution.centers.forEach(System.out::println);
         }
 
         return new BinaryMatrix(res, bsms.get(0).getParent().getHeight());
@@ -41,7 +42,7 @@ class BMASolver implements Runnable {
     private final BinarySubMatrix bsm;
     private final int k;
     private final int r;
-    List<BitSet> centers;
+    List<BMASolution> centers;
 
     public BMASolver(BinarySubMatrix bsm, int k, int r) {
         this.bsm = bsm;
@@ -53,7 +54,10 @@ class BMASolver implements Runnable {
     @Override
     public void run() {
         if (bsm.isFinished()) {
-            centers.add(bsm.getColumn(0));
+            var sol = bsm.getColumn(0);
+            var pack = new ArrayList<BitSet>();
+            pack.add(sol);
+            centers.add(new BMASolution(0, pack));
             return;
         }
 
@@ -64,17 +68,25 @@ class BMASolver implements Runnable {
         for (var i = 0; i < bsm.getWidth(); i++)
             I.add(i, i);
 
-        try {
-            this.centers = findCenters(I, S, k);
-        } catch (BinaryMatrixNoInstanceException e) {
-            e.printStackTrace();
+        for (int i = k; i > 0; i--) {
+            try {
+                var res = findCenters(I, S, i);
+                if (res == null) {
+                    break;
+                }
+                this.centers.add(res);
+            } catch (BinaryMatrixNoInstanceException e) {
+                break;
+            }
         }
     }
 
-    public List<BitSet> findCenters(List<Integer> I, List<BitSet> S, int d) throws BinaryMatrixNoInstanceException {
+    public BMASolution findCenters(List<Integer> I, List<BitSet> S, int d) throws BinaryMatrixNoInstanceException {
         var PartitionGenerator = new Partition<Integer>();
 
-        if (!S.isEmpty() && totalHammingDist(S) <= d) return S;
+        if (!S.isEmpty() && totalHammingDist(S) <= d) {
+            return new BMASolution(totalHammingDist(S), S);
+        }
         if (S.size() == this.r) {
             throw new BinaryMatrixNoInstanceException("");
         }
@@ -103,8 +115,9 @@ class BMASolver implements Runnable {
                         }
                         var tmpS = new ArrayList<>(S);
                         tmpS.addAll(optimalCenter);
-                        if (totalHammingDist(tmpS) <= d)
-                            return tmpS;
+                        if (totalHammingDist(tmpS) <= d) {
+                            return new BMASolution(totalHammingDist(tmpS), tmpS);
+                        }
                     }
                 }
             }
@@ -157,5 +170,27 @@ class BMASolver implements Runnable {
             dist += tmpDist;
         }
         return dist;
+    }
+}
+
+class BMASolution {
+    final int d;
+    final List<BitSet> centers;
+
+    public BMASolution(int d, List<BitSet> centers) {
+        this.d = d;
+        this.centers = centers;
+    }
+
+    @Override
+    public String toString() {
+        var bld = new StringBuilder();
+        for (int i = 0; i < centers.get(0).length(); i++) {
+            for (int j = 0; j < centers.size(); j++) {
+                bld.append(centers.get(j).get(i) ? '1' : '0').append(" ");
+            }
+            bld.append(System.lineSeparator());
+        }
+        return bld.toString();
     }
 }

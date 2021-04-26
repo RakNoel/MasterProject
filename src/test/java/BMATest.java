@@ -36,6 +36,6 @@ public class BMATest {
 
         var solver = new BMA(binaryMatrix, k, r);
         var res = solver.Approximate();
-        System.out.println(res);
+       // System.out.println(res);
     }
 }
