@@ -6,6 +6,7 @@ import com.raknoel.bma.structures.BinarySubMatrix;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.raknoel.bma.tools.HammingDistance.hammingDistance;
@@ -30,8 +31,11 @@ public class BMA {
         }
 
         var solution = new int[k + 1];
+        var bags = new ArrayList[k+1];
         for (int i = 0; i <= k; i++) {
             solution[i] = subsolvers[0].getCenters()[i].centers.size();
+            bags[i] = new ArrayList<BitSet>();
+            bags[i].addAll(subsolvers[0].getCenters()[i].centers);
         }
 
         for (int s = 1; s < subsolvers.length; s++) {
@@ -42,12 +46,17 @@ public class BMA {
                 int inc = 0;
                 int best = solution[dec] + working[inc].centers.size();
 
+                var p = inc;
                 while (dec > 0) {
-                    best = Math.min(best, solution[--dec] + working[++inc].centers.size());
-                    //TODO: Store solution for future backtracking
+                    var contender = solution[--dec] + working[++inc].centers.size();
+                    if (best > contender) {
+                        best = contender;
+                        p = inc;
+                    }
                 }
 
                 newSolution[i] = best;
+                bags[i].addAll(working[p].centers);
             }
             solution = newSolution;
         }
@@ -61,7 +70,8 @@ public class BMA {
             }
         }
 
-        System.out.printf("Best solution K: %d, R: %d", bestK, bestR);
+        System.out.printf("Best solution K: %d, R: %d %n", bestK, bestR);
+        System.out.println(new BinaryMatrix(bags[bestK], this.bsms.get(0).getParent().getHeight()));
         return null;
     }
 }
