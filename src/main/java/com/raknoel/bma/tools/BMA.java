@@ -20,20 +20,49 @@ public class BMA {
         this.bsms = new Kernel(k, r).kernelize(bnm);
     }
 
-    public synchronized BinaryMatrix Approximate() throws BinaryMatrixNoInstanceException {
-        var solvers = new BMASolver[this.bsms.size()];
-        var res = new ArrayList<BitSet>();
-        var i = 0;
+    public synchronized BinaryMatrix Approximate() {
+        var subsolvers = new BMASolver[this.bsms.size()];
+
+        var pointer = 0;
         for (var bsm : this.bsms) {
-            solvers[i] = new BMASolver(bsm, k, r - this.bsms.size() + 1);
-            solvers[i++].run();
+            subsolvers[pointer] = new BMASolver(bsm, k, r);
+            subsolvers[pointer++].run();
         }
 
-        for (var solution : solvers) {
-            solution.centers.forEach(System.out::println);
+        var solution = new int[k + 1];
+        for (int i = 0; i <= k; i++) {
+            solution[i] = subsolvers[0].getCenters()[i].centers.size();
         }
 
-        return new BinaryMatrix(res, bsms.get(0).getParent().getHeight());
+        for (int s = 1; s < subsolvers.length; s++) {
+            var working = subsolvers[s].getCenters();
+            var newSolution = new int[k + 1];
+            for (int i = 0; i <= k; i++) {
+                int dec = i;
+                int inc = 0;
+                int best = solution[dec] + working[inc].centers.size();
+
+                while (dec > 0) {
+                    best = Math.min(best, solution[--dec] + working[++inc].centers.size());
+                    //TODO: Store solution for future backtracking
+                }
+
+                newSolution[i] = best;
+            }
+            solution = newSolution;
+        }
+
+        var bestK = 0;
+        var bestR = solution[bestK];
+        for (int i = 0; i < solution.length; i++) {
+            if (bestR > solution[i]) {
+                bestK = i;
+                bestR = solution[bestK];
+            }
+        }
+
+        System.out.printf("Best solution K: %d, R: %d", bestK, bestR);
+        return null;
     }
 }
 
@@ -42,50 +71,47 @@ class BMASolver implements Runnable {
     private final BinarySubMatrix bsm;
     private final int k;
     private final int r;
-    List<BMASolution> centers;
+    private BMAHypothesis[] centers;
 
     public BMASolver(BinarySubMatrix bsm, int k, int r) {
         this.bsm = bsm;
         this.k = k;
         this.r = r;
-        this.centers = new ArrayList<>();
+        this.centers = new BMAHypothesis[k + 1];
+    }
+
+    public BMAHypothesis[] getCenters() {
+        return centers;
     }
 
     @Override
     public void run() {
         if (bsm.isFinished()) {
-            var sol = bsm.getColumn(0);
-            var pack = new ArrayList<BitSet>();
-            pack.add(sol);
-            centers.add(new BMASolution(0, pack));
+            centers[0] = new BMAHypothesis(0, bsm.getColumn(0));
             return;
         }
 
         assert (bsm.getWidth() > 0);
 
-        var I = new ArrayList<Integer>(bsm.getWidth());
-        var S = new ArrayList<BitSet>();
-        for (var i = 0; i < bsm.getWidth(); i++)
-            I.add(i, i);
-
-        for (int i = k; i > 0; i--) {
+        for (int i = 0; i <= k; i++) {
             try {
-                var res = findCenters(I, S, i);
-                if (res == null) {
-                    break;
-                }
-                this.centers.add(res);
+                var I = new ArrayList<Integer>(bsm.getWidth());
+                var S = new ArrayList<BitSet>();
+                for (var t = 0; t < bsm.getWidth(); t++)
+                    I.add(t, t);
+
+                this.centers[i] = findCenters(I, S, i);
             } catch (BinaryMatrixNoInstanceException e) {
-                break;
+                //Ignore
             }
         }
     }
 
-    public BMASolution findCenters(List<Integer> I, List<BitSet> S, int d) throws BinaryMatrixNoInstanceException {
+    public BMAHypothesis findCenters(List<Integer> I, List<BitSet> S, int d) throws BinaryMatrixNoInstanceException {
         var PartitionGenerator = new Partition<Integer>();
 
         if (!S.isEmpty() && totalHammingDist(S) <= d) {
-            return new BMASolution(totalHammingDist(S), S);
+            return new BMAHypothesis(totalHammingDist(S), S);
         }
         if (S.size() == this.r) {
             throw new BinaryMatrixNoInstanceException("");
@@ -116,7 +142,7 @@ class BMASolver implements Runnable {
                         var tmpS = new ArrayList<>(S);
                         tmpS.addAll(optimalCenter);
                         if (totalHammingDist(tmpS) <= d) {
-                            return new BMASolution(totalHammingDist(tmpS), tmpS);
+                            return new BMAHypothesis(totalHammingDist(tmpS), tmpS);
                         }
                     }
                 }
@@ -153,7 +179,7 @@ class BMASolver implements Runnable {
             for (var s : S) {
                 l = Math.min(hammingDistance(s, bsm.getColumn(i)), l);
             }
-            if (l < h - 1) {
+            if (l < h - 1 || l == 0) {
                 I.remove(i);
                 a--;
                 d = d - l;
@@ -165,7 +191,7 @@ class BMASolver implements Runnable {
     private int totalHammingDist(List<BitSet> S) {
         int dist = 0;
         for (var column : bsm.getColumns()) {
-            int tmpDist = 0;
+            int tmpDist = Integer.MAX_VALUE;
             for (var vector : S) tmpDist = Math.min(hammingDistance(column, vector), tmpDist);
             dist += tmpDist;
         }
@@ -173,13 +199,19 @@ class BMASolver implements Runnable {
     }
 }
 
-class BMASolution {
+class BMAHypothesis {
     final int d;
     final List<BitSet> centers;
 
-    public BMASolution(int d, List<BitSet> centers) {
+    public BMAHypothesis(int d, List<BitSet> centers) {
         this.d = d;
         this.centers = centers;
+    }
+
+    public BMAHypothesis(int d, BitSet center) {
+        this.d = d;
+        this.centers = new ArrayList<>();
+        this.centers.add(center);
     }
 
     @Override

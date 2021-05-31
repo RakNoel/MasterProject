@@ -21,21 +21,19 @@ public class BMATest {
         System.out.println(binaryMatrix);
 
         var solver = new BMA(binaryMatrix, k, r);
-        var res = solver.Approximate();
-        System.out.println(res);
+        solver.Approximate();
     }
 
     @Test
     void KnownMatrixApproximation() throws BinaryMatrixNoInstanceException {
-        int k = 2;
-        int r = 2;
+        int k = 6;
+        int r = 4;
 
         var binaryMatrix = readMatrixFromFile(new File(testPath + "manualMatrixNoKernelBMA.bnm"));
 
         System.out.println(binaryMatrix);
 
         var solver = new BMA(binaryMatrix, k, r);
-        var res = solver.Approximate();
-       // System.out.println(res);
+        solver.Approximate();
     }
 }
