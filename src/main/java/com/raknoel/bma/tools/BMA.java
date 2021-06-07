@@ -24,7 +24,7 @@ public class BMA {
 
         var pointer = 0;
         for (var bsm : this.bsms) {
-            solvers[pointer] = new BMASolver(bsm, k, r);
+            solvers[pointer] = new BMASolver(bsm, k, r - this.bsms.size() + 1);
             solvers[pointer++].run();
         }
 

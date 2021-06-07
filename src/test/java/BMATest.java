@@ -17,15 +17,18 @@ public class BMATest {
     @Test
     void SimpleMatrixApproximation() throws BinaryMatrixNoInstanceException {
         int k = 5;
-        int r = 6;
+        int r = 5;
 
-        var binaryMatrix = MatrixGenerator.generateRKMatrix(25, 7, 5, 6, new Random().nextInt());
+        var binaryMatrix = MatrixGenerator
+                .generateRKMatrix(100, 10, 20, 1, new Random().nextInt());
 
         System.out.println(binaryMatrix);
 
         var solver = new BMA(binaryMatrix, k, r);
         var res = solver.Approximate();
-        System.out.printf("Best solution K: %d, R: %d %n", res.getTotalCost(), res.getWidth());
+        System.out.printf("Best solution K: %d, R: %d %n",
+                binaryMatrix.getChild().totalHammingDist(res.getCenters()),
+                res.getWidth());
     }
 
     @Test
