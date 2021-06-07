@@ -2,6 +2,8 @@ package com.raknoel.bma.structures;
 
 import java.util.*;
 
+import static com.raknoel.bma.tools.HammingDistance.hammingDistance;
+
 public class BinarySubMatrix implements Iterable<BitSet> {
     private final BinaryMatrix parent;
 
@@ -141,5 +143,17 @@ public class BinarySubMatrix implements Iterable<BitSet> {
 
     public void setFinished() {
         this.finished = true;
+    }
+
+    public int totalHammingDist(List<BitSet> S) {
+        if (S.isEmpty()) return Integer.MAX_VALUE;
+
+        int dist = 0;
+        for (var column : this.getColumns()) {
+            int tmpDist = Integer.MAX_VALUE;
+            for (var vector : S) tmpDist = Math.min(hammingDistance(column, vector), tmpDist);
+            dist += tmpDist;
+        }
+        return dist;
     }
 }

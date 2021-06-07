@@ -1,11 +1,14 @@
 import com.raknoel.bma.exceptions.BinaryMatrixNoInstanceException;
+import com.raknoel.bma.structures.BinaryMatrix;
 import com.raknoel.bma.tools.BMA;
 import generators.MatrixGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Random;
 
 import static generators.MatrixFileReader.readMatrixFromFile;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BMATest {
 
@@ -13,15 +16,16 @@ public class BMATest {
 
     @Test
     void SimpleMatrixApproximation() throws BinaryMatrixNoInstanceException {
-        int k = 10;
+        int k = 5;
         int r = 6;
 
-        var binaryMatrix = MatrixGenerator.generateRKMatrix(50, 10, 11, 6, 123);
+        var binaryMatrix = MatrixGenerator.generateRKMatrix(25, 7, 5, 6, new Random().nextInt());
 
         System.out.println(binaryMatrix);
 
         var solver = new BMA(binaryMatrix, k, r);
-        solver.Approximate();
+        var res = solver.Approximate();
+        System.out.printf("Best solution K: %d, R: %d %n", res.getTotalCost(), res.getWidth());
     }
 
     @Test
@@ -34,6 +38,12 @@ public class BMATest {
         System.out.println(binaryMatrix);
 
         var solver = new BMA(binaryMatrix, k, r);
-        solver.Approximate();
+        var res = solver.Approximate();
+        System.out.printf("Best solution K: %d, R: %d %n", res.getTotalCost(), res.getWidth());
+        System.out.println(new BinaryMatrix(res.getCenters(), binaryMatrix.getHeight()));
+
+        assert binaryMatrix != null;
+        assertEquals(binaryMatrix.getChild().totalHammingDist(res.getCenters()), res.getTotalCost());
+        assertEquals(2, res.getWidth());
     }
 }
