@@ -1,7 +1,7 @@
 import com.raknoel.bma.exceptions.BinaryMatrixNoInstanceException;
+import com.raknoel.bma.generators.MatrixGenerator;
 import com.raknoel.bma.structures.BinarySubMatrix;
 import com.raknoel.bma.tools.Kernel;
-import generators.MatrixGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Random;
 
 import static com.raknoel.bma.extra.BinaryMatrixFactory.generateRandomMatrix;
-import static generators.MatrixFileReader.readMatrixFromFile;
+import static com.raknoel.bma.generators.MatrixFileReader.readMatrixFromFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class KernelTest {

@@ -1,26 +1,82 @@
 package com.raknoel.bma;
 
-import com.raknoel.bma.exceptions.BinaryMatrixNoInstanceException;
-import com.raknoel.bma.tools.Kernel;
+import com.google.cloud.bigquery.*;
+import com.raknoel.bma.generators.MatrixGenerator;
+import com.raknoel.bma.structures.BinaryMatrix;
+import com.raknoel.bma.tools.BMA;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
-import static com.raknoel.bma.extra.BinaryMatrixFactory.generateRandomMatrix;
-
 public class Main {
+    static final String DATASET_NAME = "matrixResults";
+    static final String TABLE_NAME = "first-runs";
+    static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
     public static void main(String[] args) {
-        var binaryMatrix = generateRandomMatrix(new Random(), 100, 100, 7, 8);
+        BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
+        int width = 1000, height = 1000, h = 1;
 
-        Kernel a = new Kernel(7, 8);
-        try {
-            var res = a.kernelize(binaryMatrix);
+        for (int r = 5; r <= 10; r++)
+            for (int k = 3; k <= 10; k++)
+                for (int d = 11; d <= 15; d++) {
+                    for (int i = 0; i < 10; i++) {
+                        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                        System.out.printf("Running: R %d, K %d, D %d, I %d %n", r, k, d, i);
 
-            System.out.printf("Solution found of %d sub matrices %n", res.size());
+                        var binaryMatrix = MatrixGenerator
+                                .generateRKMatrix(width, height, d, h, new Random().nextInt());
 
-            for (var sub : res)
-                System.out.println(sub);
-        } catch (BinaryMatrixNoInstanceException noInstance) {
-            noInstance.printStackTrace();
-        }
+                        Map<String, Object> content = new HashMap<>();
+                        content.put("k", k);
+                        content.put("r", r);
+                        content.put("d", d);
+                        content.put("h", h);
+                        content.put("matrix_width", width);
+                        content.put("matrix_height", height);
+                        content.put("matrix", binaryMatrix.toString());
+                        content.put("computer_id", "DESKTOP_1");
+                        content.put("rundate", SIMPLE_DATE_FORMAT.format(timestamp));
+
+                        final long START = System.currentTimeMillis();
+                        try {
+                            BMA solver = new BMA(binaryMatrix, k, r);
+                            var sol = solver.Approximate();
+                            final long STOP = System.currentTimeMillis();
+                            final long RUNTIME = STOP - START;
+
+                            content.put("runtime_ms", RUNTIME);
+                            content.put("solved", true);
+                            content.put("solution", new BinaryMatrix(sol.getCenters(), height).toString());
+                            content.put("best_k", binaryMatrix.getChild().totalHammingDist(sol.getCenters()));
+                            content.put("best_r", sol.getWidth());
+                        } catch (Exception e) {
+                            final long STOP = System.currentTimeMillis();
+                            final long RUNTIME = STOP - START;
+                            content.put("runtime_ms", RUNTIME);
+                            content.put("solved", false);
+                            content.put("solution", "");
+                            content.put("best_k", -1);
+                            content.put("best_r", -1);
+                        }
+
+                        var res = insertAll(bigquery, content);
+                        if (res.hasErrors()) {
+                            res.getInsertErrors().forEach((x, y) -> System.out.println(y.toString()));
+                        }
+                    }
+                }
+    }
+
+    public static InsertAllResponse insertAll(BigQuery bq, Map<String, Object> rowContent) {
+        TableId tableId = TableId.of(DATASET_NAME, TABLE_NAME);
+
+        return bq.insertAll(
+                InsertAllRequest.newBuilder(tableId)
+                        .addRow(rowContent)
+                        .build());
     }
 }

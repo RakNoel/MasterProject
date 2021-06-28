@@ -88,3 +88,6 @@ _deps
 *.exe
 *.out
 *.app
+
+# JSON token
+binarymatrixapproximation-*.json

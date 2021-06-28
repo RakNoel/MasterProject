@@ -1,4 +1,4 @@
-package generators;
+package com.raknoel.bma.generators;
 
 import com.raknoel.bma.structures.BinaryMatrix;
 

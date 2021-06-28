@@ -1,13 +1,13 @@
 import com.raknoel.bma.exceptions.BinaryMatrixNoInstanceException;
+import com.raknoel.bma.generators.MatrixGenerator;
 import com.raknoel.bma.structures.BinaryMatrix;
 import com.raknoel.bma.tools.BMA;
-import generators.MatrixGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Random;
 
-import static generators.MatrixFileReader.readMatrixFromFile;
+import static com.raknoel.bma.generators.MatrixFileReader.readMatrixFromFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BMATest {

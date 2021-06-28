@@ -1,4 +1,4 @@
-package generators;
+package com.raknoel.bma.generators;
 
 import com.raknoel.bma.structures.BinaryMatrix;
 
@@ -62,18 +62,18 @@ public class MatrixGenerator {
      * @param width  The width of the resulting BinaryMatrix
      * @param height The height of the resulting BinaryMatrix
      * @param d      The number of bits to flip after generation (Noise)
-     * @param r      The number of random centers to generate for the BinaryMatrix
+     * @param h      The number of random centers to generate for the BinaryMatrix
      * @param seed   The seed used for the random-generator
      * @return BinaryMatrix following the promises of the method
      */
-    public static BinaryMatrix generateRKMatrix(int width, int height, int d, int r, int seed) {
-        if (width < r) throw new IllegalArgumentException("matrix too small to hold r columns");
+    public static BinaryMatrix generateRKMatrix(int width, int height, int d, int h, int seed) {
+        if (width < h) throw new IllegalArgumentException("matrix too small to hold r columns");
 
         var rnd = new Random(seed);
         var centers = new ArrayList<BitSet>();
 
         //Produce r center
-        for (int i = 0; i < r; i++) {
+        for (int i = 0; i < h; i++) {
             var tmp = new BitSet(height);
             for (int b = 0; b < height; b++)
                 tmp.set(b, rnd.nextBoolean());
@@ -84,7 +84,7 @@ public class MatrixGenerator {
         var matrixLayout = new ArrayList<BitSet>();
 
         //From centers pick width columns from centers
-        for (int i = 0; i < width - r; i++)
+        for (int i = 0; i < width - h; i++)
             matrixLayout.add((BitSet) centers.get(rnd.nextInt(centers.size())).clone());
 
         //Flips k bits

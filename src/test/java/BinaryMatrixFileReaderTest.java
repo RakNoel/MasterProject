@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static generators.MatrixFileReader.readMatrixFromFile;
+import static com.raknoel.bma.generators.MatrixFileReader.readMatrixFromFile;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BinaryMatrixFileReaderTest {
