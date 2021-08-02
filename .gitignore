@@ -91,3 +91,12 @@ _deps
 
 # JSON token
 binarymatrixapproximation-*.json
+
+##############################
+## Thesis
+##############################
+thesis/*
+!thesis/figures
+!thesis/citation-db.bib
+!thesis/uib_frontpage.tex
+!thesis/thesis.tex

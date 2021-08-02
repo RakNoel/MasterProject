@@ -1,0 +1,202 @@
+%	Oskar L. F. Lerivåg
+%	Masters Thesis
+
+\documentclass[a4paper, 12pt]{article}
+
+%Bookmarks
+\usepackage[colorlinks=true,urlcolor=cyan,linkcolor=black,citecolor=red,bookmarksopen=true]{hyperref}
+\usepackage{bookmark}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usepackage{listings}
+\usetikzlibrary{arrows}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{epigraph}
+\usepackage{pgfplots}
+
+%Subfile
+\usepackage{subfiles}
+\usepackage[breakable]{tcolorbox}
+\usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+
+\usepackage{iftex}
+\ifPDFTeX
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\else
+\usepackage{fontspec}
+\fi
+
+% Basic figure setup, for now with no caption control since it's done
+% automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+\usepackage{graphicx}
+% Maintain compatibility with old templates. Remove in nbconvert 6.0
+\let\Oldincludegraphics\includegraphics
+% Ensure that by default, figures have no caption (until we provide a
+% proper Figure object with a Caption API and a way to capture that
+% in the conversion process - todo).
+\usepackage{caption}
+\DeclareCaptionFormat{nocaption}{}
+\captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+\usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+\adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+\usepackage{float}
+\floatplacement{figure}{H} % forces figures to be placed at the correct location
+\usepackage{xcolor} % Allow colors to be defined
+\usepackage{enumerate} % Needed for markdown enumerations to work
+\usepackage{geometry} % Used to adjust the document margins
+\usepackage{amsmath} % Equations
+\usepackage{amssymb} % Equations
+\usepackage{textcomp} % defines textquotesingle
+% Hack from http://tex.stackexchange.com/a/47451/13684:
+\AtBeginDocument{%
+\def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+}
+\usepackage{upquote} % Upright quotes for verbatim code
+\usepackage{eurosym} % defines \euro
+\usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+\usepackage{fancyvrb} % verbatim replacement that allows latex
+\usepackage{grffile} % extends the file name processing of package graphics
+% to support a larger range
+\makeatletter % fix for grffile with XeLaTeX
+\def\Gread@@xetex#1{%
+\IfFileExists{"\Gin@base".bb}%
+{\Gread@eps{\Gin@base.bb}}%
+{\Gread@@xetex@aux#1}%
+}
+\makeatother
+
+% The hyperref package gives us a pdf with properly built
+% internal navigation ('pdf bookmarks' for the table of contents,
+% internal cross-reference links, web links for URLs, etc.)
+\usepackage{hyperref}
+% The default LaTeX title has an obnoxious amount of whitespace. By default,
+% titling removes some of it. It also provides customization options.
+\usepackage{titling}
+\usepackage{longtable} % longtable support required by pandoc >1.10
+\usepackage{booktabs}  % table support for pandoc > 1.12.2
+\usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+\usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+% normalem makes italics be italics, not underlines
+\usepackage{mathrsfs}
+
+\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+
+%Images%
+\usepackage{graphicx}
+\usepackage{float}
+
+%Margins
+\usepackage{geometry}
+\geometry{a4paper, margin=3cm}
+
+\newcommand{\myFigure}[3]{\begin{figure}[h!]\centering\includegraphics[scale=#1]{figures/#2}\caption{#3}\end{figure}}
+
+\begin{document}
+
+    % % % % % % % % % % % % % % % % %
+    %
+    %	FRONT PAGE
+    %
+    \input{./uib_frontpage.tex}
+
+    % % % % % % % % % % % % % % % % %
+    %
+    %	Acknowledgements
+    %
+    \section*{Acknowledgements}
+    \newpage
+
+    % % % % % % % % % % % % % % % % %
+    %
+    %	TABLE OF CONTENTS
+    %
+    \pdfbookmark{\contentsname}{toc}
+    \tableofcontents
+    \newpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+    % % % % % % % % % % % % % % % % %
+    %
+    %	0. Abstract
+    %
+    \section{Abstract}
+
+    % % % % % % % % % % % % % % % % %
+    %
+    %	1. Introduction
+    %
+    \section{Introduction}
+    \subsection{Problem statement}
+	Though clustering itself does not have a strict definition, it has been researched and used extensively. As any comparable data-point might be more or less similar to other components, in which we can measure the similarity, can also contain data in the relationship between the similarity to other comparable components; it has long been an idea to group comparable components into classifications based on the components variables. By pre-determining the classifications one also pre-determines which variables in a comparable component is to be evaluated. The goal of clustering is therefore to compare a relationship among all variables, and regroup 	the data such that the components that are in the same group, are more similar to each other than those in other groups. \cite{gan07}
+    \subsection{Motivation}
+    \subsection{Previous results}
+    
+    % % % % % % % % % % % % % % % % %
+    %
+    %	2. Preliminaries
+    %
+    \section{Preliminaries}
+    \subsection{Notations and Definitions}
+    \subsection{Problem complexity / kernelization}
+    \subsection{Turing kernels}
+    
+    % % % % % % % % % % % % % % % % %
+    %
+    %	3. Algorithm
+    %
+    \section{Algorithm}
+    \subsection{Kernelization}
+    \subsection{Branching Algorithm}
+    \subsection{Dynamic programming reconstruction}
+    
+    % % % % % % % % % % % % % % % % %
+    %
+    %	4. Implementation
+    %
+    \section{Algorithm}
+    \subsection{Tools used}
+    \subsection{Data structures}
+    
+    % % % % % % % % % % % % % % % % %
+    %
+    %	5. Testing
+    %
+    \section{Testing}
+    \subsection{Generating test matrix}
+    \subsection{Results}
+    \subsection{Testing conclutions (Brief 1 paragraf)}
+    
+    % % % % % % % % % % % % % % % % %
+    %
+    %	6. Conclution
+    %
+    \section{Conclution}
+    \subsection{Results}
+    \subsection{Future work}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+    % % % % % % % % % % % % % % % % %
+    %
+    %	ADD REFERANCES
+    %
+    \newpage
+    \bibliography{citation-db} 
+	\bibliographystyle{unsrt}
+	\addcontentsline{toc}{section}{References}
+
+\end{document}
