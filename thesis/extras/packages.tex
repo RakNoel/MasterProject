@@ -1,0 +1,40 @@
+%Bookmarks
+\usepackage[colorlinks=true,urlcolor=cyan,linkcolor=black,citecolor=red,bookmarksopen=true]{hyperref}
+\usepackage{bookmark}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usepackage{listings}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+% Ensure that by default, figures have no caption
+\usepackage{caption}
+\DeclareCaptionFormat{nocaption}{}
+\captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+\usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+\adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+\usepackage{float}
+\floatplacement{figure}{H} % forces figures to be placed at the correct location
+
+\usepackage{enumerate} % Needed for markdown enumerations to work
+
+\usepackage[mathletters]{ucs}
+
+\usepackage{titling} %Remove insane whitespaces
+
+%Margins
+\usepackage{geometry}
+\geometry{a4paper, margin=3cm}
+
+%Algorithms
+\usepackage{algorithm, algorithmicx}
+\usepackage{algpseudocode}

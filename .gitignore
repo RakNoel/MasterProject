@@ -95,8 +95,14 @@ binarymatrixapproximation-*.json
 ##############################
 ## Thesis
 ##############################
-thesis/*
-!thesis/figures
-!thesis/citation-db.bib
-!thesis/uib_frontpage.tex
-!thesis/thesis.tex
+*.log
+thesis/Output/*
+*.aux
+*.bbl
+*.loa
+*.pdf
+*.toc
+*.synctex.gz
+*.fls
+*.blg
+*.ddb_latexmk

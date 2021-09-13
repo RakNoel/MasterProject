@@ -1,202 +1,332 @@
-%	Oskar L. F. Lerivåg
+%	Oskar L F Lerivåg
 %	Masters Thesis
 
-\documentclass[a4paper, 12pt]{article}
-
-%Bookmarks
-\usepackage[colorlinks=true,urlcolor=cyan,linkcolor=black,citecolor=red,bookmarksopen=true]{hyperref}
-\usepackage{bookmark}
-
-\usepackage[utf8]{inputenc}
-\usepackage{amsmath}
-\usepackage{pgf,tikz}
-\usepackage{mathrsfs}
-\usepackage{listings}
-\usetikzlibrary{arrows}
-\usepackage{amssymb}
-\usepackage{url}
-\usepackage{epigraph}
-\usepackage{pgfplots}
-
-%Subfile
-\usepackage{subfiles}
-\usepackage[breakable]{tcolorbox}
-\usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
-
-\usepackage{iftex}
-\ifPDFTeX
-\usepackage[T1]{fontenc}
-\usepackage{mathpazo}
-\else
-\usepackage{fontspec}
-\fi
-
-% Basic figure setup, for now with no caption control since it's done
-% automatically by Pandoc (which extracts ![](path) syntax from Markdown).
-\usepackage{graphicx}
-% Maintain compatibility with old templates. Remove in nbconvert 6.0
-\let\Oldincludegraphics\includegraphics
-% Ensure that by default, figures have no caption (until we provide a
-% proper Figure object with a Caption API and a way to capture that
-% in the conversion process - todo).
-\usepackage{caption}
-\DeclareCaptionFormat{nocaption}{}
-\captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
-
-\usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
-\adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
-\usepackage{float}
-\floatplacement{figure}{H} % forces figures to be placed at the correct location
-\usepackage{xcolor} % Allow colors to be defined
-\usepackage{enumerate} % Needed for markdown enumerations to work
-\usepackage{geometry} % Used to adjust the document margins
-\usepackage{amsmath} % Equations
-\usepackage{amssymb} % Equations
-\usepackage{textcomp} % defines textquotesingle
-% Hack from http://tex.stackexchange.com/a/47451/13684:
-\AtBeginDocument{%
-\def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
-}
-\usepackage{upquote} % Upright quotes for verbatim code
-\usepackage{eurosym} % defines \euro
-\usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
-\usepackage{fancyvrb} % verbatim replacement that allows latex
-\usepackage{grffile} % extends the file name processing of package graphics
-% to support a larger range
-\makeatletter % fix for grffile with XeLaTeX
-\def\Gread@@xetex#1{%
-\IfFileExists{"\Gin@base".bb}%
-{\Gread@eps{\Gin@base.bb}}%
-{\Gread@@xetex@aux#1}%
-}
-\makeatother
-
-% The hyperref package gives us a pdf with properly built
-% internal navigation ('pdf bookmarks' for the table of contents,
-% internal cross-reference links, web links for URLs, etc.)
-\usepackage{hyperref}
-% The default LaTeX title has an obnoxious amount of whitespace. By default,
-% titling removes some of it. It also provides customization options.
-\usepackage{titling}
-\usepackage{longtable} % longtable support required by pandoc >1.10
-\usepackage{booktabs}  % table support for pandoc > 1.12.2
-\usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
-\usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
-% normalem makes italics be italics, not underlines
-\usepackage{mathrsfs}
-
-\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
-
-%Images%
-\usepackage{graphicx}
-\usepackage{float}
-
-%Margins
-\usepackage{geometry}
-\geometry{a4paper, margin=3cm}
-
-\newcommand{\myFigure}[3]{\begin{figure}[h!]\centering\includegraphics[scale=#1]{figures/#2}\caption{#3}\end{figure}}
+\documentclass[a4paper]{article}
+\input{extras/packages.tex}
+\input{extras/commands.tex}
 
 \begin{document}
 
-    % % % % % % % % % % % % % % % % %
-    %
-    %	FRONT PAGE
-    %
-    \input{./uib_frontpage.tex}
+% % % % % % % % % % % % % % % % %
+%
+%	FRONT PAGE
+%
+\input{extras/frontpage.tex}
 
-    % % % % % % % % % % % % % % % % %
-    %
-    %	Acknowledgements
-    %
-    \section*{Acknowledgements}
-    \newpage
+% % % % % % % % % % % % % % % % %
+%
+%	Acknowledgements
+%
+\section*{Acknowledgements}
+\newpage
 
-    % % % % % % % % % % % % % % % % %
-    %
-    %	TABLE OF CONTENTS
-    %
-    \pdfbookmark{\contentsname}{toc}
-    \tableofcontents
-    \newpage
+% % % % % % % % % % % % % % % % %
+%
+%	0. Abstract
+%
+\section*{Abstract}
+\newpage
+
+% % % % % % % % % % % % % % % % %
+%
+%	TABLE OF CONTENTS
+%
+\pdfbookmark{\contentsname}{toc}
+\tableofcontents
+\newpage
+
+% % % % % % % % % % % % % % % % %
+%
+%	TABLE OF ALGORITHMS
+%
+\addcontentsline{toc}{section}{List of Algorithms}
+\listofalgorithms
+\newpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% % % % % % % % % % % % % % % % %
+%
+%	1. Introduction
+%
+\section{Introduction}
+Though clustering itself does not have a strict definition, it has been researched and used 
+extensively. As any comparable data-point might be more or less similar to other components, 
+in which we can measure the similarity, can also contain data in the relationship between the 
+similarity to other comparable components; it has long been an idea to group comparable 
+components into classifications based on the components variables. By pre-determining the 
+classifications one also pre-determines which variables in a comparable component is to be 
+evaluated. The goal of clustering is therefore to compare a relationship among all variables, 
+and regroup the data such that the components that are in the same group, are more similar 
+to each other than those in other groups. \cite{gan07}
+
+\subsection{Problem statement}
+\begin{problem}[Binary r-Means]{prob:rm}
+    \begin{tabular}{p{0.1\textwidth}p{0.8\textwidth}}
+    \textit{Input}: & An $n \times m$ matrix \textbf{A} with columns 
+    ($\textbf{a}^1,...,\textbf{a}^n$), a positive integer $\textbf{r}$ and a nonnegative 
+    integer $\textbf{k}$\\
+    
+    \textit{Task}: & Decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq 
+    \textbf{r}$, a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of $\{1,...,n\}$ and vectors 
+    $(\textbf{c}^1,...,\textbf{c}^{r\sp{\prime}}) \in \{0,1\}^m$ such that
+    
+    \[
+        \sum_{i = 1}^{r\sp{\prime}} \sum_{j \in I_i} d_H(c^i, a^j) \leq k
+    \]
+    \end{tabular}
+\end{problem}
+
+\subsection{Example}
+If a streaming webpage tracks whether their users like any given movie or not, they might want 
+to use this data to recommend movies to any specific user which they might like. This is an
+example of when we can create an approximation matrix holding centres of which any user would
+be most likely to share the same movie interest with. In our example we assume that all the
+included users rated all movies.
+
+
+If we create an initial matrix of users and movies where we place all users as individual 
+columns where the vector position indicate whether a user liked the movie ('1') or disliked the 
+movie ('0'), and run the clustering algorithm, then the resulting centres list would be the 
+new recommendations. All that remains is to find the closest centre for any new users vector,
+and update anytime the users vector changes. 
+
+
+When running the algorithm we also have to select the parameters $k$ and $r$ where $r$ would be
+how many centres of movie-personalities we wish to define, and $k$ how much the users in
+the training-set would be allowed to deviate from the centre.
+
+\subsection{Binary cluster}
+\subsection{Categorical cluster}
+
+\subsection{Motivation}
+Much research has gone into developing theoretical algorithms for the most complex computational 
+problems in computer science, however many of them remain purely theoretical, not because 
+they're not useful, but because the implementation of brute-force algorithms is simpler, and 
+computational power can be bought. Testing the viability and practicality of implementing 
+these complex algorithms is an important step in the research done for improving the 
+algorithms, and the many practical limitations we face while constructing them in our 
+preferred languages.
+
+
+This paper aims to clarify the issues faced during development, and the results one could expect 
+on a practical level of computation time on a smaller home computer/laptop.
+
+\subsection{Previous results}
+empty
+
+% % % % % % % % % % % % % % % % %
+%
+%	2. Preliminaries
+%
+\newpage
+
+\section{Preliminaries}
+\subsection{Notations and Definitions}
+\subsubsection{Matrices}
+We here use matrices to define any $n \times m$ matrix $A$ where $n$ is the number of columns 
+and $m$ is the number of rows, where $\forall A(n,m) \in \{0,1\}$.
+
+
+It is also useful to note a column of a matrix $A$ as vector $a_n = (a_1,...a_m)^T$, or the row
+of a matrix $A$ as $a_m = (a_1,...,a_n)$.
+
+
+For clustering we need to compare the columns of matrices by distance, to calculate the distance
+between columns we will use the hamming distance. Let us recall that the hamming distance
+between two binary vectors $x,y \in \{0,1\}^m$ where $x=\{x_1,...,x_m\}^T$ and 
+$y=\{y_1,...,y_m\}^T$, is 
+\[
+    d_H(x,y)= \sum_{i = 1}^{m} |x_i - y_i|
+\]
+or, in other words, the 
+number of positions $i \in \{1,...,m\}$ where $x_i$ and $y_i$ differ. With that distance we can
+also define the distance between two matrices as the sum of the distance between the columns of
+the matrices.
+
+
+With this lets also define the cardinality of a binary vector as the number of positive bits in 
+the vector $v \in {0,1}^m$ such that $d_C(v)=\sum_{i = 1}^{m} v^i$. As the binary XOR ($\otimes$) 
+operation between two bits results $i \otimes j = |i - j|$, we see that hamming distance between 
+the two binary vectors can be defined
+\[
+    d_H(x, y) = d_C(x \otimes y) =\sum_{i = 1}^{m} (x^i \otimes y^i) = \sum_{i = 1}^{m} |x_i - y_i|
+\]
+
+
+For two binary $n \times m$ matrices with columns $A=(a^1,...,a^n)$ and 
+$B=(b^1,...,b^n)$, the hamming distance we define as
+\[
+    d_H(A,B) = \sum_{i = 1}^{n} d_H(a^i, b^i)    
+\]
+
+\subsection{Parameterized algorithms}
+\subsubsection{FPT}
+\subsubsection{Kernel}
+\subsubsection{Turing kernel}
+
+\subsection{Problem complexity / kernelization}
+\subsection{Turing kernels}
+
+% % % % % % % % % % % % % % % % %
+%
+%	3. Algorithm
+%
+\newpage
+
+\section{Algorithm}
+\subsection{Kernelization}
+\input{algorithms/kernel.tex}
+
+\subsection{Branching Algorithm}
+\input{algorithms/main-branching.tex}
+
+\subsection{Dynamic programming reconstruction}
+The original r-means kernelization algorithm by \cite{fomin_golovach_panolan_2020} 
+intended for the sub-matrices $A_i=A_1,...,A_s$ to be stitched together to a single 
+matrix before running the r-means algorithm. However as it holds that 
+$r_1 + r_2 ... + r_s \leq r\sp{\prime}$ and $k_1 + k_2 ... + k_s \leq k\sp{\prime}$ 
+then instead of stitching the solution into a single matrix $A\sp{\prime}$ 
+we can run the algorithm multiple times over $A_i$ with increasing parameters $k+r$, 
+save the different possible solutions, and stitch the solutions as the end. Thus saving 
+memory space and allowing the sub-matrices to be run in parallel.
+
+This reconstruction is done dynamically by constructing a set of possible solutions $S_L$
+\input{algorithms/solution-reconstruction.tex}
+
+
+% % % % % % % % % % % % % % % % %
+%
+%	4. Implementation
+%
+\newpage
+
+\section{Algorithm implementation}
+\begin{itemize}
+    \item No kernel stitching
+    \item No "agrees with"
+\end{itemize}
+\subsection{Tools used}
+\subsubsection{The Java programming language, Version 1.6}
+Selecting the programming language for any project is always an issue, and the choice of using
+the Java programming language was mostly based on availability and the existing operations
+and packages in the language, rather than the runtime.
+\\
+The Java programming language is not as fast as many of its alternatives, but does run almost
+seamlessly on any operating system due to running on the JVM (Java virtual machine).
+
+\subsubsection{ArchLinux operating system}
+The minimal operating system Linux-distro of ArchLinux was used.
+
+\subsubsection{GCP / BigQuery}
+Running several thousand of tests multiple times and storing all results to a database with
+input and resulting output can easily fill large amounts of data. To avoid bottlenecking the
+testing computer all results could be pushed to an external database. For this the cloud database
+"BigQuery" in the "Google Cloud Platform" could be used.
+
+\subsubsection{Google Data studio}
+The advantage of using an external database solution like BigQuery is that it's also easily
+integrated in other tools. "Google Data studio" can create statistical plots based on large
+data systems, and is able to directly query the BigQuery database for almost live updates.
+
+\subsubsection{JetBrains - IntelliJ IDEA}
+For any development in a high-level programming language an intelligent development environment 
+(IDE) is usually recommended. The IntelliJ IDEA is a premium alternative of many IDEs.
+
+\subsubsection{Git / GitHub}
+During development of an application it's recommended to use a version-control tool. GIT is
+one of the most known version-control-tools in the field, and allows the user to traverse
+the entire solutions history at any time.
+\\
+To use GIT as a tool, an external GIT hosting solution can improve the experience while acting
+as a backup tool. While a simple server could be sufficient, advanced solutions like GitHub 
+exist to add extra functionality.
+
+\subsubsection{Testing computer}
+The algorithm tests were run on a "Lenovo YOGA 900" with "Intel Core i5 (6. gen) 6200U / 2.3 GHz" 
+8GB (1600 MHz / PC3-12800), LPDDR3 SDRAM. 256GB SSD M.2 memory, Intel HD Graphics 520.
+
+\subsection{Data structures}
+\subsubsection{BinaryVector}
+Each binary vector is represented as a BitSet defined in the Java programming language. A 
+BitSet could be defined as a set of positions which is set to $1$. Hence the binary byte 
+representation of the number $42$ could be represented as the set 
+$42 \equiv 00101010 \equiv (3,5,7)$. The Java library version of BitSet also includes several 
+useful binary operations and extras such as cardinality. It should though be noted that the 
+BitSet standard is not Thread-safe \cite{bitset_java_14_2020}
+
+An alternative implementation could be to use numbers to store the bits and use the standard 
+bit-operators of any programming language. Unfortunately this creates a limit in the length 
+of the vectors and their mutability which would require workarounds, but could theoretically 
+improve the runtime.
+
+\subsubsection{BinaryMatrix}
+The main Binary matrix structure is defined as a list of vectors or BitSets, along with the 
+original height and width.
+
+\subsubsection{BinarySubMatrix}
+The binary sub matrix is mainly copies of a binary matrix, and along also stores the parent 
+binary matrix reference. This allows for deletion of rows and columns, for deleted rows and 
+columns to be restored, and to find original positions in the parent matrix.
+
+% % % % % % % % % % % % % % % % %
+%
+%	5. Testing
+%
+\newpage
+
+\section{Testing}
+\subsection{Generating test matrix}
+For the generation of a matrix used for testing we could use any complete randomized binary 
+matrix, but to be able to control the result after the completion of the algorithm it is best 
+to create more concentrated tests.
+
+\input{algorithms/test-generation.tex}
+
+By reversing the algorithm we can generate a set of vectors $H$, which will be the centres, 
+and by picking random vectors from $H$ we will create a matrix with a solution of $K=0$, 
+and $R=H$. By then flipping random bits we can slightly modify the expected result, mainly 
+the K parameter. By flipping $D$ bits in the matrix we will still have a solvable matrix 
+with $R = H$ as long as $K \geq D$ though the matrix might still be solvable within both 
+smaller $K$ and $R$.
+
+Still for normal runtime analysis the importance is to test the worst cases for the algorithm, 
+and while the concentrated tests is controllable, most of those will be mostly solved by the 
+kernel, not allowing for proper testing of the actual algorithm. For this the generation 
+algorithm would run with small parameters ($R \leq 5$, and $K \leq 30$).
+
+\subsection{Results}
+\subsection{Testing conclusions (Brief 1 paragraph)}
+
+% % % % % % % % % % % % % % % % %
+%
+%	6. Conclusion
+%
+\newpage
+
+\section{Conclusion}
+\subsection{Results}
+\subsection{Future work}
+\begin{itemize}
+    \item Multithreading
+    \item Better data structure and binary operations
+\end{itemize}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-    % % % % % % % % % % % % % % % % %
-    %
-    %	0. Abstract
-    %
-    \section{Abstract}
 
-    % % % % % % % % % % % % % % % % %
-    %
-    %	1. Introduction
-    %
-    \section{Introduction}
-    \subsection{Problem statement}
-	Though clustering itself does not have a strict definition, it has been researched and used extensively. As any comparable data-point might be more or less similar to other components, in which we can measure the similarity, can also contain data in the relationship between the similarity to other comparable components; it has long been an idea to group comparable components into classifications based on the components variables. By pre-determining the classifications one also pre-determines which variables in a comparable component is to be evaluated. The goal of clustering is therefore to compare a relationship among all variables, and regroup 	the data such that the components that are in the same group, are more similar to each other than those in other groups. \cite{gan07}
-    \subsection{Motivation}
-    \subsection{Previous results}
-    
-    % % % % % % % % % % % % % % % % %
-    %
-    %	2. Preliminaries
-    %
-    \section{Preliminaries}
-    \subsection{Notations and Definitions}
-    \subsection{Problem complexity / kernelization}
-    \subsection{Turing kernels}
-    
-    % % % % % % % % % % % % % % % % %
-    %
-    %	3. Algorithm
-    %
-    \section{Algorithm}
-    \subsection{Kernelization}
-    \subsection{Branching Algorithm}
-    \subsection{Dynamic programming reconstruction}
-    
-    % % % % % % % % % % % % % % % % %
-    %
-    %	4. Implementation
-    %
-    \section{Algorithm}
-    \subsection{Tools used}
-    \subsection{Data structures}
-    
-    % % % % % % % % % % % % % % % % %
-    %
-    %	5. Testing
-    %
-    \section{Testing}
-    \subsection{Generating test matrix}
-    \subsection{Results}
-    \subsection{Testing conclutions (Brief 1 paragraf)}
-    
-    % % % % % % % % % % % % % % % % %
-    %
-    %	6. Conclution
-    %
-    \section{Conclution}
-    \subsection{Results}
-    \subsection{Future work}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-    % % % % % % % % % % % % % % % % %
-    %
-    %	ADD REFERANCES
-    %
-    \newpage
-    \bibliography{citation-db} 
-	\bibliographystyle{unsrt}
-	\addcontentsline{toc}{section}{References}
+% % % % % % % % % % % % % % % % %
+%
+%	ADD REFERANCES
+%
+\newpage
+\bibliography{extras/citation-db}
+\bibliographystyle{unsrt}
+\addcontentsline{toc}{section}{References}
 
 \end{document}

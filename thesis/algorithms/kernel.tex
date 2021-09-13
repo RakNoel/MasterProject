@@ -1,0 +1,44 @@
+\begin{algorithm}[H]
+    \caption{Pre-processing for Binary r-Means}
+    \label{kernel}
+    \begin{algorithmic}[1]
+        \Require{An $n \times m$ matrix $A=(a^1,...,a^n)$, $r > 0 \wedge k \geq 0$}
+        \Procedure{Preprocess}{$A,r,k$}
+            \State $I \gets \{1,...,n\}$
+            \State $L \gets \emptyset$
+            \State Construct the partition $\{I_1,...,I_t\}$ of $I$ into initial clusters
+            \If{$t>k+r$}
+                \State Return NO
+            \Else
+                \For{$i \gets l$ to $t$}
+                    \While{$|I_i| > k+1$}
+                        \State Select arbitrary $j \in I_i$
+                        \State $I_i \gets I_i \backslash \{j\}$
+                        \State $I \gets I \backslash \{j\}$
+                    \EndWhile
+                \EndFor
+                \State $s \gets 0$
+                \While{$I \neq \emptyset$}
+                    \State $s \gets s+1$
+                    \State Select arbitrary $j \in I$
+                    \State $S \gets \{j\}$
+                    \State $I \gets I \backslash \{j\}$
+                    \While{$\exists((p \in S) \cap (q \in I)) \ni d_H(a^p,a^q) \leq k$}
+                        \State $S \gets S \cup \{q\}$
+                        \State $I \gets I \backslash \{q\}$
+                    \EndWhile
+                    \State $J \gets \{1,...,m\}$
+                    \While{$|J| \geq 2$ and $A[J,S]$ has uniform row with an index $h \in J$}
+                        \State $J \gets J \backslash \{h\}$
+                    \EndWhile
+                    \State $L \gets L \cup A[S,J]$
+                \EndWhile
+            \EndIf
+            \If{$s > r$}
+                \State Return NO
+            \Else
+                \State Return $L$
+            \EndIf
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}

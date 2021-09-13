@@ -1,0 +1,19 @@
+\begin{algorithm}[H]
+    \caption{Test-Matrix generation}
+    \label{matrixgen}
+    \begin{algorithmic}[1]
+        \Require{$d \geq 0 \wedge h > 0$}
+        \Procedure{GenerateTestMatrix}{$d,h$}
+            \While{$h \geq 0$}
+                \State $H_h \gets $ RandomVector
+                \State $h \gets h - 1$
+            \EndWhile
+            \While{$d \geq 0$}
+                \State $x \gets $ random vector
+                \State $y \gets $ random bit
+                \State $H_{xy} \gets \lnot H_{xy}$
+            \EndWhile \\
+            \Return $H$
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
