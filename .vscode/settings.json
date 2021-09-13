@@ -1,0 +1,4 @@
+{
+    "latex-workshop.bibtex-format.tab": "tab",
+    "latex-workshop.latex.outDir": "%DIR%/Output"
+}
