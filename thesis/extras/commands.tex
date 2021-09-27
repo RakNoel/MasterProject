@@ -1,5 +1,12 @@
 \newcommand{\myFigure}[3]{\begin{figure}[h!]\centering\includegraphics[scale=#1]{figures/#2}\caption{#3}\end{figure}}
 
+\newtheorem{theoremdefinition}{\textbf{Definition}}
+
+\algnewcommand\algorithmicforeach{\textbf{foreach}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+
+\algdef{S}[FOR]{ForTo}[2]{\algorithmicfor\ #1 \textbf{to} #2\ \algorithmicdo}
+
 \newenvironment{problem}[2][]{
    \mdfsetup{
         frametitle={

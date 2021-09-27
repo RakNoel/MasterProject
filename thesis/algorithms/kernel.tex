@@ -13,17 +13,15 @@
                 \For{$i \gets l$ to $t$}
                     \While{$|I_i| > k+1$}
                         \State Select arbitrary $j \in I_i$
-                        \State $I_i \gets I_i \backslash \{j\}$
-                        \State $I \gets I \backslash \{j\}$
+                        \State $I_i \gets I_i \backslash \{j\}$ and $I \gets I \backslash \{j\}$
                     \EndWhile
                 \EndFor
                 \State $s \gets 0$
                 \While{$I \neq \emptyset$}
                     \State $s \gets s+1$
                     \State Select arbitrary $j \in I$
-                    \State $S \gets \{j\}$
-                    \State $I \gets I \backslash \{j\}$
-                    \While{$\exists((p \in S) \cap (q \in I)) \ni d_H(a^p,a^q) \leq k$}
+                    \State $S \gets \{j\}$ and $I \gets I \backslash \{j\}$
+                    \While{$\exists((p \in S) \cap (q \in I)) \textit{s.t.} d_H(a^p,a^q) \leq k$}
                         \State $S \gets S \cup \{q\}$
                         \State $I \gets I \backslash \{q\}$
                     \EndWhile

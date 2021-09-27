@@ -2,9 +2,46 @@
     \caption{Binary r-Means}
     \label{main-algo}
     \begin{algorithmic}[1]
-        \Require{An $n \times m$ matrix $A=(a^1,...,a^n)$, $r > 0 \wedge k \geq 0$}
-        \Procedure{r-Means}{$A,r,k$}
-            \State Panic("Not Implemented yet")
+        \Require{
+            A set $I \subseteq \{1,\dots,n\}$, a set of vectors $S \subseteq \{0,1\}^m$
+            of size at most $r$ that agree with $A$, and a nonnegative integer $d$.
+        }
+        \Procedure{r-Means}{$I,S,r,d$}
+            \If{$\sum_{i \in I} min\{d_H(s,a^i) | s \in S)\} \leq d$} \State Return C = S \EndIf
+            \If{$|S|=r$} \State Return NO \EndIf
+            \State $h \gets 0$
+
+            \While{$h \leq d$}
+                \ForEach{$i \in I$}
+                    \If{$l = min\{d_H(s,a^i) | s \in S\} \leq h - 1$}
+                        \State $I \gets I \backslash \{i\}$ and $d \gets d - l$
+                    \EndIf
+                \EndFor
+
+                \If{$d \geq 0 \wedge |I| \leq \sqrt{d r ~log(w) ~/ ~log(r)}$}
+                    \ForTo{$p := 1$}{$min\{|I|, r - |S|\}$}
+                        \ForEach{\textit{partition} $\{J_0,\dots,J_p\}$ \textit{of} 
+                        $I$, \textit{where} $J_0$ \textit{may be empty}}
+                            \ForTo{$j:=1$}{p}
+                                \State {find the optimal means $s^j$ for the cluster $J_j$
+                                    using the majority rule}
+                            \EndFor
+                        \EndFor
+                        \State $S \gets S \cup \{s^1, \dots, s^p\}$
+                        \If{$\sum_{i \in I} min\{d_H(s,a^i) | s \in S)\} \leq d$}
+                            \State Return C = S
+                        \EndIf
+                    \EndFor
+                \EndIf
+                \If{$h \leq d/|I|$}
+                    \ForEach{\textit{vector} $s \in \{0,1\}^m$ \textit{s.t.} $d_H(s,a^i)=h$ \textit{for some} $i \in I$}
+                        \State Call r-Means$\{I,S \cup \{s\},r,d\}$
+                        \If{\textit{the algorithm returns a solution} $C$} \State Return C \EndIf
+                    \EndFor
+                \EndIf
+                \State $h \gets h + 1$                
+            \EndWhile
+            \State Return NO
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}

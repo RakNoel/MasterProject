@@ -1,3 +1,5 @@
+% !TeX root = thesis.tex
+
 %	Oskar L F Lerivåg
 %	Masters Thesis
 
@@ -18,6 +20,7 @@
 %	Acknowledgements
 %
 \section*{Acknowledgements}
+empty
 \newpage
 
 % % % % % % % % % % % % % % % % %
@@ -25,6 +28,7 @@
 %	0. Abstract
 %
 \section*{Abstract}
+empty
 \newpage
 
 % % % % % % % % % % % % % % % % %
@@ -52,66 +56,103 @@
 %	1. Introduction
 %
 \section{Introduction}
-Though clustering itself does not have a strict definition, it has been researched and used 
-extensively. As any comparable data-point might be more or less similar to other components, 
-in which we can measure the similarity, can also contain data in the relationship between the 
-similarity to other comparable components; it has long been an idea to group comparable 
-components into classifications based on the components variables. By pre-determining the 
-classifications one also pre-determines which variables in a comparable component is to be 
-evaluated. The goal of clustering is therefore to compare a relationship among all variables, 
-and regroup the data such that the components that are in the same group, are more similar 
-to each other than those in other groups. \cite{gan07}
+In the current age of technology, humans have gathered unfathomable amounts of data wherever
+we saw the possibility to log something. Ranging from major corporations to single individuals,
+as long as we do anything digital, data is being logged, and the amount is measured in Exabytes.
+It's well known that there is useful information not only in the direct statistics of this data,
+but in the anomalies, patterns and correlations between the data. The process of looking and
+comparing all this data, has become known as Data mining, due to the complexity of the work,
+and time required.
+
+One technique of many to find correlations between data in big datasets is clustering. While
+clustering, we in general look on data-points and classify the data-points
+into sets; where any data-point within a set, is more similar to all other data-points inside
+the same set, than all other data-points in other classification-sets. Hence by adding any new
+data-point, we should be able to find which cluster or classification-set it is closest too,
+thereby also classifying it. \cite{gan07}
+
+To quickly compare new data-points, we can use averages or centres. This is called centroid-based
+clustering, so that all data-points can be linearly classified by finding it's closest centre.
+The problem then becomes defining what is a centre, and how we find them.
+
+\subsection{Binary clustering} empty
+\subsection{Categorical clustering} empty
 
 \subsection{Problem statement}
+For this paper, we will look into one such centroid-based clustering algorithm, where we attempt find
+the centres in clusters of binary vectors. If we define the clustering difference to be the
+hamming distance (\textit{$d_H(a, b)$}) between the binary vectors, then the centres will be the averages
+of all bits in a row inside the cluster. Due to the algorithm using both rows and columns, we will
+use a matrix to represent the set of vectors as the columns.
+
+Because we need to know the sets, before we can find the centres in the algorithm, we will
+generally need to compare all data-points to all other data-points, creating a $\mathcal{O}(n!)$ runtime. This
+is highly undesirable as only a few hundred vectors could result in a runtime longer than the lifetime
+of the universe. The paper \cite{fomin_golovach_panolan_2020} has however defined a
+theoretical parameterized algorithm, with a proposed runtime of $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$
+parameterized by the two parameters $k$ and $r$, where $k$ is the total maximum deviancy of all data-points
+to their respective centres, and $r$ is the maximum allowed sets and thereby centres allowed. Placing
+the algorithm in the FPT class.
+
+Let's formally define the problem then, of "Binary r-Means".
 \begin{problem}[Binary r-Means]{prob:rm}
-    \begin{tabular}{p{0.1\textwidth}p{0.8\textwidth}}
-    \textit{Input}: & An $n \times m$ matrix \textbf{A} with columns 
-    ($\textbf{a}^1,...,\textbf{a}^n$), a positive integer $\textbf{r}$ and a nonnegative 
-    integer $\textbf{k}$\\
-    
-    \textit{Task}: & Decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq 
-    \textbf{r}$, a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of $\{1,...,n\}$ and vectors 
+\begin{tabular}{p{0.1\textwidth}p{0.8\textwidth}}
+    \textit{Input}: & An $n \times m$ binary matrix \textbf{A} with columns
+    ($\textbf{a}^1,...,\textbf{a}^n$), a positive integer $\textbf{r}$ and a nonnegative
+    integer $\textbf{k}$                                                                     \\
+
+    \textit{Task}:  & Decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq
+        \textbf{r}$, a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of $\{1,...,n\}$ and vectors
     $(\textbf{c}^1,...,\textbf{c}^{r\sp{\prime}}) \in \{0,1\}^m$ such that
-    
+
     \[
         \sum_{i = 1}^{r\sp{\prime}} \sum_{j \in I_i} d_H(c^i, a^j) \leq k
     \]
-    \end{tabular}
+\end{tabular}
 \end{problem}
 
 \subsection{Example}
-If a streaming webpage tracks whether their users like any given movie or not, they might want 
-to use this data to recommend movies to any specific user which they might like. This is an
-example of when we can create an approximation matrix holding centres of which any user would
-be most likely to share the same movie interest with. In our example we assume that all the
-included users rated all movies.
+If a streaming webpage collects data on whether their users like any given movie or not,
+they might want to use this data to recommend movies to any specific user which they might like.
+If we can classify users into groups of users that share mostly the same taste in movies, then
+the average or centres of the classification would be a "super user" most likely to like the same movies
+interest as any other user in the same classification.
 
+To convert this problem to a binary matrix, we can define each individual user as a vector
+$u=\{0,1\}^m$ where where the individual bit-number in the vector represent the same movie for all users
+and indicates whether the user liked ('1') or disliked the movie ('0'), such that if the two
+user-vectors $u=\{1,1,\ldots\}^m$ and $v=\{0,1,\ldots\}^m$ we say that $u$ and $v$ both like movie $2$,
+but disagree on movie $1$ as $u_1 \neq v_1$.
 
-If we create an initial matrix of users and movies where we place all users as individual 
-columns where the vector position indicate whether a user liked the movie ('1') or disliked the 
-movie ('0'), and run the clustering algorithm, then the resulting centres list would be the 
-new recommendations. All that remains is to find the closest centre for any new users vector,
-and update anytime the users vector changes. 
-
+We then transform the vectors and place them in the set $U^n$. Now we can use the user-vectors of $U$
+as columns in a matrix such that
+\[
+    A(U)  \rightarrow \begin{pmatrix}
+        1       & 0       & \cdots & a_{1,n} \\
+        1       & 1       & \cdots & a_{2,n} \\
+        \vdots  & \vdots  & \ddots & \vdots  \\
+        a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+    \end{pmatrix}
+\]
 
 When running the algorithm we also have to select the parameters $k$ and $r$ where $r$ would be
 how many centres of movie-personalities we wish to define, and $k$ how much the users in
-the training-set would be allowed to deviate from the centre.
+the training-set would be allowed to deviate from the centre in total, also known as the cost.
 
-\subsection{Binary cluster}
-\subsection{Categorical cluster}
+The resulting vectors would now be the new set of super-users to use in a recommendation system,
+linearly comparing every new user to the one centre they are closest to whenever they rate movies.
 
 \subsection{Motivation}
-Much research has gone into developing theoretical algorithms for the most complex computational 
-problems in computer science, however many of them remain purely theoretical, not because 
-they're not useful, but because the implementation of brute-force algorithms is simpler, and 
-computational power can be bought. Testing the viability and practicality of implementing 
-these complex algorithms is an important step in the research done for improving the 
-algorithms, and the many practical limitations we face while constructing them in our 
+Much research has gone into developing theoretical algorithms for the most complex computational
+problems in computer science, however many of them remain purely theoretical, not because
+they're not useful, but because the implementation of brute-force algorithms is simpler, and
+computational power can be bought. Testing the viability and practicality of implementing
+these complex algorithms is an important step in the research done for improving the
+algorithms, and the many practical limitations we face while constructing them in our
 preferred languages.
 
 
-This paper aims to clarify the issues faced during development, and the results one could expect 
+This paper aims to clarify the issues faced during development, and the results one could expect
 on a practical level of computation time on a smaller home computer/laptop.
 
 \subsection{Previous results}
@@ -126,49 +167,87 @@ empty
 \section{Preliminaries}
 \subsection{Notations and Definitions}
 \subsubsection{Matrices}
-We here use matrices to define any $n \times m$ matrix $A$ where $n$ is the number of columns 
-and $m$ is the number of rows, where $\forall A(n,m) \in \{0,1\}$.
+As we are clustering binary vectors $v \in \{0,1\}^m$, we can transform any set of vectors
+$V$ into a matrix $A(v^1, v^2, \cdots, v^n)$ where $n$ is the number of columns
+and $m$ is the length of the vectors.
 
+\[
+    A_{m,n} =
+    \begin{pmatrix}
+        a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+        a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+        \vdots  & \vdots  & \ddots & \vdots  \\
+        a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+    \end{pmatrix}
+\]
 
-It is also useful to note a column of a matrix $A$ as vector $a_n = (a_1,...a_m)^T$, or the row
-of a matrix $A$ as $a_m = (a_1,...,a_n)$.
-
-
+\subsubsection{Hamming distance}
 For clustering we need to compare the columns of matrices by distance, to calculate the distance
 between columns we will use the hamming distance. Let us recall that the hamming distance
-between two binary vectors $x,y \in \{0,1\}^m$ where $x=\{x_1,...,x_m\}^T$ and 
-$y=\{y_1,...,y_m\}^T$, is 
+between two binary vectors $x,y \in \{0,1\}^m$ where $x=\{x_1,...,x_m\}^T$ and
+$y=\{y_1,...,y_m\}^T$, is
+
 \[
     d_H(x,y)= \sum_{i = 1}^{m} |x_i - y_i|
 \]
-or, in other words, the 
-number of positions $i \in \{1,...,m\}$ where $x_i$ and $y_i$ differ. With that distance we can
+
+or, in other words, the number of positions $i \in \{1,...,m\}$ where $x_i$ and $y_i$ differ.
+
+With that distance we can
 also define the distance between two matrices as the sum of the distance between the columns of
-the matrices.
-
-
-With this lets also define the cardinality of a binary vector as the number of positive bits in 
-the vector $v \in {0,1}^m$ such that $d_C(v)=\sum_{i = 1}^{m} v^i$. As the binary XOR ($\otimes$) 
-operation between two bits results $i \otimes j = |i - j|$, we see that hamming distance between 
+the matrices. Now we can also define the cardinality of a binary vector as the number of positive bits in
+the vector $v \in \{0,1\}^m$ such that $d_C(v)=\sum_{i = 1}^{m} v^i$. As the binary XOR ($\otimes$)
+operation between two bits results $i \otimes j = |i - j|$, we see that hamming distance between
 the two binary vectors can be defined
+
 \[
     d_H(x, y) = d_C(x \otimes y) =\sum_{i = 1}^{m} (x^i \otimes y^i) = \sum_{i = 1}^{m} |x_i - y_i|
 \]
 
-
-For two binary $n \times m$ matrices with columns $A=(a^1,...,a^n)$ and 
+For two binary $n \times m$ matrices with columns $A=(a^1,...,a^n)$ and
 $B=(b^1,...,b^n)$, the hamming distance we define as
+
 \[
-    d_H(A,B) = \sum_{i = 1}^{n} d_H(a^i, b^i)    
+    d_H(A,B) = \sum_{i = 1}^{n} d_H(a^i, b^i)
 \]
 
 \subsection{Parameterized algorithms}
+\begin{theoremdefinition}[Parameterized problem]
+    A \textit{parameterized problem} is a language $L \subseteq \Sigma^* \times \mathbb{N}$,
+    where $\Sigma$ is a fixed, finite alphabet. For an instance $(x,k) \in \Sigma^* \times \mathbb{N}$,
+    $k$ is called the \textit{parameter}.
+\end{theoremdefinition}\cite[p.~12]{param_algo_book}
+
 \subsubsection{FPT}
+\begin{theoremdefinition}[Fixed-parameter tractable]
+    A parameterized problem $L \subseteq \Sigma^* \times \mathbb{N}$ is called
+    \textit{fixed-parameter tractable} (FPT) if there exists an algorithm $\mathcal{A}$ (called
+    a \textit{fixed-parameter algorithm}), a computable function $f:\mathbb{N} \rightarrow \mathbb{N}$,
+    and a constant $c$ such that, given $(x,k) \in \Sigma^* \times \mathbb{N}$, the algorithm
+    $\mathcal{A}$ correctly decides whether $(x,k) \in L$ in time bounded by $f(k) \dot |(x,k)|^c$.
+    The complexity class containing all fixed-parameter tractable problems is called FPT
+\end{theoremdefinition}\cite[p.~13]{param_algo_book}
+
 \subsubsection{Kernel}
+\begin{theoremdefinition}[Kernelization, kernel]
+    A kernelization algorithm, or simply a kernel, for a parameterized problem $Q$
+    is an algorithm $\mathcal{A}$ that, given an instance $(I,k)$ of $Q$, works in polynomial
+    time and returns an equivalent instance $(I^\prime, k^\prime)$ of $Q$. Moreover, we require
+    that $size_{\mathcal{A}}(k) \leq g(k)$ for some computable function
+    $g: \mathbb{N} \rightarrow \mathbb{N}$.
+\end{theoremdefinition}\cite[p.~18]{param_algo_book}
+
 \subsubsection{Turing kernel}
+\begin{theoremdefinition}[Turing kernelization]
+    Let $Q$ be a parameterized problem and let $f:\mathbb{N} \rightarrow \mathbb{N} $
+    be a computable function. A \textit{Turing kernelization} for $Q$ of size $f$ is an
+    algorithm that decides whether a given instance $(x,k) \in \Sigma^* \times \mathbb{N}$
+    is contained in $Q$ in time polynomial in $|x|+k$, when given access to an oracle
+    that decides membership in $Q$ for any instance $(x^\prime, k^\prime)$ with
+    $|x^\prime|,k^\prime \leq f(k)$ in a single step.
+\end{theoremdefinition}\cite[p.~314]{param_algo_book}
 
 \subsection{Problem complexity / kernelization}
-\subsection{Turing kernels}
 
 % % % % % % % % % % % % % % % % %
 %
@@ -184,13 +263,12 @@ $B=(b^1,...,b^n)$, the hamming distance we define as
 \input{algorithms/main-branching.tex}
 
 \subsection{Dynamic programming reconstruction}
-The original r-means kernelization algorithm by \cite{fomin_golovach_panolan_2020} 
-intended for the sub-matrices $A_i=A_1,...,A_s$ to be stitched together to a single 
-matrix before running the r-means algorithm. However as it holds that 
-$r_1 + r_2 ... + r_s \leq r\sp{\prime}$ and $k_1 + k_2 ... + k_s \leq k\sp{\prime}$ 
-then instead of stitching the solution into a single matrix $A\sp{\prime}$ 
-we can run the algorithm multiple times over $A_i$ with increasing parameters $k+r$, 
-save the different possible solutions, and stitch the solutions as the end. Thus saving 
+The original r-means kernelization algorithm by \cite{fomin_golovach_panolan_2020}
+intended for the sub-matrices $A_i=A_1,...,A_s$ to be stitched together to a single
+matrix before running the r-means algorithm. However as of \cite[Lemma 5]{fomin_golovach_panolan_2020}
+then instead of stitching the solution into a single matrix $A\sp{\prime}$
+we can run the algorithm multiple times over $A_i$ with increasing parameters $k+r$,
+save the different possible solutions, and stitch the solutions as the end. Thus saving
 memory space and allowing the sub-matrices to be run in parallel.
 
 This reconstruction is done dynamically by constructing a set of possible solutions $S_L$
@@ -232,43 +310,69 @@ integrated in other tools. "Google Data studio" can create statistical plots bas
 data systems, and is able to directly query the BigQuery database for almost live updates.
 
 \subsubsection{JetBrains - IntelliJ IDEA}
-For any development in a high-level programming language an intelligent development environment 
+For any development in a high-level programming language an intelligent development environment
 (IDE) is usually recommended. The IntelliJ IDEA is a premium alternative of many IDEs.
 
 \subsubsection{Git / GitHub}
 During development of an application it's recommended to use a version-control tool. GIT is
 one of the most known version-control-tools in the field, and allows the user to traverse
 the entire solutions history at any time.
-\\
+
+
 To use GIT as a tool, an external GIT hosting solution can improve the experience while acting
-as a backup tool. While a simple server could be sufficient, advanced solutions like GitHub 
+as a backup tool. While a simple server could be sufficient, advanced solutions like GitHub
 exist to add extra functionality.
 
+\subsubsection{Maven}
+Maven is a package manager for the Java Programming language, allowing the user to easily
+list the needed dependencies of their project, then handling the rest.
+
+\subsubsection{Travis}
+Travis is a build tool that can seamlessly integrate with most Git solutions such as GitHub
+to automatically fetch the newest version of any repository, and run build scripts defined
+within the project. It also allows to run unit-tests and push the report.
+
+\subsubsection{Codacy}
+Codacy is a code quality evaluation tool, that can seamlessly integrate with most Git
+solutions such as GitHub to automatically fetch the newest version of any repository,
+and run a quality control on the code to catch any typical errors, bad habits, or
+simply code that breaks standards to enhance readability and further development.
+
+
+Codacy also holds a test-report functionality, though it lacks the ability to compile
+and run any code or tests, it allows other tools to push the test-results in such that
+in can serve as a total quality-control dashboard for the project.
+
+\subsubsection{Combinatoricslib3}
+Combinatoricslib3 is a open source Java library available on GitHub with existing
+combinatoric functions such as partitioning.
+
 \subsubsection{Testing computer}
-The algorithm tests were run on a "Lenovo YOGA 900" with "Intel Core i5 (6. gen) 6200U / 2.3 GHz" 
+The algorithm tests were run on a "Lenovo YOGA 900" with "Intel Core i5 (6. gen) 6200U / 2.3 GHz"
 8GB (1600 MHz / PC3-12800), LPDDR3 SDRAM. 256GB SSD M.2 memory, Intel HD Graphics 520.
 
 \subsection{Data structures}
 \subsubsection{BinaryVector}
-Each binary vector is represented as a BitSet defined in the Java programming language. A 
-BitSet could be defined as a set of positions which is set to $1$. Hence the binary byte 
-representation of the number $42$ could be represented as the set 
-$42 \equiv 00101010 \equiv (3,5,7)$. The Java library version of BitSet also includes several 
-useful binary operations and extras such as cardinality. It should though be noted that the 
+Each binary vector is represented as a BitSet defined in the Java programming language. A
+BitSet could be defined as a set of positions which is set to $1$. Hence the binary byte
+representation of the number $42$ could be represented as the set
+$42 \equiv 00101010 \equiv (3,5,7)$. The Java library version of BitSet also includes several
+useful binary operations and extras such as cardinality. It should though be noted that the
 BitSet standard is not Thread-safe \cite{bitset_java_14_2020}
 
-An alternative implementation could be to use numbers to store the bits and use the standard 
-bit-operators of any programming language. Unfortunately this creates a limit in the length 
-of the vectors and their mutability which would require workarounds, but could theoretically 
+
+An alternative implementation could be to use numbers to store the bits and use the standard
+bit-operators of any programming language. Unfortunately this creates a limit in the length
+of the vectors and their mutability which would require workarounds, but could theoretically
 improve the runtime.
 
 \subsubsection{BinaryMatrix}
-The main Binary matrix structure is defined as a list of vectors or BitSets, along with the 
+The main Binary matrix structure is defined as a list of vectors or BitSets, along with the
 original height and width.
 
 \subsubsection{BinarySubMatrix}
-The binary sub matrix is mainly copies of a binary matrix, and along also stores the parent 
-binary matrix reference. This allows for deletion of rows and columns, for deleted rows and 
+The binary sub matrix is mainly copies of a binary matrix, and along also stores the parent
+binary matrix reference. This allows for deletion of rows and columns, for deleted rows and
 columns to be restored, and to find original positions in the parent matrix.
 
 % % % % % % % % % % % % % % % % %
@@ -279,22 +383,23 @@ columns to be restored, and to find original positions in the parent matrix.
 
 \section{Testing}
 \subsection{Generating test matrix}
-For the generation of a matrix used for testing we could use any complete randomized binary 
-matrix, but to be able to control the result after the completion of the algorithm it is best 
+For the generation of a matrix used for testing we could use any complete randomized binary
+matrix, but to be able to control the result after the completion of the algorithm it is best
 to create more concentrated tests.
 
 \input{algorithms/test-generation.tex}
 
-By reversing the algorithm we can generate a set of vectors $H$, which will be the centres, 
-and by picking random vectors from $H$ we will create a matrix with a solution of $K=0$, 
-and $R=H$. By then flipping random bits we can slightly modify the expected result, mainly 
-the K parameter. By flipping $D$ bits in the matrix we will still have a solvable matrix 
-with $R = H$ as long as $K \geq D$ though the matrix might still be solvable within both 
+By reversing the algorithm we can generate a set of vectors $H$, which will be the centres,
+and by picking random vectors from $H$ we will create a matrix with a solution of $K=0$,
+and $R=H$. By then flipping random bits we can slightly modify the expected result, mainly
+the K parameter. By flipping $D$ bits in the matrix we will still have a solvable matrix
+with $R = H$ as long as $K \geq D$ though the matrix might still be solvable within both
 smaller $K$ and $R$.
 
-Still for normal runtime analysis the importance is to test the worst cases for the algorithm, 
-and while the concentrated tests is controllable, most of those will be mostly solved by the 
-kernel, not allowing for proper testing of the actual algorithm. For this the generation 
+
+Still for normal runtime analysis the importance is to test the worst cases for the algorithm,
+and while the concentrated tests is controllable, most of those will be mostly solved by the
+kernel, not allowing for proper testing of the actual algorithm. For this the generation
 algorithm would run with small parameters ($R \leq 5$, and $K \leq 30$).
 
 \subsection{Results}
