@@ -65,9 +65,9 @@ comparing all this data, has become known as Data mining, due to the complexity 
 and time required.
 
 One technique of many to find correlations between data in big datasets is clustering. While
-clustering, we in general look on data-points and classify the data-points
+clustering, we in general look on data-points and organize the data-points
 into sets; where any data-point within a set, is more similar to all other data-points inside
-the same set, than all other data-points in other classification-sets. Hence by adding any new
+the same set, than all other data-points in other sets. Hence by adding any new
 data-point, we should be able to find which cluster or classification-set it is closest too,
 thereby also classifying it. \cite{gan07}
 
@@ -75,8 +75,10 @@ To quickly compare new data-points, we can use averages or centres. This is call
 clustering, so that all data-points can be linearly classified by finding it's closest centre.
 The problem then becomes defining what is a centre, and how we find them.
 
-\subsection{Binary clustering} empty
-\subsection{Categorical clustering} empty
+The problem we will be looking at here, is a unique situation where the problem consist 
+purely of binary data-points. Since we will be comparing binary vectors, we can look at them as
+sequences and calculate the distance between two data-points by using hamming distance. Thereby 
+defining the distance metrics as how many differentiating bits are between two vectors.
 
 \subsection{Problem statement}
 For this paper, we will look into one such centroid-based clustering algorithm, where we attempt find
@@ -212,40 +214,60 @@ $B=(b^1,...,b^n)$, the hamming distance we define as
 \]
 
 \subsection{Parameterized algorithms}
+As the main algorithm in this thesis is based on a parameterized problem, we here refer to the
+book \cite{param_algo_book} for a detailed introduction. Here we shall only refer to the most
+basic theorems.
+
 \begin{theoremdefinition}[Parameterized problem]
     A \textit{parameterized problem} is a language $L \subseteq \Sigma^* \times \mathbb{N}$,
     where $\Sigma$ is a fixed, finite alphabet. For an instance $(x,k) \in \Sigma^* \times \mathbb{N}$,
-    $k$ is called the \textit{parameter}.
-\end{theoremdefinition}\cite[p.~12]{param_algo_book}
+    $k$ is called the \textit{parameter}. \cite[p.~12]{param_algo_book}
+\end{theoremdefinition}
 
-\subsubsection{FPT}
+The problem of r-means is stated to be such a parameterized problem as any instance $(A,r,k)$
+can be written as $(A, k)$ where $A$ is a binary matrix encoded as a string over $\Sigma$, and
+$k$ is a positive integer.
+
+Now it is also proposed that the algorithm proposed by \cite{fomin_golovach_panolan_2020} 
+gives an FPT running time.
+
 \begin{theoremdefinition}[Fixed-parameter tractable]
     A parameterized problem $L \subseteq \Sigma^* \times \mathbb{N}$ is called
     \textit{fixed-parameter tractable} (FPT) if there exists an algorithm $\mathcal{A}$ (called
     a \textit{fixed-parameter algorithm}), a computable function $f:\mathbb{N} \rightarrow \mathbb{N}$,
     and a constant $c$ such that, given $(x,k) \in \Sigma^* \times \mathbb{N}$, the algorithm
-    $\mathcal{A}$ correctly decides whether $(x,k) \in L$ in time bounded by $f(k) \dot |(x,k)|^c$.
-    The complexity class containing all fixed-parameter tractable problems is called FPT
-\end{theoremdefinition}\cite[p.~13]{param_algo_book}
+    $\mathcal{A}$ correctly decides whether $(x,k) \in L$ in time bounded by $f(k) * |(x,k)|^c$.
+    The complexity class containing all fixed-parameter tractable problems is called FPT \cite[p.~13]{param_algo_book}
+\end{theoremdefinition}
 
-\subsubsection{Kernel}
+By this definition the proposed algorithm from \cite{fomin_golovach_panolan_2020} should have 
+a runtime in the form of $f(k) * |(x,k)|^c$. We can see that the proposed runtime is 
+
+\begin{theoremdefinition}[Data reduction rule]
+    A \textit{data reduction rule}, of a parameterized problem $Q$ is a function 
+    $\phi \Sigma^* \times \mathbb{N}$ that maps an instance $(I,k)$ of $Q$ to an equivalent
+    instance $(I^\prime, k^\prime)$ of $Q$ such that $\phi$ is computable in polynomial time
+    in $|I|$ and $k$. We say that two instances of $Q$ are \textit{equivalent} if the following
+    holds: $(I,k) \in Q$ if and only if $(I^\prime, k^\prime) \in Q$. 
+    \cite{fomin_golovach_panolan_2020}
+\end{theoremdefinition}
+
 \begin{theoremdefinition}[Kernelization, kernel]
     A kernelization algorithm, or simply a kernel, for a parameterized problem $Q$
     is an algorithm $\mathcal{A}$ that, given an instance $(I,k)$ of $Q$, works in polynomial
     time and returns an equivalent instance $(I^\prime, k^\prime)$ of $Q$. Moreover, we require
     that $size_{\mathcal{A}}(k) \leq g(k)$ for some computable function
-    $g: \mathbb{N} \rightarrow \mathbb{N}$.
-\end{theoremdefinition}\cite[p.~18]{param_algo_book}
+    $g: \mathbb{N} \rightarrow \mathbb{N}$. \cite[p.~18]{param_algo_book}
+\end{theoremdefinition}
 
-\subsubsection{Turing kernel}
 \begin{theoremdefinition}[Turing kernelization]
     Let $Q$ be a parameterized problem and let $f:\mathbb{N} \rightarrow \mathbb{N} $
     be a computable function. A \textit{Turing kernelization} for $Q$ of size $f$ is an
     algorithm that decides whether a given instance $(x,k) \in \Sigma^* \times \mathbb{N}$
     is contained in $Q$ in time polynomial in $|x|+k$, when given access to an oracle
     that decides membership in $Q$ for any instance $(x^\prime, k^\prime)$ with
-    $|x^\prime|,k^\prime \leq f(k)$ in a single step.
-\end{theoremdefinition}\cite[p.~314]{param_algo_book}
+    $|x^\prime|,k^\prime \leq f(k)$ in a single step. \cite[p.~314]{param_algo_book}
+\end{theoremdefinition}
 
 \subsection{Problem complexity / kernelization}
 

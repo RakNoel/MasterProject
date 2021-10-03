@@ -2,9 +2,34 @@
     \caption{Solution reconstruction}
     \label{reconstruction}
     \begin{algorithmic}[1]
-        \Require{A set $V^L$ of tuples $(S, K)$, where $S_l$ is a set of solution-submatrices, and $K_l$ is a set of the costs}
-        \Procedure{Reconstruct}{$V^L, l$} \Comment{Where $l$ is the number of submatrices}
-            \State PLACEHOLDER
+        \Input{$S$ as a list of lists of hypothesis, $V$ as a a non-empty list of solutions, $B$ as a list of bags}
+        \Output{$V$ as the final list of solutions, where $V_k$ is the best solution for $k$. If null, then no solution}
+        \Procedure{Reconstruct}{$S, V, B$}
+            \ForTo{$s := 1$}{$|S|-1$}
+                \State $w \gets S_s$ \Comment{Where $w$ gets the proposed centers}
+                \State $s^{\prime} \gets \emptyset$ \Comment{Init proposed solution}
+
+                \ForTo{$i := 0$}{$k$}
+                    \State $x \gets i$ and $y \gets 0$ and $p \gets 0$
+                    \State $b \gets V_{x} + |w_{y}|$
+
+                    \While{$x > 0$}
+                        \State $x \gets x - 1 \wedge y \gets y + 1$
+                        \State $c \gets V_{x} + |w_{y}|$
+
+                        \If{$b > c$}
+                            \State $b \gets c$
+                            \State $p \gets y$
+                        \EndIf
+                    \EndWhile
+
+                    \State $s^{\prime}_i \gets b$
+                    \State $B_i \gets B_i \cup w_p$
+                \EndFor
+                \State $V \gets s^{\prime}$
+            \EndFor
+
+            \State return $V$
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
