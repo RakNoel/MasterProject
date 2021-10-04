@@ -60,7 +60,7 @@ In the current age of technology, humans have gathered unfathomable amounts of d
 we saw the possibility to log something. Ranging from major corporations to single individuals,
 as long as we do anything digital, data is being logged, and the amount is measured in Exabytes.
 It's well known that there is useful information not only in the direct statistics of this data,
-but in the anomalies, patterns and correlations between the data. The process of looking and
+but in the anomalies, patterns and correlations between the data. The process of looking though and
 comparing all this data, has become known as Data mining, due to the complexity of the work,
 and time required.
 
@@ -71,32 +71,52 @@ the same set, than all other data-points in other sets. Hence by adding any new
 data-point, we should be able to find which cluster or classification-set it is closest too,
 thereby also classifying it. \cite{gan07}
 
-To quickly compare new data-points, we can use averages or centres. This is called centroid-based
-clustering, so that all data-points can be linearly classified by finding it's closest centre.
-The problem then becomes defining what is a centre, and how we find them.
+Now suppose we have a streaming webpage that collects data on whether a user like any given movie or not,
+then we might want to use this data to recommend movies to any specific user which they might like.
+If we can classify our users into groups that share mostly the same taste in movies, then
+the "average-user" or centres of the classifications would be a "super user" most likely to share the same movie
+interest as any other user in the same classification.
 
-The problem we will be looking at here, is a unique situation where the problem consist 
-purely of binary data-points. Since we will be comparing binary vectors, we can look at them as
-sequences and calculate the distance between two data-points by using hamming distance. Thereby 
-defining the distance metrics as how many differentiating bits are between two vectors.
+To quickly group the new users, we can use these averages or centres. This is called centroid-based
+clustering, so that all data-points can be linearly classified by finding it's closest centre.
+The problem then becomes defining what is a centre, and how do we find them.
+
+Unfortunately we now know that to cluster and create these centers is an NP-har problem, 
+and to create such centres for small instances might not be viable even with massive computing power,
+over long time frames.
+
+\subsection{Motivation}
+Much research has gone into developing theoretical algorithms for the most complex computational
+problems in computer science, however many of them remain purely theoretical, not because
+they're not useful, but because the implementation of brute-force algorithms is simpler, and
+computational power can be bought. Testing the viability and practicality of implementing
+these complex algorithms is an important step in the research done for improving the
+algorithms, and the many practical limitations we face while constructing them in our
+preferred languages.
+
+This paper aims to clarify the issues faced during development, and the results one could expect
+on a practical level of computation time on a smaller home computer/laptop.
 
 \subsection{Problem statement}
-For this paper, we will look into one such centroid-based clustering algorithm, where we attempt find
-the centres in clusters of binary vectors. If we define the clustering difference to be the
-hamming distance (\textit{$d_H(a, b)$}) between the binary vectors, then the centres will be the averages
-of all bits in a row inside the cluster. Due to the algorithm using both rows and columns, we will
-use a matrix to represent the set of vectors as the columns.
+From example above with our streaming webpage, we get a rather unique situation where the problem consist 
+purely of binary data-points. We want to find a viable centroid-based clustering algorithm, to find
+centers in clusters of binary vectors, in a reasonable runtime.
 
-Because we need to know the sets, before we can find the centres in the algorithm, we will
-generally need to compare all data-points to all other data-points, creating a $\mathcal{O}(n!)$ runtime. This
-is highly undesirable as only a few hundred vectors could result in a runtime longer than the lifetime
-of the universe. The paper \cite{fomin_golovach_panolan_2020} has however defined a
-theoretical parameterized algorithm, with a proposed runtime of $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$
-parameterized by the two parameters $k$ and $r$, where $k$ is the total maximum deviancy of all data-points
-to their respective centres, and $r$ is the maximum allowed sets and thereby centres allowed. Placing
-the algorithm in the FPT class.
+For this paper, we will look into a theoretical centroid-based binary vector clustering algorithm, proposed
+by \cite{fomin_golovach_panolan_2020}. First we need to find a distance metric between the vectors so we 
+can group them. The algorithm from \cite{fomin_golovach_panolan_2020} has define the clustering metric 
+to be the Hamming distance (\textit{$d_H(a, b)$}) between the binary vectors, such that the centres 
+becomes the averages of all bits in a row inside the cluster. Due to the algorithm using both rows and 
+columns, it uses a matrix to represent the set of vectors as the columns.
 
-Let's formally define the problem then, of "Binary r-Means".
+This propose theoretical algorithm is a parameterized algorithm. Here we are limiting the runtime of the
+algorithm parameterized by the two parameters $k$ and $r$, where $k$ is the total maximum deviancy 
+of all data-points to their respective centres, and $r$ is the maximum allowed sets and 
+thereby total centres allowed in a solution.
+
+\newpage
+
+Now let's formally define the problem then, of "Binary r-Means".
 \begin{problem}[Binary r-Means]{prob:rm}
 \begin{tabular}{p{0.1\textwidth}p{0.8\textwidth}}
     \textit{Input}: & An $n \times m$ binary matrix \textbf{A} with columns
@@ -113,15 +133,24 @@ Let's formally define the problem then, of "Binary r-Means".
 \end{tabular}
 \end{problem}
 
+Now given any set $S$, it is trivial to find the center of that set in polynomial time. The challenge
+here is that we don't know the sets, and we need a center to create the sets. It simply becomes a problem
+of which comes first, the chicken or the egg.
+
+Because we need to know the sets, before we can find the centres in the algorithm, we will
+generally need to compare all data-points to all other data-points, creating a $\mathcal{O}(n!)$ runtime. This
+is highly undesirable as only a few hundred vectors could result in a runtime longer than the lifetime
+of the universe. The algorithm from the paper \cite{fomin_golovach_panolan_2020} has however proposed a 
+runtime of $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$; placing the algorithm in the FPT class, which is
+much closer to the runtime we might expect from normal computers.
+
 \subsection{Example}
-If a streaming webpage collects data on whether their users like any given movie or not,
-they might want to use this data to recommend movies to any specific user which they might like.
-If we can classify users into groups of users that share mostly the same taste in movies, then
-the average or centres of the classification would be a "super user" most likely to like the same movies
-interest as any other user in the same classification.
+Now lets look back to our example. We want to find the "centres" or "super users" which we can use to 
+give new movie recommendations to new users. Let's see how we have to encode this problem over a language
+equal to the problem we stated above.
 
 To convert this problem to a binary matrix, we can define each individual user as a vector
-$u=\{0,1\}^m$ where where the individual bit-number in the vector represent the same movie for all users
+$u=\{0,1\}^m$ where the individual bit-number in the vector represent the same movie for all users
 and indicates whether the user liked ('1') or disliked the movie ('0'), such that if the two
 user-vectors $u=\{1,1,\ldots\}^m$ and $v=\{0,1,\ldots\}^m$ we say that $u$ and $v$ both like movie $2$,
 but disagree on movie $1$ as $u_1 \neq v_1$.
@@ -143,19 +172,6 @@ the training-set would be allowed to deviate from the centre in total, also know
 
 The resulting vectors would now be the new set of super-users to use in a recommendation system,
 linearly comparing every new user to the one centre they are closest to whenever they rate movies.
-
-\subsection{Motivation}
-Much research has gone into developing theoretical algorithms for the most complex computational
-problems in computer science, however many of them remain purely theoretical, not because
-they're not useful, but because the implementation of brute-force algorithms is simpler, and
-computational power can be bought. Testing the viability and practicality of implementing
-these complex algorithms is an important step in the research done for improving the
-algorithms, and the many practical limitations we face while constructing them in our
-preferred languages.
-
-
-This paper aims to clarify the issues faced during development, and the results one could expect
-on a practical level of computation time on a smaller home computer/laptop.
 
 \subsection{Previous results}
 empty
@@ -284,12 +300,12 @@ a runtime in the form of $f(k) * |(x,k)|^c$. We can see that the proposed runtim
 \subsection{Branching Algorithm}
 \input{algorithms/main-branching.tex}
 
-\subsection{Dynamic programming reconstruction}
+\subsection{Dynamic programming}
 The original r-means kernelization algorithm by \cite{fomin_golovach_panolan_2020}
 intended for the sub-matrices $A_i=A_1,...,A_s$ to be stitched together to a single
 matrix before running the r-means algorithm. However as of \cite[Lemma 5]{fomin_golovach_panolan_2020}
 then instead of stitching the solution into a single matrix $A\sp{\prime}$
-we can run the algorithm multiple times over $A_i$ with increasing parameters $k+r$,
+we can run the algorithm multiple times over $A_i$ with increasing parameter $k+r$,
 save the different possible solutions, and stitch the solutions as the end. Thus saving
 memory space and allowing the sub-matrices to be run in parallel.
 
@@ -449,11 +465,11 @@ algorithm would run with small parameters ($R \leq 5$, and $K \leq 30$).
 
 % % % % % % % % % % % % % % % % %
 %
-%	ADD REFERANCES
+%	ADD REFERENCES
 %
 \newpage
 \bibliography{extras/citation-db}
-\bibliographystyle{unsrt}
+\bibliographystyle{apalike} %unsrt
 \addcontentsline{toc}{section}{References}
 
 \end{document}
