@@ -295,6 +295,27 @@ a runtime in the form of $f(k) * |(x,k)|^c$. We can see that the proposed runtim
 
 \section{Algorithm}
 \subsection{Kernelization}
+The goal of the pre processing algorithm is to act as a kernel and reduce the input matrix by following certain reduction rules.
+We will apply the following reduction-rules
+
+\begin{reductionrule}
+    Any duplicate vector must be in the same cluster. Therefore it follows that more than $k+1$ equal vector
+    cannot impact the result and they can therefore be discarded.
+\end{reductionrule}
+
+\begin{reductionrule}
+    All vectors of distance $d_H \leq k$ should be in the same cluster. Therefore we should move all vectors of
+    distance $d_H \leq k$ into the same.
+\end{reductionrule}
+
+\begin{reductionrule}
+    For all defined clusters, it must follow that any \textit{uniform row} will result in the same result. Meaning 
+    if $\forall k$ in $\Sigma_{i=1}^{m} v_i \in A_k = 0 \vee m$, the row can be discarded.
+\end{reductionrule}
+
+When we reduce the matrix we will produce instance of clusters, where any vector in a cluster is at max k distance to all
+other vectors in the same cluster $\forall d_H(v, u) \in L_i \leq k$. Each of these clusters  can now be treated as it's 
+own sub-matrices $A_1, \dots, A_i$ of the original matrix $A$.
 \input{algorithms/kernel.tex}
 
 \subsection{Branching Algorithm}
@@ -302,7 +323,7 @@ a runtime in the form of $f(k) * |(x,k)|^c$. We can see that the proposed runtim
 
 \subsection{Dynamic programming}
 The original r-means kernelization algorithm by \cite{fomin_golovach_panolan_2020}
-intended for the sub-matrices $A_i=A_1,...,A_s$ to be stitched together to a single
+intended for the sub-matrices $A_i=A_1,\dots,A_s$ to be stitched together to a single
 matrix before running the r-means algorithm. However as of \cite[Lemma 5]{fomin_golovach_panolan_2020}
 then instead of stitching the solution into a single matrix $A\sp{\prime}$
 we can run the algorithm multiple times over $A_i$ with increasing parameter $k+r$,
