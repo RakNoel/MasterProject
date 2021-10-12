@@ -18,6 +18,21 @@
 \algnewcommand\algorithmicoutput{\textbf{Output:}}
 \algnewcommand\Output{\item[\algorithmicoutput]}
 
+%FancyRef
+%\newcommand*{\fancyrefthmlabelprefix}{thm}
+\newcommand*{\mref}[1]{\hyperref[#1]{\fref{#1}}}
+\newcommand*{\Mref}[1]{\hyperref[#1]{\Fref{#1}}}
+
+\newcommand*{\fancyrefredlabelprefix}{red}
+
+\frefformat{vario}{\fancyrefredlabelprefix}{
+\textbf{reduction~rule}\fancyrefdefaultspacing#1
+}
+
+\Frefformat{vario}{\fancyrefredlabelprefix}{
+    \textbf{Reduction~rule}\fancyrefdefaultspacing#1
+}
+
 \newenvironment{problem}[2][]{
     \mdfsetup{
         frametitle={

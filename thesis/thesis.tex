@@ -295,27 +295,40 @@ a runtime in the form of $f(k) * |(x,k)|^c$. We can see that the proposed runtim
 
 \section{Algorithm}
 \subsection{Kernelization}
-The goal of the pre processing algorithm is to act as a kernel and reduce the input matrix by following certain reduction rules.
-We will apply the following reduction-rules
-
-\begin{reductionrule}
-    Any duplicate vector must be in the same cluster. Therefore it follows that more than $k+1$ equal vector
+The goal of the pre processing algorithm is to act as a kernel and reduce the input matrix by following certain reduction rules
+based on the two parameters $k$ and $r$, running in polynomial time over the input size, here ($n \times m$).
+We will here apply the following reduction-rules 
+\begin{reductionrule}\label{red:equalclusters}
+    Any duplicate vector must be in the same cluster. Therefore it follows that more than $k+2$ equal vector
     cannot impact the result and they can therefore be discarded.
 \end{reductionrule}
 
-\begin{reductionrule}
+\begin{reductionrule}\label{red:distmaxk}
     All vectors of distance $d_H \leq k$ should be in the same cluster. Therefore we should move all vectors of
     distance $d_H \leq k$ into the same.
 \end{reductionrule}
 
-\begin{reductionrule}
+\begin{reductionrule}\label{red:uniformrow}
     For all defined clusters, it must follow that any \textit{uniform row} will result in the same result. Meaning 
     if $\forall k$ in $\Sigma_{i=1}^{m} v_i \in A_k = 0 \vee m$, the row can be discarded.
 \end{reductionrule}
 
-When we reduce the matrix we will produce instance of clusters, where any vector in a cluster is at max k distance to all
-other vectors in the same cluster $\forall d_H(v, u) \in L_i \leq k$. Each of these clusters  can now be treated as it's 
-own sub-matrices $A_1, \dots, A_i$ of the original matrix $A$.
+When reducing the matrix the algorithm should produce a set of clusters $L$, where any vector in a cluster is at max $k$ distance to all
+other vectors in the same cluster $\forall d_H(v, u) \in L_i \leq k$. Each of these clusters can now be treated a 
+different sub-matrix itself $A_1, \dots, A_i$ of the original matrix $A$.
+
+Designing the algorithm it should require a $n \times m$ binary matrix A. And the two parameters $r > 0$ limiting the
+maximum number of clusters, and $k \geq 0$ limiting the cost of all total distances.
+
+Firstly all the vectors have to be constructed into clusters of equal vectors denoted by a new set $I^* = \{I_1, \dots, I_t\}$, henceforth 
+called the \textit{initial clusters}; subsequently limiting the size of each cluster \textit{s.t.} $|I_i| \leq k+2$. This should
+fulfill\mref{red:equalclusters}. Also note that if $t > k+r$ we
+already have no solution so return NO.
+
+Secondly the algorithm should group all vectors of distance $d_H(u,v) \leq k$ into the same clusters as of\mref{red:distmaxk}. This can be done greedily from any
+arbitrary vector. While performing this task, if at any point, the algorithm produces more than $r$ clusters, then return NO.
+
+Lastly the algorithm should remove all uniform rows from any cluster $|J| \geq 2$ as of\mref{red:uniformrow}
 \input{algorithms/kernel.tex}
 
 \subsection{Branching Algorithm}
