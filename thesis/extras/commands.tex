@@ -26,12 +26,23 @@
 \newcommand*{\fancyrefredlabelprefix}{red}
 
 \frefformat{vario}{\fancyrefredlabelprefix}{
-\textbf{reduction~rule}\fancyrefdefaultspacing#1
+    \textbf{reduction~rule\fancyrefdefaultspacing#1}
 }
 
 \Frefformat{vario}{\fancyrefredlabelprefix}{
-    \textbf{Reduction~rule}\fancyrefdefaultspacing#1
+    \textbf{Reduction~rule\fancyrefdefaultspacing#1}
 }
+
+\newcommand*{\fancyrefalglabelprefix}{alg}
+
+\frefformat{vario}{\fancyrefalglabelprefix}{
+    \textbf{algorithm\fancyrefdefaultspacing#1}
+}
+
+\Frefformat{vario}{\fancyrefalglabelprefix}{
+    \textbf{Algorithm\fancyrefdefaultspacing#1}
+}
+
 
 \newenvironment{problem}[2][]{
     \mdfsetup{

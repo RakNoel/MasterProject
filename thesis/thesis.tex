@@ -1,6 +1,6 @@
 % !TeX root = thesis.tex
 
-%	Oskar L F Lerivåg
+%	Oskar L F Leirvåg
 %	Masters Thesis
 
 \documentclass[a4paper]{article}
@@ -81,7 +81,7 @@ To quickly group the new users, we can use these averages or centres. This is ca
 clustering, so that all data-points can be linearly classified by finding it's closest centre.
 The problem then becomes defining what is a centre, and how do we find them.
 
-Unfortunately we now know that to cluster and create these centers is an NP-har problem, 
+Unfortunately we now know that to cluster and create these centres is an NP-hard problem, 
 and to create such centres for small instances might not be viable even with massive computing power,
 over long time frames.
 
@@ -100,7 +100,7 @@ on a practical level of computation time on a smaller home computer/laptop.
 \subsection{Problem statement}
 From example above with our streaming webpage, we get a rather unique situation where the problem consist 
 purely of binary data-points. We want to find a viable centroid-based clustering algorithm, to find
-centers in clusters of binary vectors, in a reasonable runtime.
+centres in clusters of binary vectors, in a reasonable runtime.
 
 For this paper, we will look into a theoretical centroid-based binary vector clustering algorithm, proposed
 by \cite{fomin_golovach_panolan_2020}. First we need to find a distance metric between the vectors so we 
@@ -133,8 +133,8 @@ Now let's formally define the problem then, of "Binary r-Means".
 \end{tabular}
 \end{problem}
 
-Now given any set $S$, it is trivial to find the center of that set in polynomial time. The challenge
-here is that we don't know the sets, and we need a center to create the sets. It simply becomes a problem
+Now given any set $S$, it is trivial to find the centre of that set in polynomial time. The challenge
+here is that we don't know the sets, and we need a centre to create the sets. It simply becomes a problem
 of which comes first, the chicken or the egg.
 
 Because we need to know the sets, before we can find the centres in the algorithm, we will
@@ -322,17 +322,13 @@ maximum number of clusters, and $k \geq 0$ limiting the cost of all total distan
 
 Firstly all the vectors have to be constructed into clusters of equal vectors denoted by a new set $I^* = \{I_1, \dots, I_t\}$, henceforth 
 called the \textit{initial clusters}; subsequently limiting the size of each cluster \textit{s.t.} $|I_i| \leq k+2$. This should
-fulfill\mref{red:equalclusters}. Also note that if $t > k+r$ we
-already have no solution so return NO.
+fulfil\mref{red:equalclusters}. Also note that if $t > k+r$ we already have no solution so return NO.
 
 Secondly the algorithm should group all vectors of distance $d_H(u,v) \leq k$ into the same clusters as of\mref{red:distmaxk}. This can be done greedily from any
 arbitrary vector. While performing this task, if at any point, the algorithm produces more than $r$ clusters, then return NO.
 
 Lastly the algorithm should remove all uniform rows from any cluster $|J| \geq 2$ as of\mref{red:uniformrow}
 \input{algorithms/kernel.tex}
-
-\subsection{Branching Algorithm}
-\input{algorithms/main-branching.tex}
 
 \subsection{Dynamic programming}
 The original r-means kernelization algorithm by \cite{fomin_golovach_panolan_2020}
@@ -346,6 +342,45 @@ memory space and allowing the sub-matrices to be run in parallel.
 This reconstruction is done dynamically by constructing a set of possible solutions $S_L$
 \input{algorithms/solution-reconstruction.tex}
 
+\subsection{Branching Algorithm}
+Given a $n \times m$ binary matrix $A$, we should be able to find its centres. Due to the kernel \mref{alg:kernel}, the instances to be run, should all be as small as possible, and
+close in distance. Still, we will need to test each one with a $k$ and $r$ parameter. To find the best centres is a complex algorithm, requiring combinatorics which
+we can do with branching. Since we used $k$ to denote the max cost in the kernel \mref{alg:kernel}, and $k$ denotes the 
+maximum cost also for the entire run from start to finish, we will here use $d$ to denote the maximum cost in 
+any single run of\mref{alg:main}. The following algorithm is based on the works of \cite{fomin_golovach_panolan_2020}, but slightly modified to reduce implementation complexity. It's a recursive 
+branching algorithm, which can be divided into several parts.
+
+Beginning the algorithm we should define the starting parameters, as we will use a set 
+$I \subseteq \{1, \dots ,n\}$ to define the remaining vectors to be tested by the algorithm, starting as the complete list
+from $1, \dots ,n$ of the matrix $A$. We will need a set of the final vectors $S = \left[ x ~| ~x \subseteq \{0,1\}^m \right]$
+of size at most $r$, which will be initialized as $S = \emptyset$. And finally the non-negative integer $d$.
+
+For each iteration, we must do the basics of many recursive functions and test if we have a 
+solution, or a non solution before we attempt to continue on the branch.
+
+Then for each value from $0$ up to $d$ we must try all possible values, denoted by $h$, as the main part 
+of\mref{alg:main}. This can again be split into three parts; the first of which is a linear clean up, where 
+we can remove any vectors from the processing if they are now already covered by a selected center, within
+a distance of $h-1$.
+
+Now, depending on the remaining cost, and unprocessed binary vectors, we must either brute-force a solution
+of branch further. This is denoted by the formula
+\[
+    |I| \leq \sqrt{d r ~log(w) ~/ ~log(r)}    
+\]
+
+For brute forcing, we simply try all possible partitions $\{J_0, \dots ,J_p\}$ of $I$ from $p=1$ to either
+the length or the remaining binary vectors ($|I|$) or the remaining allowed centres ($r-|S|$). \textit{(Here $J_0$ may
+also be empty)}. Then we simply find the optimal means $s^j$ for each cluster $J_j$ by using the majority rule. Recall that 
+the majority rule is simply the most prevalent bit at each position of the vectors.
+
+For branching, we will branch on all permutations of the vector $s \in \{0,1\}^m$ where the vector $s$ has a
+distance of $h$ to another vector $a^i$ where $i \in I$. This vector $s$ will then be a new centre so we recurse
+with $S = S \cup \{s\}$.
+
+If no solution has then been found, return NO.
+
+\input{algorithms/main-branching.tex}
 
 % % % % % % % % % % % % % % % % %
 %
@@ -368,7 +403,7 @@ The Java programming language is not as fast as many of its alternatives, but do
 seamlessly on any operating system due to running on the JVM (Java virtual machine).
 
 \subsubsection{ArchLinux operating system}
-The minimal operating system Linux-distro of ArchLinux was used.
+The minimal operating system, the Linux distribution ArchLinux was used.
 
 \subsubsection{GCP / BigQuery}
 Running several thousand of tests multiple times and storing all results to a database with

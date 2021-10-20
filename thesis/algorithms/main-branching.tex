@@ -4,7 +4,7 @@
     \begin{algorithmic}[1]
         \Require{
             A set $I \subseteq \{1,\dots,n\}$, a set of vectors $S \subseteq \{0,1\}^m$
-            of size at most $r$ that agree with $A$, and a nonnegative integer $d$.
+            of size at most $r$, and a nonnegative integer $d$.
         }
         \Procedure{r-Means}{$I,S,r,d$}
             \If{$\sum_{i \in I} min\{d_H(s,a^i) | s \in S)\} \leq d$} \State Return C = S \EndIf
