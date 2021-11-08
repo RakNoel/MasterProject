@@ -295,7 +295,7 @@ a runtime in the form of $f(k) * |(x,k)|^c$. We can see that the proposed runtim
 
 \section{Algorithm}
 \subsection{Kernelization}
-The goal of the pre processing algorithm is to act as a kernel and reduce the input matrix by following certain reduction rules
+The goal of the preprocessing algorithm is to reduce the input matrix by following certain reduction rules
 based on the two parameters $k$ and $r$, running in polynomial time over the input size, here ($n \times m$).
 We will here apply the following reduction-rules 
 \begin{reductionrule}\label{red:equalclusters}
@@ -394,7 +394,7 @@ If no solution has then been found, return NO.
     \item No "agrees with"
 \end{itemize}
 \subsection{Tools used}
-\subsubsection{The Java programming language, Version 1.6}
+\subsubsection{The Java programming language, Version 17}
 Selecting the programming language for any project is always an issue, and the choice of using
 the Java programming language was mostly based on availability and the existing operations
 and packages in the language, rather than the runtime.
@@ -402,16 +402,15 @@ and packages in the language, rather than the runtime.
 The Java programming language is not as fast as many of its alternatives, but does run almost
 seamlessly on any operating system due to running on the JVM (Java virtual machine).
 
-\subsubsection{ArchLinux operating system}
-The minimal operating system, the Linux distribution ArchLinux was used.
-
 \subsubsection{GCP / BigQuery}
+\label{sec:bigquery}
 Running several thousand of tests multiple times and storing all results to a database with
 input and resulting output can easily fill large amounts of data. To avoid bottlenecking the
 testing computer all results could be pushed to an external database. For this the cloud database
 "BigQuery" in the "Google Cloud Platform" could be used.
 
 \subsubsection{Google Data studio}
+\label{sec:datastudio}
 The advantage of using an external database solution like BigQuery is that it's also easily
 integrated in other tools. "Google Data studio" can create statistical plots based on large
 data systems, and is able to directly query the BigQuery database for almost live updates.
@@ -454,9 +453,17 @@ in can serve as a total quality-control dashboard for the project.
 Combinatoricslib3 is a open source Java library available on GitHub with existing
 combinatoric functions such as partitioning.
 
-\subsubsection{Testing computer}
-The algorithm tests were run on a "Lenovo YOGA 900" with "Intel Core i5 (6. gen) 6200U / 2.3 GHz"
-8GB (1600 MHz / PC3-12800), LPDDR3 SDRAM. 256GB SSD M.2 memory, Intel HD Graphics 520.
+\subsubsection{Testing computers}
+\label{sec:computer}
+The algorithm tests were run on a two testing computers
+\begin{itemize}
+    \item "Lenovo YOGA 900" with "Intel Core i5 (6. gen) 6200U / 2.3 GHz"
+    8GB (1600 MHz / PC3-12800), LPDDR3 SDRAM. 256GB SSD M.2 memory, Intel HD Graphics 520.
+    Running the minimal operating system, Linux distribution ArchLinux.
+    \item A custom built desktop with "AMD FX-8350", "16.0GB Dual-Channel DDR3 @ 722MHz" memory, and a
+    4095MB NVIDIA GeForce GTX 980 graphics card. Running the more standardized operating 
+    system "Microsoft Windows 10".
+\end{itemize}
 
 \subsection{Data structures}
 \subsubsection{BinaryVector}
@@ -509,7 +516,32 @@ and while the concentrated tests is controllable, most of those will be mostly s
 kernel, not allowing for proper testing of the actual algorithm. For this the generation
 algorithm would run with small parameters ($R \leq 5$, and $K \leq 30$).
 
+\subsection{Running the test}
+The algorithm testing was performed on randomly generated $1000 \times 1000$ matrices, on the computer
+specified \mref{sec:computer}. Every single iteration would generate a new matrix, then measure the
+milliseconds of the single iteration, and push the runtime with metadata to the cloud database specified
+in \mref{sec:bigquery}.
+
+The data for each iteration is its runtime, but metadata was added to separate later for analysis. The
+metadata added was all the input parameters as $k,r,d,h, width, heigh$, the solution results, whether it was solved, the
+computer running the test (in case of multiple test machines), and the date-time of the test case.
+
+\subsection{Analysis}
+To analyse the results of the several thousands of tests, a statistical tool was used, specified at
+\mref{sec:datastudio}. In the tool the database was imported directly as a table, and could produce
+plots to visualize the data. 
+
+In Data studio, new columns were added to support a multi-parameter plot for better comparison of the
+algorithms behaviour over the different parameters.
+
 \subsection{Results}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/Binary_matrix_runtime.pdf}
+    \caption{Average runtime in ms, filter: Only solved problems, $H$ being the number of centres generated in test, $1 \leq d \leq 2k+1$, width and height = 1000, $k$ is initial $k$ limit, and $r$ is initial $r$ limit.}
+    \label{fig:result-table}
+\end{figure}
+
 \subsection{Testing conclusions (Brief 1 paragraph)}
 
 % % % % % % % % % % % % % % % % %

@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.release>14</maven.compiler.release>
+        <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit-jupiter.version>5.4.2</junit-jupiter.version>
         <maven-jacoco-plugin.version>0.8.6</maven-jacoco-plugin.version>
@@ -66,9 +66,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <release>15</release>
-                    <source>14</source>
-                    <target>14</target>
+                    <release>17</release>
+                    <source>17</source>
+                    <target>17</target>
                     <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>
