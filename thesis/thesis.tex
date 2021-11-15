@@ -58,10 +58,11 @@ empty
 \section{Introduction}
 In the current age of technology, humans have gathered unfathomable amounts of data wherever
 we saw the possibility to log something. Ranging from major corporations to single individuals,
-as long as we do anything digital, data is being logged, and the amount is measured in Exabytes.
+as long as we do anything digital, data is being logged, and the amount can only be estimated to be
+up in Exabytes.
 It's well known that there is useful information not only in the direct statistics of this data,
 but in the anomalies, patterns and correlations between the data. The process of looking though and
-comparing all this data, has become known as Data mining, due to the complexity of the work,
+comparing all this data, has become known popularly as Data mining, due to the complexity of the work,
 and time required.
 
 One technique of many to find correlations between data in big datasets is clustering. While
@@ -81,7 +82,7 @@ To quickly group the new users, we can use these averages or centres. This is ca
 clustering, so that all data-points can be linearly classified by finding it's closest centre.
 The problem then becomes defining what is a centre, and how do we find them.
 
-Unfortunately we now know that to cluster and create these centres is an NP-hard problem, 
+Unfortunately we now know that to cluster and create these centres accurately is an NP-hard problem,
 and to create such centres for small instances might not be viable even with massive computing power,
 over long time frames.
 
@@ -98,23 +99,21 @@ This paper aims to clarify the issues faced during development, and the results 
 on a practical level of computation time on a smaller home computer/laptop.
 
 \subsection{Problem statement}
-From example above with our streaming webpage, we get a rather unique situation where the problem consist 
+From example above with our streaming webpage, we get a rather unique situation where the problem consist
 purely of binary data-points. We want to find a viable centroid-based clustering algorithm, to find
 centres in clusters of binary vectors, in a reasonable runtime.
 
 For this paper, we will look into a theoretical centroid-based binary vector clustering algorithm, proposed
-by \cite{fomin_golovach_panolan_2020}. First we need to find a distance metric between the vectors so we 
-can group them. The algorithm from \cite{fomin_golovach_panolan_2020} has define the clustering metric 
-to be the Hamming distance (\textit{$d_H(a, b)$}) between the binary vectors, such that the centres 
-becomes the averages of all bits in a row inside the cluster. Due to the algorithm using both rows and 
+by \cite{fomin_golovach_panolan_2020}. First we need to find a distance metric between the vectors so we
+can group them. The algorithm from \cite{fomin_golovach_panolan_2020} has defined the clustering metric
+to be the Hamming distance (\textit{$d_H(a, b)$}) between the binary vectors, such that the centres
+becomes the averages of all bits in a row inside the cluster. Due to the algorithm using both rows and
 columns, it uses a matrix to represent the set of vectors as the columns.
 
-This propose theoretical algorithm is a parameterized algorithm. Here we are limiting the runtime of the
-algorithm parameterized by the two parameters $k$ and $r$, where $k$ is the total maximum deviancy 
-of all data-points to their respective centres, and $r$ is the maximum allowed sets and 
+This proposed theoretical algorithm is a parameterized algorithm, limiting the runtime of the
+algorithm parameterized by the two parameters $k$ and $r$, where $k$ is the total maximum deviancy
+of all data-points to their respective centres, and $r$ is the maximum allowed sets and
 thereby total centres allowed in a solution.
-
-\newpage
 
 Now let's formally define the problem then, of "Binary r-Means".
 \begin{problem}[Binary r-Means]{prob:rm}
@@ -139,13 +138,13 @@ of which comes first, the chicken or the egg.
 
 Because we need to know the sets, before we can find the centres in the algorithm, we will
 generally need to compare all data-points to all other data-points, creating a $\mathcal{O}(n!)$ runtime. This
-is highly undesirable as only a few hundred vectors could result in a runtime longer than the lifetime
-of the universe. The algorithm from the paper \cite{fomin_golovach_panolan_2020} has however proposed a 
+is highly undesirable as only a few thousand vectors could result in a runtime longer than the lifetime
+of the universe. The algorithm from the paper \cite{fomin_golovach_panolan_2020} has however proposed a
 runtime of $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$; placing the algorithm in the FPT class, which is
 much closer to the runtime we might expect from normal computers.
 
 \subsection{Example}
-Now lets look back to our example. We want to find the "centres" or "super users" which we can use to 
+Now lets look back to our example. We want to find the "centres" or "super users" which we can use to
 give new movie recommendations to new users. Let's see how we have to encode this problem over a language
 equal to the problem we stated above.
 
@@ -174,12 +173,18 @@ The resulting vectors would now be the new set of super-users to use in a recomm
 linearly comparing every new user to the one centre they are closest to whenever they rate movies.
 
 \subsection{Previous results}
-empty
+\begin{itemize}
+    \item \url{https://www.ibm.com/support/pages/clustering-binary-data-k-means-should-be-avoided}
+    \item \url{https://drops.dagstuhl.de/opus/volltexte/2018/9623/pdf/LIPIcs-MFCS-2018-41.pdf}
+    \item \url{https://bora.uib.no/bora-xmlui/bitstream/handle/11250/2735169/archive.pdf?sequence=1}
+    \item The PDF: Zohar-master
+\end{itemize}
 
 % % % % % % % % % % % % % % % % %
 %
 %	2. Preliminaries
 %
+
 \newpage
 
 \section{Preliminaries}
@@ -244,7 +249,7 @@ The problem of r-means is stated to be such a parameterized problem as any insta
 can be written as $(A, k)$ where $A$ is a binary matrix encoded as a string over $\Sigma$, and
 $k$ is a positive integer.
 
-Now it is also proposed that the algorithm proposed by \cite{fomin_golovach_panolan_2020} 
+Now it is also proposed that the algorithm proposed by \cite{fomin_golovach_panolan_2020}
 gives an FPT running time.
 
 \begin{theoremdefinition}[Fixed-parameter tractable]
@@ -256,15 +261,16 @@ gives an FPT running time.
     The complexity class containing all fixed-parameter tractable problems is called FPT \cite[p.~13]{param_algo_book}
 \end{theoremdefinition}
 
-By this definition the proposed algorithm from \cite{fomin_golovach_panolan_2020} should have 
-a runtime in the form of $f(k) * |(x,k)|^c$. We can see that the proposed runtime is 
+By this definition the proposed algorithm from \cite{fomin_golovach_panolan_2020} should have
+a runtime in the form of $f(k) * |(x,k)|^c$. We can see this in the proposed runtime which is 
+proposed to be $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$.
 
 \begin{theoremdefinition}[Data reduction rule]
-    A \textit{data reduction rule}, of a parameterized problem $Q$ is a function 
+    A \textit{data reduction rule}, of a parameterized problem $Q$ is a function
     $\phi \Sigma^* \times \mathbb{N}$ that maps an instance $(I,k)$ of $Q$ to an equivalent
     instance $(I^\prime, k^\prime)$ of $Q$ such that $\phi$ is computable in polynomial time
     in $|I|$ and $k$. We say that two instances of $Q$ are \textit{equivalent} if the following
-    holds: $(I,k) \in Q$ if and only if $(I^\prime, k^\prime) \in Q$. 
+    holds: $(I,k) \in Q$ if and only if $(I^\prime, k^\prime) \in Q$.
     \cite{fomin_golovach_panolan_2020}
 \end{theoremdefinition}
 
@@ -286,51 +292,100 @@ a runtime in the form of $f(k) * |(x,k)|^c$. We can see that the proposed runtim
 \end{theoremdefinition}
 
 \subsection{Problem complexity / kernelization}
+Empty.
 
 % % % % % % % % % % % % % % % % %
 %
 %	3. Algorithm
 %
+
 \newpage
 
 \section{Algorithm}
 \subsection{Kernelization}
 The goal of the preprocessing algorithm is to reduce the input matrix by following certain reduction rules
 based on the two parameters $k$ and $r$, running in polynomial time over the input size, here ($n \times m$).
-We will here apply the following reduction-rules 
-\begin{reductionrule}\label{red:equalclusters}
-    Any duplicate vector must be in the same cluster. Therefore it follows that more than $k+2$ equal vector
-    cannot impact the result and they can therefore be discarded.
-\end{reductionrule}
-
-\begin{reductionrule}\label{red:distmaxk}
-    All vectors of distance $d_H \leq k$ should be in the same cluster. Therefore we should move all vectors of
-    distance $d_H \leq k$ into the same.
-\end{reductionrule}
-
-\begin{reductionrule}\label{red:uniformrow}
-    For all defined clusters, it must follow that any \textit{uniform row} will result in the same result. Meaning 
-    if $\forall k$ in $\Sigma_{i=1}^{m} v_i \in A_k = 0 \vee m$, the row can be discarded.
-\end{reductionrule}
-
-When reducing the matrix the algorithm should produce a set of clusters $L$, where any vector in a cluster is at max $k$ distance to all
-other vectors in the same cluster $\forall d_H(v, u) \in L_i \leq k$. Each of these clusters can now be treated a 
-different sub-matrix itself $A_1, \dots, A_i$ of the original matrix $A$.
 
 Designing the algorithm it should require a $n \times m$ binary matrix A. And the two parameters $r > 0$ limiting the
 maximum number of clusters, and $k \geq 0$ limiting the cost of all total distances.
 
-Firstly all the vectors have to be constructed into clusters of equal vectors denoted by a new set $I^* = \{I_1, \dots, I_t\}$, henceforth 
-called the \textit{initial clusters}; subsequently limiting the size of each cluster \textit{s.t.} $|I_i| \leq k+2$. This should
-fulfil\mref{red:equalclusters}. Also note that if $t > k+r$ we already have no solution so return NO.
+While clustering, we can assume that the centres will be of a distance greater than $k$. Therefore we can
+start by grouping the vectors into sets, where any vector in a set with more than one element, is of
+a distance less than or equal to $k$, to at least one other vector. This will then result in equal vectors
+being grouped together, and thus if there are many duplicate vectors some of them can be discarded. Thus all
+the vectors have to be constructed into clusters of equal vectors denoted by a new set $I^* = \{I_1, \dots, I_t\}$, henceforth
+called the \textit{initial clusters}; subsequently limiting the size of each cluster \textit{s.t.} $|I_i| \leq k+2$.
+Also note that if $t > k+r$ we already have no solution so return NO. Finally all vectors of distance $d_H \leq k$ 
+can be assumed to be in the same cluster, we should move all vectors of initial clusters with distance 
+$d_H \leq k$ into a new "final" cluster. While performing this task, if at any point,
+the algorithm produces more than $r$ "final" clusters, then return NO.
 
-Secondly the algorithm should group all vectors of distance $d_H(u,v) \leq k$ into the same clusters as of\mref{red:distmaxk}. This can be done greedily from any
-arbitrary vector. While performing this task, if at any point, the algorithm produces more than $r$ clusters, then return NO.
+As we have now created the first clusters we're mostly done, but there is still one reduction that can be made.
+From the definition of the centres being of the smallest distance to all it's vectors, it must follow that
+any \textit{uniform row} will result in the same result. Meaning if $\forall k$ in $\Sigma_{i=1}^{m} v_i \in A_k = 0 \vee m$,
+the row can be discarded from further processing.
 
-Lastly the algorithm should remove all uniform rows from any cluster $|J| \geq 2$ as of\mref{red:uniformrow}
 \input{algorithms/kernel.tex}
 
+When reducing the initial matrix, the algorithm has now produced a set of clusters $L$, where any vector
+in a cluster is at max $k$ distance to all other vectors in the same cluster $\forall d_H(v, u) \in L_i \leq k$. 
+Each of these clusters can now be treated a different sub-matrix itself $A_1, \dots, A_i$ of the original matrix $A$. 
+This breaks with the paper \cite{fomin_golovach_panolan_2020} where there is an algorithm to create a substitute matrix, 
+but as this allows for multi processing, and a more separate design, this will not be done. Instead each cluster will be 
+treated as a separate matrix and processed separately in the branching algorithm multiple times with different 
+parameters $k$ and $r$ and a solution to be made dynamically later in \mref{sec:dynamic-result}
+
+\subsection{Branching Algorithm}
+Given a $n \times m$ binary matrix $A$, we should be able to find its centres. Due to the kernel \mref{alg:kernel}, the instances to be run, should all be as small as possible, and
+close in distance. Still, we will need to test each one with a $k$ and $r$ parameter. To find the best centres is a complex algorithm, requiring combinatorics which
+we can do with branching. Since we used $k$ to denote the max cost in the kernel \mref{alg:kernel}, and $k$ denotes the
+maximum cost also for the entire run from start to finish, we will here use $d$ to denote the maximum cost in
+any single run of \mref{alg:main}. The following algorithm is based on the works of \cite{fomin_golovach_panolan_2020}, but slightly modified to reduce implementation complexity. It's a recursive
+branching algorithm, which can be divided into several parts.
+
+Beginning the algorithm we should define the starting parameters, as we will use a set
+$I \subseteq \{1, \dots ,n\}$ to define the remaining vectors to be tested by the algorithm, starting as the complete list
+from $1, \dots ,n$ of the matrix $A$. We will need a set of the final vectors $S = \left[ x ~| ~x \subseteq \{0,1\}^m \right]$
+of size at most $r$, which will be initialized as $S = \emptyset$. And finally the non-negative integer $d$.
+
+For each iteration, we must do the basics of many recursive functions and test if we have a
+solution, or a non solution before we attempt to continue on the branch.
+
+Then for each value from $0$ up to $d$ we must try all possible values, denoted by $h$, as the main part
+of \mref{alg:main}. This can again be split into three parts; the first of which is a linear clean up, where
+we can remove any vectors from the processing if they are now already covered by a selected center, within
+a distance of $h-1$.
+
+Now, depending on the remaining cost, and unprocessed binary vectors, we must either brute-force a solution
+of branch further. This is denoted by the formula
+\[
+    |I| \leq \sqrt{d r ~log(w) ~/ ~log(r)}
+\]
+
+For brute forcing, we simply try all possible partitions $\{J_0, \dots ,J_p\}$ of $I$ from $p=1$ to either
+the length or the remaining binary vectors ($|I|$) or the remaining allowed centres ($r-|S|$). \textit{(Here $J_0$ may
+    also be empty)}. Then we simply find the optimal means $s^j$ for each cluster $J_j$ by using the majority rule. Recall that
+the majority rule is simply the most prevalent bit at each position of the vectors.
+
+For branching, we will branch on all permutations of the vector $s \in \{0,1\}^m$ where the vector $s$ has a
+distance of $h$ to another vector $a^i$ where $i \in I$. This vector $s$ will then be a new centre so we recurse
+with $S = S \cup \{s\}$. \textit{Note: the original paper \cite{fomin_golovach_panolan_2020} specified that the
+branching should be on permutations using "Agrees with", which was here skipped for practical reasons.}
+
+If no solution has then been found, return NO.
+
+\input{algorithms/main-branching.tex}
+
+With a correct implementation this algorithm should produce and return a new set $S$ containing the new proposed
+centres for each cluster. The sum of distances from any column in $A$ to the closest center in $S$ should then be
+less than or equal to $d$, and the number of centres in $S$ should be less than or equal to $r$.
+
+Any variance in the initial parameters \textit{(here $d$ and $r$)} could yield other results. Hence as we are working on
+only sub-matrices from the original starting matrix, we will have to run the algorithm multiple times on all sub-matrices
+iterating different parameters.
+
 \subsection{Dynamic programming}
+\label{sec:dynamic-result}
 The original r-means kernelization algorithm by \cite{fomin_golovach_panolan_2020}
 intended for the sub-matrices $A_i=A_1,\dots,A_s$ to be stitched together to a single
 matrix before running the r-means algorithm. However as of \cite[Lemma 5]{fomin_golovach_panolan_2020}
@@ -342,45 +397,9 @@ memory space and allowing the sub-matrices to be run in parallel.
 This reconstruction is done dynamically by constructing a set of possible solutions $S_L$
 \input{algorithms/solution-reconstruction.tex}
 
-\subsection{Branching Algorithm}
-Given a $n \times m$ binary matrix $A$, we should be able to find its centres. Due to the kernel \mref{alg:kernel}, the instances to be run, should all be as small as possible, and
-close in distance. Still, we will need to test each one with a $k$ and $r$ parameter. To find the best centres is a complex algorithm, requiring combinatorics which
-we can do with branching. Since we used $k$ to denote the max cost in the kernel \mref{alg:kernel}, and $k$ denotes the 
-maximum cost also for the entire run from start to finish, we will here use $d$ to denote the maximum cost in 
-any single run of\mref{alg:main}. The following algorithm is based on the works of \cite{fomin_golovach_panolan_2020}, but slightly modified to reduce implementation complexity. It's a recursive 
-branching algorithm, which can be divided into several parts.
-
-Beginning the algorithm we should define the starting parameters, as we will use a set 
-$I \subseteq \{1, \dots ,n\}$ to define the remaining vectors to be tested by the algorithm, starting as the complete list
-from $1, \dots ,n$ of the matrix $A$. We will need a set of the final vectors $S = \left[ x ~| ~x \subseteq \{0,1\}^m \right]$
-of size at most $r$, which will be initialized as $S = \emptyset$. And finally the non-negative integer $d$.
-
-For each iteration, we must do the basics of many recursive functions and test if we have a 
-solution, or a non solution before we attempt to continue on the branch.
-
-Then for each value from $0$ up to $d$ we must try all possible values, denoted by $h$, as the main part 
-of\mref{alg:main}. This can again be split into three parts; the first of which is a linear clean up, where 
-we can remove any vectors from the processing if they are now already covered by a selected center, within
-a distance of $h-1$.
-
-Now, depending on the remaining cost, and unprocessed binary vectors, we must either brute-force a solution
-of branch further. This is denoted by the formula
-\[
-    |I| \leq \sqrt{d r ~log(w) ~/ ~log(r)}    
-\]
-
-For brute forcing, we simply try all possible partitions $\{J_0, \dots ,J_p\}$ of $I$ from $p=1$ to either
-the length or the remaining binary vectors ($|I|$) or the remaining allowed centres ($r-|S|$). \textit{(Here $J_0$ may
-also be empty)}. Then we simply find the optimal means $s^j$ for each cluster $J_j$ by using the majority rule. Recall that 
-the majority rule is simply the most prevalent bit at each position of the vectors.
-
-For branching, we will branch on all permutations of the vector $s \in \{0,1\}^m$ where the vector $s$ has a
-distance of $h$ to another vector $a^i$ where $i \in I$. This vector $s$ will then be a new centre so we recurse
-with $S = S \cup \{s\}$.
-
-If no solution has then been found, return NO.
-
-\input{algorithms/main-branching.tex}
+Given \mref{alg:recon} we should either get a NO, or a final solution. This final solution will then be only a set of centres,
+but those are the final centres produced by the original matrix. We will stop the algorithm here, as this is the answer to
+the problem statement.
 
 % % % % % % % % % % % % % % % % %
 %
@@ -389,10 +408,6 @@ If no solution has then been found, return NO.
 \newpage
 
 \section{Algorithm implementation}
-\begin{itemize}
-    \item No kernel stitching
-    \item No "agrees with"
-\end{itemize}
 \subsection{Tools used}
 \subsubsection{The Java programming language, Version 17}
 Selecting the programming language for any project is always an issue, and the choice of using
@@ -451,34 +466,43 @@ in can serve as a total quality-control dashboard for the project.
 
 \subsubsection{Combinatoricslib3}
 Combinatoricslib3 is a open source Java library available on GitHub with existing
-combinatoric functions such as partitioning.
+combinatorial functions such as generating permutations.
 
 \subsubsection{Testing computers}
 \label{sec:computer}
 The algorithm tests were run on a two testing computers
 \begin{itemize}
     \item "Lenovo YOGA 900" with "Intel Core i5 (6. gen) 6200U / 2.3 GHz"
-    8GB (1600 MHz / PC3-12800), LPDDR3 SDRAM. 256GB SSD M.2 memory, Intel HD Graphics 520.
-    Running the minimal operating system, Linux distribution ArchLinux.
+          8GB (1600 MHz / PC3-12800), LPDDR3 SDRAM. 256GB SSD M.2 memory, Intel HD Graphics 520.
+          Running the minimal operating system, Linux distribution ArchLinux.
     \item A custom built desktop with "AMD FX-8350", "16.0GB Dual-Channel DDR3 @ 722MHz" memory, and a
-    4095MB NVIDIA GeForce GTX 980 graphics card. Running the more standardized operating 
-    system "Microsoft Windows 10".
+          4095MB NVIDIA GeForce GTX 980 graphics card. Running the more standardized operating
+          system "Microsoft Windows 10".
 \end{itemize}
+
+Also see \mref{sec:future-work} for more information.
 
 \subsection{Data structures}
 \subsubsection{BinaryVector}
-Each binary vector is represented as a BitSet defined in the Java programming language. A
-BitSet could be defined as a set of positions which is set to $1$. Hence the binary byte
+The first logical implementation would be to simply use a \textit{Boolean array}, which would
+most likely work, but due to the implementation of the Boolean type in the Java Programming language,
+it still uses 1byte \textit{1 Byte = 8 bits}, which is usually not a problem, but if we duplicate
+a $1000 \times 1000$ bit array $1'000$ times, the size becomes \textit{1 GigaByte}. If we can create
+a smarter solution using bits, the same matrices could be stored in one eight of the space
+\textit{125 MegaBytes}
+
+A solution for this is to use the bits directly, like using numbers to store the bits and use the standard
+bit-operators of any programming language. Unfortunately this creates a limit in the length
+of the vectors \textit{long = 64 bit} and their mutability which would require workarounds,
+but could theoretically improve both the runtime, and the memory.
+
+Luckily, the Java Programming language, standard library has an existing type whit a similar
+implementation. Each binary vector is represented as a BitSet, which is not human-readable, but
+a BitSet could be presented as a set of positions which is set to $1$. Hence the binary byte
 representation of the number $42$ could be represented as the set
 $42 \equiv 00101010 \equiv (3,5,7)$. The Java library version of BitSet also includes several
 useful binary operations and extras such as cardinality. It should though be noted that the
-BitSet standard is not Thread-safe \cite{bitset_java_14_2020}
-
-
-An alternative implementation could be to use numbers to store the bits and use the standard
-bit-operators of any programming language. Unfortunately this creates a limit in the length
-of the vectors and their mutability which would require workarounds, but could theoretically
-improve the runtime.
+BitSet standard is not Thread-safe \cite{bitset_java_17_2021}
 
 \subsubsection{BinaryMatrix}
 The main Binary matrix structure is defined as a list of vectors or BitSets, along with the
@@ -487,7 +511,19 @@ original height and width.
 \subsubsection{BinarySubMatrix}
 The binary sub matrix is mainly copies of a binary matrix, and along also stores the parent
 binary matrix reference. This allows for deletion of rows and columns, for deleted rows and
-columns to be restored, and to find original positions in the parent matrix.
+columns to be restored, and to find original positions of all rows and columns in the parent 
+BinaryMatrix.
+
+\subsubsection{BMAHypothesis}
+The BinaryMatrixApproximationHypothesis objects, were created to structure the multiple
+results produced iterating over all possible parameters. It is only a container for a
+proposed solution to a BinarySubMatrix with a given parameter $d$, holding the used cost $d$
+and the centres produced.
+
+\subsubsection{Partition}
+The partition object, was defined to extend on the Java standard library \textit{ArrayList$<$List$<$T$>>$}
+structure and allow the creation of partitions from a list of objects.
+
 
 % % % % % % % % % % % % % % % % %
 %
@@ -503,65 +539,235 @@ to create more concentrated tests.
 
 \input{algorithms/test-generation.tex}
 
-By reversing the algorithm we can generate a set of vectors $H$, which will be the centres,
-and by picking random vectors from $H$ we will create a matrix with a solution of $K=0$,
-and $R=H$. By then flipping random bits we can slightly modify the expected result, mainly
-the K parameter. By flipping $D$ bits in the matrix we will still have a solvable matrix
-with $R = H$ as long as $K \geq D$ though the matrix might still be solvable within both
-smaller $K$ and $R$.
-
+By reversing the algorithm we can generate a set of vectors $h$, which will be the centres,
+and by picking random vectors from $h$ we will create a matrix with a solution of $k=0$,
+and $r=h$. By then flipping random bits we can slightly modify the expected result, mainly
+the K parameter. By flipping $d$ bits in the matrix we will still have a solvable matrix
+with $r = h$ as long as $k \geq d$ though the matrix might still be solvable within both
+smaller $k$ and $r$.
 
 Still for normal runtime analysis the importance is to test the worst cases for the algorithm,
 and while the concentrated tests is controllable, most of those will be mostly solved by the
 kernel, not allowing for proper testing of the actual algorithm. For this the generation
-algorithm would run with small parameters ($R \leq 5$, and $K \leq 30$).
+algorithm would run with small parameters ($r \leq 3$, and $k \leq 30$).
 
 \subsection{Running the test}
-The algorithm testing was performed on randomly generated $1000 \times 1000$ matrices, on the computer
-specified \mref{sec:computer}. Every single iteration would generate a new matrix, then measure the
-milliseconds of the single iteration, and push the runtime with metadata to the cloud database specified
+\subsubsection{Setup}
+The algorithm testing was performed on randomly generated matrices of varying sizes, on the computers
+specified \mref{sec:computer}, and published at \cite{datastudio_results}. 
+Every single test iteration would generate a new matrix, then measure the
+milliseconds of the single iteration, then push the runtime with metadata to the cloud database specified
 in \mref{sec:bigquery}.
 
+\subsubsection{Countermeasures}
+The timing was measured directly inside the program, between generation and publishing as to only measure
+the time used to solve, and discount any time used to generate or latency caused by slow connections. The tests
+was allowed to run for extended periods, and mostly when the computers were not in use.
+
+It was possible to run multiple tests simultaneously as the both computers is multi-core, making sure not to overload
+the CPU usage.
+
+\subsubsection{Cloud computing}
+As to avoid the loss of control on the actual hardware running the tests, cloud "mining" was initially
+avoided. As the testing showed to be very resource intensive however, it was theorized how it could be achieved.
+Unfortunately many cloud providers have measures in place to avoid misuse in crypto-currency mining, and further
+discouraged its use.
+
+\subsubsection{Data collection}
 The data for each iteration is its runtime, but metadata was added to separate later for analysis. The
 metadata added was all the input parameters as $k,r,d,h, width, heigh$, the solution results, whether it was solved, the
 computer running the test (in case of multiple test machines), and the date-time of the test case.
 
 \subsection{Analysis}
 To analyse the results of the several thousands of tests, a statistical tool was used, specified at
-\mref{sec:datastudio}. In the tool the database was imported directly as a table, and could produce
-plots to visualize the data. 
+\mref{sec:datastudio}. In the tool the result-database was imported directly as a table, and plots were
+created to visualize the data.
 
 In Data studio, new columns were added to support a multi-parameter plot for better comparison of the
-algorithms behaviour over the different parameters.
+algorithms behaviour over the different parameters. This includes combining the variables $h$ and $r$ into
+a unified $h, r$ variable such to illustrate the different runtimes in the same plots. This same technique was
+also used to combine the running width and height to compare the runtimes of the matrix-size later.
 
 \subsection{Results}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{figures/Binary_matrix_runtime.pdf}
-    \caption{Average runtime in ms, filter: Only solved problems, $H$ being the number of centres generated in test, $1 \leq d \leq 2k+1$, width and height = 1000, $k$ is initial $k$ limit, and $r$ is initial $r$ limit.}
-    \label{fig:result-table}
+    \includegraphics[width=1\textwidth, page=4]{figures/Binary_matrix_runtime.pdf}
+    \caption{Plot showing the average runtime of the algorithm in milliseconds \textit{(logarithmically)}
+        over the parameter $k$, using matrices generates of size Width: $1000$ and Height:$1000$.}
+    \label{fig:res-1000x1000k}
 \end{figure}
 
-\subsection{Testing conclusions (Brief 1 paragraph)}
+The first runs was done on several 1000x1000 binary matrices. We can see from the plot in \mref{fig:res-1000x1000k}
+that the runtime is a function of both $k$ and $r$ as expected. We can also see that there is a large dependency of
+on the amount of initial columns generated initially, which is also expected.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth, page=6]{figures/Binary_matrix_runtime.pdf}
+    \caption{Plot showing the average runtime of the algorithm in milliseconds \textit{(logarithmically)}
+        over the parameter $d$, using matrices generates of size Width: $1000$ and Height:$1000$.}
+    \label{fig:res-1000x1000d}
+\end{figure}
+
+Looking at the same matrices over $d$ in \mref{fig:res-1000x1000d}, we can assume that the amount of noise
+introduced to the initial matrices affected the runtimes. The noise variable $d$ is randomly dependent on $k$
+but while we see from \mref{fig:res-1000x1000d} the average runtime of the worst case ($h:1,r:3$) at $k \simeq 30$
+is somewhere around $150'000ms$ or 2 minutes and 30 seconds, the average runtime of the worst case keeps growing exponentially
+to the worst case ($h:1,r:3$) at $d \simeq 60$ is somewhere around $600'000ms$ or 10 minutes.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth, page=3]{figures/Binary_matrix_runtime.pdf}
+    \caption{Plot showing the average runtime of the algorithm in milliseconds \textit{(logarithmically)}
+        over the parameter $k$, using matrices generates of size Width: $200$ and Height:$200$.}
+    \label{fig:res-200x200k}
+\end{figure}
+
+The size of the matrix should affect the runtime so the algorithm should be tested on smaller matrices. The
+following data is from 200x200 matrices. However looking at \mref{fig:res-200x200k} we see almost the same
+results as we did in \mref{fig:res-1000x1000k}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth, page=7]{figures/Binary_matrix_runtime.pdf}
+    \caption{Plot showing the average runtime of the algorithm in milliseconds \textit{(logarithmically)}
+        over the parameter $k$, all data from all test-runs with all matrices from this report, grouped by
+        the size of the matrices.}
+    \label{fig:res-all-matrices-over-k}
+\end{figure}
+
+In fact almost all matrices seems to follow the same pattern of runtime with little to no effect on the runtime
+between much larger matrices. This indicates that the kernel is able to mitigate the size efficiently, and that
+the data-structures used does not severely impact the runtime of the results.
+
+It is then to be expected that the rows are not a large factor of the runtime with a proper implementation,
+hence the amount of columns and the distance between them has the greatest impact on the runtime, along
+with the parameters $k$ and $r$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth, page=2]{figures/Binary_matrix_runtime.pdf}
+    \caption{Plot showing the average runtime of the algorithm in milliseconds \textit{(logarithmically)}
+        over the parameter $k$, using matrices generates of size Width: $100$ and Height:$20$.}
+    \label{fig:res-100x20k}
+\end{figure}
+
+Now looking at \mref{fig:res-100x20k} we see different results. The runtime behaves quite differently from
+both the \mref{fig:res-1000x1000k} and the \mref{fig:res-200x200k}. Here we can see what appear to be
+three groups with similar runtime grouped by $r$. The three groups here are
+\begin{itemize}
+    \item $(h1,~r1),(h2,~r1),(h3,~r1)$
+    \item $(h1,~r2),(h2,~r2),(h3,~r2)$
+    \item $(h1,~r3),(h2,~r3),(h3,~r3)$
+\end{itemize}
+
+Compared to \mref{fig:res-200x200k} we can see that it starts off similar, but as $k$ grows, we get a
+clear change in runtime. The $(h3,~r3)$ which seemed of no significance, now crosses over $(h1,~r3)$
+with much higher average runtimes consistently. The same goes for $(h2,~r3)$, which for \mref{fig:res-200x200k}
+was much lower.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth, page=5]{figures/Binary_matrix_runtime.pdf}
+    \caption{Plot showing the average runtime of the algorithm in milliseconds \textit{(logarithmically)}
+        over the parameter $d$, using matrices generates of size Width: $100$ and Height:$20$.}
+    \label{fig:res-100x20d}
+\end{figure}
+
+One theory is that as $k$ grows, so does the number of noise $d$, but looking at
+\mref{fig:res-100x20d}, it appears that both $(h3,~r3)$ and $(h2,~r3)$ both have a higher avg.
+runtime than $(h1,~r3)$.
+
+Looking more at \mref{fig:res-100x20d}, it holds the same grouping by $r$ as we saw in \mref{fig:res-100x20k},
+but the runtimes seems more stable from the beginning.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth, page=1]{figures/Binary_matrix_runtime.pdf}
+    \caption{Plot showing the average runtime of the algorithm in milliseconds \textit{(logarithmically)}
+        over the parameter $k$, using all data from all test-runs with all matrices from this report.}
+    \label{fig:res-all-data}
+\end{figure}
+
+Adding all the data from all matrices of all sizes together, we do se some of the significance of \mref{fig:res-100x20k}
+bleeding trough, though an non-uniform test-case balance could be the reason for this. What's more important is the
+overall runtime. Though the matrix size is not a huge factor, we do see that \mref{fig:res-1000x1000k} do impact
+the result as some of it's worst cases was in the \textit{500Kms} or \textit{8+ minutes}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth, page=8]{figures/Binary_matrix_runtime.pdf}
+    \caption{Plot showing the average runtime of the algorithm in milliseconds \textit{(logarithmically)}
+        over the parameter $d$, using all data from all test-runs with all matrices from this report, grouped by
+        the size of the matrices.}
+    \label{fig:res-all-matrices-over-d}
+\end{figure}
+
+Though the plot appears rather noisy in the larger $d$-space \textit{(due to the randomness of $d$)},
+seeing all matrices by size over $d$, we can see the much of the same results as
+in \mref{fig:res-all-matrices-over-k}, and it's clear that on average the $100 \times 20$ matrices perform
+the worst.
 
 % % % % % % % % % % % % % % % % %
 %
 %	6. Conclusion
 %
-\newpage
 
 \section{Conclusion}
 \subsection{Results}
+By the performance seen during testing, it appears as if the algorithm behaves as expected. We saw only a polynomial
+dependency on the input-matrix, and a much greater dependency on the given parameters $r$ and $k$. Smaller tests also
+seems to confirm the algorithms correctness in producing only valid results, or NO instances.
+
+However, it becomes apparent that this is an FPT algorithm, and although inconceivably better than a brute-force
+implementation, it still has a noticeable runtime, which can stretch for several minutes for small instances. Thus the
+question of the algorithms viability still stands.
+
+As for minor implementations of small matrices with little noise, and small parameters, it can be used on smaller devices,
+and even smart-devices. However, any larger use-cases would wound up in minutes or hours, excluding the every-day use-cases.
+Instead it could be of use in data-analysis, where larger machines are available, and where time is not limited in seconds.
+
+As this implementation is only a "proof of concept", there are several theoretical improvements that should be tested to improve
+runtime \textit{see \mref{sec:future-work}}. However, even with the current implementation, the results looks promising.
+
+Still, more experimentation is needed.
+
 \subsection{Future work}
-\begin{itemize}
-    \item Multithreading
-    \item Better data structure and binary operations
-\end{itemize}
+\label{sec:future-work}
+For stable results, the algorithm though theoretically able to be run in parallel, was only tested as a linear implementation,
+due to hardware limitations on the testing computer producing highly irregular results for initial parallel tests. 
+Though the solutions produced were correct, the processing time varied too greatly between several runs, even on the same input. 
+Still with a different implementation it could theoretically be possible to optimize the algorithm further
+for high parallel processing, maybe even GPU programming.
+
+Most high-level programming languages have a performance drop when using recursion. While recursion is easy to implement, it can
+usually be avoided with workarounds. If possible, the recursive calls in the main branching algorithm could be implemented 
+in an iterative procedure, possibly improving the runtime significantly.
+
+The programming language was chosen for it's familiarity, and multi-OS practicality, as to produce a proof-of-concept.
+It is well known, that the Java programming language is sub-optimal in its performance due to several
+factors. The usage of a language which can get closer to the machine operations, would probably improve
+runtime significantly.
+
+The testing was done on "typical" home computers, which were both running the tests in the background, not
+with the possibility of dedicated cores/threads. Though this has probably not affected the results unevenly,
+it may have affected the overall runtime negatively. A dedicated processing server would eliminate the
+possibility of operating systems, and random background tasks (updates etc) possibly
+interfering with the results.
+
+The hardware in the testing computers is of old technology. The average performance is probably no longer what
+is promised by the manufacturer, and newer technology does on average have better performance. Also the writer
+was made aware during testing that there existed a dispute on the processor technology in use for \mref{sec:computer};
+namely the "AMD FX-8350" processor, as it is in actuality not an 8-core, but 4-core.
+\cite{dickey_v._advanced_micro_devices:inc._2015,dickey_v._advanced_micro_devices:inc._2020,chaim_gartenberg_2019}
+
+While the algorithm and it's implementation could theoretically be improved, the dataset used for testing was only
+random. While working with proper datasets, natural symmetry and other patterns might make the data reducible enough,
+or open for the possibility of customize the algorithm for a specific data-set.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 
 % % % % % % % % % % % % % % % % %
