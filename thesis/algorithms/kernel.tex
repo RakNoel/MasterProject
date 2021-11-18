@@ -2,32 +2,32 @@
     \caption{Pre-processing for Binary r-Means}
     \label{alg:kernel}
     \begin{algorithmic}[1]
-        \Require{An $n \times m$ matrix $A=(a^1,...,a^n)$, $r > 0 \wedge k \geq 0$}
+        \Input{An $n \times m$ binary matrix $A=(a^1,...,a^n)$, $r > 0 \wedge k \geq 0$}
+        \Output{A set $L$ of sub-matrices $A_1,\dots,A_s$}
         \Procedure{Preprocess}{$A,r,k$}
             \State $I \gets \{1,...,n\}$
-            \State $L \gets \emptyset$
             \State Construct the partition $\{I_1,...,I_t\}$ of $I$ into initial clusters
             \If{$t>k+r$}
                 \State Return NO
             \Else
-                \For{$i \gets l$ to $t$}
+                \For{$i \gets l$ to $t$}    \Comment{Reduce duplicates down to $k+1$}
                     \While{$|I_i| > k+1$}
                         \State Select arbitrary $j \in I_i$
                         \State $I_i \gets I_i \backslash \{j\}$ and $I \gets I \backslash \{j\}$
                     \EndWhile
                 \EndFor
                 \State $s \gets 0$
-                \While{$I \neq \emptyset$}
+                \While{$I \neq \emptyset$} \Comment{Produce clusters greedily}
                     \State $s \gets s+1$
                     \State Select arbitrary $j \in I$
                     \State $S \gets \{j\}$ and $I \gets I \backslash \{j\}$
-                    \While{$\exists((p \in S) \cap (q \in I)) \textit{s.t.} d_H(a^p,a^q) \leq k$}
+                    \While{$\exists((p \in S) \cap (q \in I)) ~\textit{s.t.}~ d_H(a^p,a^q) \leq k$}
                         \State $S \gets S \cup \{q\}$
                         \State $I \gets I \backslash \{q\}$
                     \EndWhile
                     \State $J \gets \{1,...,m\}$
                     \While{$|J| \geq 2$ and $A[J,S]$ has uniform row with an index $h \in J$}
-                        \State $J \gets J \backslash \{h\}$
+                        \State $J \gets J \backslash \{h\}$ \Comment{Remove uniform rows if $|J| \geq 2$}
                     \EndWhile
                     \State $L \gets L \cup A[S,J]$
                 \EndWhile

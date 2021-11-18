@@ -1,7 +1,7 @@
 \newcommand{\myFigure}[3]{\begin{figure}[h!]\centering\includegraphics[scale=#1]{figures/#2}\caption{#3}\end{figure}}
 
 \newtheorem{theoremdefinition}{\textbf{Definition}}
-\newtheorem{reductionrule}{\textbf{Reduction rule}}
+\newtheorem{theoremlemma}{\textbf{Lemma}}
 
 % Algorithmic ForEach
 \algnewcommand\algorithmicforeach{\textbf{foreach}}
@@ -23,15 +23,19 @@
 \newcommand*{\mref}[1]{\hyperref[#1]{\fref{#1}}}
 \newcommand*{\Mref}[1]{\hyperref[#1]{\Fref{#1}}}
 
-\newcommand*{\fancyrefredlabelprefix}{red}
-\frefformat{vario}{\fancyrefredlabelprefix}{\textbf{reduction~rule\fancyrefdefaultspacing#1}}
-\Frefformat{vario}{\fancyrefredlabelprefix}{\textbf{Reduction~rule\fancyrefdefaultspacing#1}}
-
 \newcommand*{\fancyrefalglabelprefix}{alg}
 \frefformat{vario}{\fancyrefalglabelprefix}{\textbf{algorithm\fancyrefdefaultspacing#1}}
 \Frefformat{vario}{\fancyrefalglabelprefix}{\textbf{Algorithm\fancyrefdefaultspacing#1}}
 
-\newenvironment{problem}[2][]{
+\newcommand*{\fancyrefproblabelprefix}{prob}
+\frefformat{vario}{\fancyrefproblabelprefix}{\textbf{problem\fancyrefdefaultspacing#1}}
+\Frefformat{vario}{\fancyrefproblabelprefix}{\textbf{Problem\fancyrefdefaultspacing#1}}
+
+\newcommand*{\fancyreflemlabelprefix}{lem}
+\frefformat{vario}{\fancyreflemlabelprefix}{\textbf{lemma\fancyrefdefaultspacing#1}}
+\Frefformat{vario}{\fancyreflemlabelprefix}{\textbf{Lemma\fancyrefdefaultspacing#1}}
+
+\newenvironment{problem}[1][]{
     \mdfsetup{
         frametitle={
                 \tikz[baseline=(current bounding box.east),outer sep=0pt]

@@ -2,18 +2,27 @@
     \caption{Test-Matrix generation}
     \label{alg:test}
     \begin{algorithmic}[1]
-        \Require{$d \geq 0 \wedge h > 0$}
-        \Procedure{GenerateTestMatrix}{$d,h$}
-            \While{$h \geq 0$}
-                \State $H_h \gets $ RandomVector
-                \State $h \gets h - 1$
+        \Input{Two nonnegative integers $d$ and $h$, and two positive integers $n$ and $m$}
+        \Output{A binary matrix $A$ of size $n \times m$, from $h$ \textit{initial clusters}, with 
+        $d$ randomly flipped bits}
+
+        \Procedure{GenerateTestMatrix}{$d,h,n,m$}
+            \While{$h \geq 0$} \Comment{Generate random initial columns}
+                \State $H_h \gets $ RandomVector($m$)
+                \State $h := h - 1$
+            \EndWhile
+            \State $i \gets 0$
+            \While{$i < n$}
+                \State $S_i := S \cup H_{rnd}$  \Comment{Add random vector from $H$}
+                \State $i := i + 1$
             \EndWhile
             \While{$d \geq 0$}
-                \State $x \gets $ random vector
-                \State $y \gets $ random bit
-                \State $H_{xy} \gets \lnot H_{xy}$
+                \State $x \gets rnd(0,n)$
+                \State $y \gets rnd(0,m)$
+                \State $S_{xy} \gets \lnot S_{xy}$ \Comment{Flip random bit}
+                \State $d := d - 1$
             \EndWhile \\
-            \Return $H$
+            \Return $A[S,m]$
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
