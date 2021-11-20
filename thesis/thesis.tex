@@ -28,7 +28,26 @@ empty
 %	0. Abstract
 %
 \section*{Abstract}
-empty
+In the \cite{fomin_golovach_panolan_2020} paper, the authors gave an exact parameterized 
+algorithm for the Binary r-Means clustering problem, parameterized by $k+r$, with the runtime of 
+$2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$. The problem of Binary r-Means takes as input
+an $n \times m$ binary matrix \textbf{A} with columns ($\textbf{a}^1,...,\textbf{a}^n$), a positive 
+integer $\textbf{r}$ and a nonnegative integer $\textbf{k}$. 
+The task is then to decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq \textbf{r}$, 
+a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of $\{1,...,n\}$ and vectors 
+$(\textbf{c}^1,...,\textbf{c}^{r\sp{\prime}}) \in \{0,1\}^m$ such that 
+$\sum_{i = 1}^{r\sp{\prime}} \sum_{j \in I_i} d_H(c^i, a^j) \leq k $.
+
+As the Binary r-Means problem is in the NP space, no other viable exact algorithm is currently known. Still due to
+the nature of NP-algorithms complexity, its performance as a practical implementation is not yet known. 
+A proof of concept version of the algorithm was therefore implemented and tested against randomly generated binary matrices, 
+as to measure its performance on a standard desk-top computer. 
+
+The results show that even a sub-optimal implementation is inconceivably better than a brute force, and 
+viable with small parameters, while for data-mining greater resources and time could open for more use cases. More 
+research is needed, but the results are promising.
+
+
 \newpage
 
 % % % % % % % % % % % % % % % % %
@@ -56,6 +75,7 @@ empty
 %	1. Introduction
 %
 \section{Introduction}
+\label{sec:intro}
 In the current age of technology, humans have gathered unfathomable amounts of data wherever
 we saw the possibility to log something. Ranging from major corporations to single individuals,
 as long as we do anything digital, data is being logged, and the amount can only be estimated to be
@@ -106,8 +126,7 @@ centres in clusters of binary vectors, in a reasonable runtime.
 For this paper, we will look into a theoretical centroid-based binary vector clustering algorithm, proposed
 by \cite{fomin_golovach_panolan_2020}. First we need to find a distance metric between the vectors so we
 can group them. Because we're clustering binary vectors/matrices, the standard clustering metric is
-the Hamming distance (\textit{$d_H(a, b)$}) between the binary vectors, such that the centres
-becomes the averages of all bits in a row inside the cluster. We will here represent the input of these
+the Hamming distance (\textit{$d_H(a, b)$}) between the binary vectors. We will here represent the input of these
 vectors as a single matrix, where each column is a binary vector.
 
 This proposed theoretical algorithm is a parameterized algorithm, limiting the runtime of the
@@ -151,7 +170,7 @@ Now let's formally define the problem then, of "Binary r-Means".
     integer $\textbf{k}$                                                                     \\
 
     \textit{Task}:  & Decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq
-        \textbf{r}$, a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of $\{1,...,n\}$ and vectors
+        \textbf{r}$, a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of indices $\{1,...,n\}$ and vectors
     $(\textbf{c}^1,...,\textbf{c}^{r\sp{\prime}}) \in \{0,1\}^m$ such that
 
     \[
@@ -180,6 +199,15 @@ and results. However, it must be taken into account that if an exact solution is
 algorithm may have a much faster running time.
 \cite{SimonovKirill2021ACoC,DanChen2015LRAo,zohar:k-means-viability,ibm:support:k-means:opinion}
 
+\subsection{Overview}
+\Mref{sec:intro} has now presented the paper, and given an introduction to the main problem at hand and the
+motivation behind it. In \mref{sec:prelim} the most basic notations and definitions which will be used in 
+later sections are stated. Then \mref{sec:algo} introduces the algorithms implementation in three main parts, and 
+explains how they work in some detail. \Mref{sec:impl} presents all the tools used in this paper, and states which 
+custom objects were defined and used in the actual implementation. After that \mref{sec:testing} details how the 
+testing was designed and run, how the data was stored, processed and analysed, before detailing the results. Finally 
+in \mref{sec:conclusion} we have the conclusion, and a suggestion for further work.
+
 % % % % % % % % % % % % % % % % %
 %
 %	2. Preliminaries
@@ -188,6 +216,7 @@ algorithm may have a much faster running time.
 \newpage
 
 \section{Preliminaries}
+\label{sec:prelim}
 \subsection{Notations and Definitions}
 \subsubsection{Matrices}
 As we are clustering binary vectors $v \in \{0,1\}^m$, we can transform any set of vectors
@@ -234,54 +263,52 @@ As the main algorithm in this thesis is based on a parameterized problem, we her
 book \cite{param_algo_book} for a detailed introduction. Here we shall only introduce the most
 basic notions.
 
-\begin{theoremdefinition}[Parameterized problem]
+\begin{theoremdefinition}[Parameterized problem]{\cite[p.~12]{param_algo_book}}
     A \textit{parameterized problem} is a language $L \subseteq \Sigma^* \times \mathbb{N}$,
     where $\Sigma$ is a fixed, finite alphabet. For an instance $(x,k) \in \Sigma^* \times \mathbb{N}$,
-    $k$ is called the \textit{parameter}. \cite[p.~12]{param_algo_book}
+    $k$ is called the \textit{parameter}. 
 \end{theoremdefinition}
 
 With the problem of r-means from \cite{fomin_golovach_panolan_2020}, we here consider it as such
-a parameterized problem, where as any instance $(A,r,k)$
-can be written as $(A, k)$ where $A$ is a binary matrix encoded as a string over $\Sigma$, and
-$k$ is a positive integer.
+a parameterized problem, with $(A,k+r)$
 
-\begin{theoremdefinition}[Fixed-parameter tractable]
+\begin{theoremdefinition}[Fixed-parameter tractable]{\cite[p.~13]{param_algo_book}}
     A parameterized problem $L \subseteq \Sigma^* \times \mathbb{N}$ is called
     \textit{fixed-parameter tractable} (FPT) if there exists an algorithm $\mathcal{A}$ (called
     a \textit{fixed-parameter algorithm}), a computable function $f:\mathbb{N} \rightarrow \mathbb{N}$,
     and a constant $c$ such that, given $(x,k) \in \Sigma^* \times \mathbb{N}$, the algorithm
     $\mathcal{A}$ correctly decides whether $(x,k) \in L$ in time bounded by $f(k) * |(x,k)|^c$.
-    The complexity class containing all fixed-parameter tractable problems is called FPT \cite[p.~13]{param_algo_book}
+    The complexity class containing all fixed-parameter tractable problems is called FPT
 \end{theoremdefinition}
 
 By this definition the proposed algorithm from \cite{fomin_golovach_panolan_2020} should have
 a runtime in the form of $f(k) * |(x,k)|^c$. We can see this in the proposed runtime which is
 proposed to be $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$.
 
-\begin{theoremdefinition}[Data reduction rule]
+\begin{theoremdefinition}[Data reduction rule]{\cite[p.~18]{param_algo_book}}
     A \textit{data reduction rule}, of a parameterized problem $Q$ is a function
-    $\phi \Sigma^* \times \mathbb{N}$ that maps an instance $(I,k)$ of $Q$ to an equivalent
+    $\phi \Sigma^* \times \mathbb{N} \rightarrow \Sigma^* \times \mathbb{N}$ 
+    that maps an instance $(I,k)$ of $Q$ to an equivalent
     instance $(I^\prime, k^\prime)$ of $Q$ such that $\phi$ is computable in polynomial time
     in $|I|$ and $k$. We say that two instances of $Q$ are \textit{equivalent} if the following
     holds: $(I,k) \in Q$ if and only if $(I^\prime, k^\prime) \in Q$.
-    \cite{fomin_golovach_panolan_2020}
 \end{theoremdefinition}
 
-\begin{theoremdefinition}[Kernelization, kernel]
+\begin{theoremdefinition}[Kernelization, kernel]{\cite[p.~18]{param_algo_book} \label{def:kernelization}}
     A kernelization algorithm, or simply a kernel, for a parameterized problem $Q$
     is an algorithm $\mathcal{A}$ that, given an instance $(I,k)$ of $Q$, works in polynomial
     time and returns an equivalent instance $(I^\prime, k^\prime)$ of $Q$. Moreover, we require
     that $size_{\mathcal{A}}(k) \leq g(k)$ for some computable function
-    $g: \mathbb{N} \rightarrow \mathbb{N}$. \cite[p.~18]{param_algo_book}
+    $g: \mathbb{N} \rightarrow \mathbb{N}$.
 \end{theoremdefinition}
 
-\begin{theoremdefinition}[Turing kernelization]
+\begin{theoremdefinition}[Turing kernelization]{\cite[p.~314]{param_algo_book} \label{def:turing-kernelization}}
     Let $Q$ be a parameterized problem and let $f:\mathbb{N} \rightarrow \mathbb{N} $
     be a computable function. A \textit{Turing kernelization} for $Q$ of size $f$ is an
     algorithm that decides whether a given instance $(x,k) \in \Sigma^* \times \mathbb{N}$
     is contained in $Q$ in time polynomial in $|x|+k$, when given access to an oracle
     that decides membership in $Q$ for any instance $(x^\prime, k^\prime)$ with
-    $|x^\prime|,k^\prime \leq f(k)$ in a single step. \cite[p.~314]{param_algo_book}
+    $|x^\prime|,k^\prime \leq f(k)$ in a single step.
 \end{theoremdefinition}
 
 % % % % % % % % % % % % % % % % %
@@ -292,19 +319,24 @@ proposed to be $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$.
 \newpage
 
 \section{Algorithm}
-
+\label{sec:algo}
 \subsection{Kernelization}
-The goal of the preprocessing algorithm is to reduce the input matrix by following certain reduction rules
+The goal of the preprocessing algorithm is to reduce the input matrix by following certain reduction steps
 based on the two parameters $k$ and $r$, running in polynomial time over the input size, here ($n \times m$).
 
 Designing the algorithm it should require a $n \times m$ binary matrix A. And the two parameters $r > 0$ limiting the
-maximum number of clusters, and $k \geq 0$ limiting the cost of all total distances.
+maximum number of clusters, and $k \geq 0$ limiting the cost of all total distances. And by \mref{def:kernelization}, it
+should produce an equivalent problem, and we should expect an output of a binary matrix $A^\prime$ and the parameters $k^\prime$
+and $r^\prime$.
+
+The first observation is that if there are more than $k+r$ distant columns, there can not be a solution, so we can simply return NO. Therefore as
+a start we partition the columns into clusters of equal columns $I = {I_1, \dots, I_t}$ and test if $t \ge k+r$. We will call this partitioning $I$ 
+and its groups for the \textit{initial clusters}. Further we can assume that all initial clusters will be clustered together, so if the size
+of a cluster $|I_i|$ is larger than $k+1$, we can assume that...
 
 To reduce the size of the problem, the simplest idea, is to remove what we can call \textit{uniform rows}. A uniform
-row, is a row in a matrix A, there the cardinality of its vector equals either it's length or zero,
-$\forall k$ in $\Sigma_{i=1}^{m} v_i \in A_k = 0 \vee m$. In simpler terms a uniform row, is a row consisting only of
-zeros and ones. If we remove a uniform row, it will not have any impact on the final result as the optimal centre is
-and must keep the uniformity of the row. Hence this is a free and powerful reduction, but unfortunately rare.
+row, is a row consisting only of zeros or only ones. If we remove a uniform row, it will not have any impact on the final result as the optimal centre is
+and must keep the uniformity of the row.
 
 By partitioning the columns such that the distance between the sets is greater than $k$, we know that each set must
 have a separate centre, and there must exist an optimal solution with this clustering. Further since we have
@@ -322,8 +354,7 @@ the columns are now clustered together, the number of pairwise distant columns i
 conclude that the number of non-uniform rows is bound.
 
 All this is in fact explained by the following lemma
-\setcounter{theoremlemma}{4}
-\begin{theoremlemma}
+\begin{theoremlemma}{\cite[Lemma 5]{fomin_golovach_panolan_2020}}
     Given an instance $(A,r,k)$ of Binary r-Means, Algorithm 1 runs in $O(n^2m)$ time
     and either correctly concludes that $(A,r,k)$ is a no-instance of Binary r-Means and
     returns NO or returns $s \leq r$ matrices $A_1, \dots, A_s$ such that
@@ -337,19 +368,15 @@ All this is in fact explained by the following lemma
               of $A_i$ and $n_1 + \dots + n_s \leq (k+1)(k+r)$
         \item the total number of distinct columns in $A_1,\dots,A_s$ is at most $k+r$
     \end{itemize}
-    \cite[Lemma 5]{fomin_golovach_panolan_2020}
     \label{lem:5}
 \end{theoremlemma}
 
-
-
 \input{algorithms/kernel.tex}
 
-When reducing the initial matrix, the algorithm has now produced a list of sub-matrices $L$, where any vector
-in a cluster is at max $k$ distance to all other vectors in the same cluster $\forall d_H(v, u) \in L_i \leq k$.
-Each of these clusters can now be treated a different sub-matrix itself $A_1, \dots, A_i$ of the original matrix $A$.
-This breaks with the paper \cite{fomin_golovach_panolan_2020} where there is an algorithm to create a substitute matrix,
-but as using sub-matrices allows for multi processing, and a more separate design, this will not be done.
+When reducing the initial matrix, the algorithm has now produced a list of sub-matrices $L$, which might seem to conflict with our expectations
+of $\mathcal{A}(A,k+r) \rightarrow (A^\prime,k^\prime+r^\prime)$. However, from \mref{lem:5} we know that a combination of the solutions of the 
+individual sub-matrices in $L$ should produce a solution for the initial binary matrix $A$, thus we actually have a \mref{def:turing-kernelization}.
+This breaks with the papers original pseudo-code \cite{fomin_golovach_panolan_2020} where there is an algorithm to create a substitute matrix.
 
 \subsection{Branching Algorithm}
 Now from the kernel in \mref{alg:kernel} we are given a list $L$ of sub-matrices, which can be processed individually. Here we
@@ -438,6 +465,7 @@ the problem statement.
 \newpage
 
 \section{Algorithm implementation}
+\label{sec:impl}
 \subsection{Tools used}
 \subsubsection{The Java programming language, Version 17}
 Selecting the programming language for any project is always an issue, and the choice of using
@@ -562,6 +590,7 @@ structure and allow the creation of partitions from a list of objects.
 \newpage
 
 \section{Testing}
+\label{sec:testing}
 \subsection{Generating test matrix}
 For the generation of a matrix used for testing we could use any complete randomized binary
 matrix, but to be able to control the result after the completion of the algorithm it is best
@@ -746,7 +775,7 @@ the worst.
 %
 
 \section{Conclusion}
-\subsection{Results}
+\label{sec:conclusion}
 By the performance seen during testing, it appears as if the algorithm behaves as expected. We saw only a polynomial
 dependency on the input-matrix, and a much greater dependency on the given parameters $r$ and $k$. Smaller tests also
 seems to confirm the algorithms correctness in producing only valid results, or NO instances.
