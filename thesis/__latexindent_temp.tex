@@ -321,7 +321,6 @@ proposed to be $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$.
 \section{Algorithm}
 \label{sec:algo}
 \subsection{Kernelization}
-\label{sec:algo:kernel}
 The goal of the preprocessing algorithm is to reduce the input matrix by following certain reduction steps
 based on the two parameters $k$ and $r$, running in polynomial time over the input size, here ($n \times m$).
 
@@ -374,7 +373,6 @@ The papers original pseudo-code \cite{fomin_golovach_panolan_2020} gives an algo
 one single matrix, but as they can be processed individually, we will do so instead.
 
 \subsection{Branching Algorithm}
-\label{sec:algo:branching}
 Now from the kernel in \mref{alg:kernel} we are given a list $L$ of sub-matrices, which can be processed individually. Here we
 shall look at the main step of the algorithm; the Binary r-Means, recursive branching algorithm.
 
@@ -420,9 +418,10 @@ less than or equal to $d$, and the number of centres in $S$ should be less than 
 \subsection{Dynamic programming}
 \label{sec:dynamic-result}
 The original r-means kernelization algorithm by \cite{fomin_golovach_panolan_2020}
-intended for the sub-matrices $L=A_1,\dots,A_s$ produced from the kernel in \mref{sec:algo:kernel} to be \textit{"glued"} together 
-into a single matrix before running the r-means algorithm. However as of \mref{lem:5} then instead of stitching the solution 
-into a single matrix $A^\prime$ we can run the algorithm multiple times over $A_i$ with increasing parameter $k$,
+intended for the sub-matrices $A_i=A_1,\dots,A_s$ to be \textit{"glued"} together into a single
+matrix before running the r-means algorithm. However as of \mref{lem:5}
+then instead of stitching the solution into a single matrix $A\sp{\prime}$
+we can run the algorithm multiple times over $A_i$ with increasing parameter $k$,
 save the different possible solutions in a set $H$ \textit{(hypotheses)}, and stitch the solutions in the end. Thus saving
 memory space and allowing the sub-matrices to be run in parallel.
 
@@ -431,38 +430,29 @@ the a solution of
 
 \[ f(k) =
   \begin{cases}
-    \text{NO - Instance}   & \quad \text{if } (r_1 + \hdots + r_s \geq r+1 ~|~ k_1, \hdots, k_s \leq k) \\
-    \text{YES - Instance}  & \quad \text{if } k \leq r
+    \text{NO - Instance}   & \quad \text{if min\{r\} with } k \geq r+1 \\
+    \text{YES - Instance}  & \quad \text{if min\{r\} with } k \leq r
   \end{cases}
 \]
 
-As for every $i \in \{1,\dots,s\}$ we have the cases
-\[ f_i(k^\prime) =
-    \begin{cases}
-        \text{min \#clusters that can be obtained for} A_i \text{ using at most } k^\prime & \\
-        r+1,  & \quad \text{if \#clusters} > r
-    \end{cases}
-\]
+As for every $i \in \{1,\dots,s\}$ we have the cases\\
 
-We have in \mref{sec:algo:branching} three given the algorithm for finding this with the parameters, hence 
-\[ 
-    f_i(k^\prime) = \text{Binary r-Means}(I=\{1,\dots, A_{i_n}\}, S = \emptyset, r^\prime, k^\prime).
-\]
-
-Now as equal calls will be made multiple times, we can store the values in a table, and even better, we can store the minimum \#clusters we can achieve in all clusters upp to $i$.
-\[ 
-    T[i, k^\prime] \rightarrow \text{min \#clusters that can be obtained for the set } \{A_1, \dots, A_i\}, \text{ using at most } k^\prime
-\]
-
-which we can define with the functions $f_i(k^\prime)$ by
 \[
-    \begin{tabular}{lcl}
-        $T[1, k^\prime]$ & $=$ & $f_1(k^\prime)$ \\
-        $T[i, k^\prime]$ & $=$ & $min\{ min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}, r+1 \}$
-    \end{tabular}
+$f_i(k^\prime)$ =
+\begin{cases}{lcl}
+    min \#clusters that can be obtained for $A_i$ using at most $k^\prime$ \\
+    $r+1$, if $\#\text{clusters} > r$ 
+\end{cases}
 \]
 
-With which we can simplify $f(k)$ into
+With the functions $f_i(k^\prime)$ we can define the table as such 
+\\
+\begin{tabular}{lcl}
+    $T[i, k^\prime]$ & $\rightarrow$ & min \#clusters that can be obtained for $A_1, \dots, A_i$, using at most $k^\prime$ \\
+    $T[1, k^\prime]$ & $=$ & $f_1(k^\prime)$ \\
+    $T[i, k^\prime]$ & $=$ & $min\{ min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}, r+1 \}$
+\end{tabular}
+
 \[ f(k) =
   \begin{cases}
     \text{NO - Instance}   & \quad \text{if } T[s,k] \geq r+1 \\
@@ -662,18 +652,7 @@ algorithms behaviour over the different parameters. This includes combining the 
 a unified $h, r$ variable such to illustrate the different runtimes in the same plots. This same technique was
 also used to combine the running width and height to compare the runtimes of the matrix-size later.
 
-\newpage
 \subsection{Results}
-First off, let us recall that we defined the variables as such
-\[
-    \begin{tabular}{lll}
-        $h$ & $\rightarrow$ & \textit{\#initial clusters} used to generate the random binary matrices \\
-        $d$ & $\rightarrow$ & \textit{\#random-bit-flips} performed on the randomly generated binary matrices \\
-        $r$ & $\rightarrow$ & the initial parameter $r$ that was given to the algorithm \\
-        $k$ & $\rightarrow$ & the initial parameter $k$ that was given to the algorithm \\
-    \end{tabular}
-\]
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth, page=4]{figures/Binary_matrix_runtime.pdf}

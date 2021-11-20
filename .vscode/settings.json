@@ -1,4 +1,10 @@
 {
     "latex-workshop.bibtex-format.tab": "tab",
-    "latex-workshop.latex.outDir": "%DIR%/Output"
+    "latex-workshop.latex.outDir": "%DIR%/Output",
+    "cSpell.words": [
+        "Codacy",
+        "Intelli",
+        "LPDDR",
+        "SDRAM"
+    ]
 }
