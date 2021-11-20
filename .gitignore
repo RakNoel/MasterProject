@@ -106,3 +106,5 @@ thesis/Output/*
 *.fls
 *.blg
 *.ddb_latexmk
+
+!thesis/figures
