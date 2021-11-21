@@ -801,12 +801,11 @@ the worst.
 \section{Conclusion}
 \label{sec:conclusion}
 By the performance seen during testing, it appears as if the algorithm behaves as expected. We saw only a polynomial
-dependency on the input-matrix, and a much greater dependency on the given parameters $r$ and $k$. Smaller tests also
-seems to confirm the algorithms correctness in producing only valid results, or NO instances.
+dependency on the input-matrix, and a much greater dependency on the given parameters $r$ and $k$.
 
-However, it becomes apparent that this is an FPT algorithm, and although inconceivably better than a brute-force
-implementation, it still has a noticeable runtime, which can stretch for several minutes for small instances. Thus the
-question of the algorithms viability still stands.
+However, it becomes apparent that this algorithm is in NP, as although inconceivably better than a brute-force
+implementation, it still has a noticeable runtime, which can stretch from several minutes to hours even for small instances. 
+Thus the question of the algorithms viability still stands.
 
 As for minor implementations of small matrices with little noise, and small parameters, it can be used on smaller devices,
 and even smart-devices. However, any larger use-cases would wound up in minutes or hours, excluding the every-day use-cases.
@@ -843,8 +842,11 @@ interfering with the results.
 The hardware in the testing computers is of old technology. The average performance is probably no longer what
 is promised by the manufacturer, and newer technology does on average have better performance. Also the writer
 was made aware during testing that there existed a dispute on the processor technology in use for \mref{sec:computer};
-namely the "AMD FX-8350" processor, as it is in actuality not an 8-core, but 4-core.
-\cite{dickey_v._advanced_micro_devices:inc._2015,dickey_v._advanced_micro_devices:inc._2020,chaim_gartenberg_2019}
+namely the "AMD FX-8350" processor, where it was determined that it is in actuality not an 8-core, but 4-core.
+\cite{dickey_v._advanced_micro_devices:inc._2015,dickey_v._advanced_micro_devices:inc._2020,chaim_gartenberg_2019}. This 
+has most likely impacted the accuracy of the runtime somewhat, when more than 4 test were running simultaneously on 
+the affected machine. However isolating the machine shows much of the same trends, but unfortunately holds to few test-cases to 
+be conclusive on it's own.
 
 While the algorithm and it's implementation could theoretically be improved, the dataset used for testing was only
 random. While working with proper datasets, natural symmetry and other patterns might make the data reducible enough,
