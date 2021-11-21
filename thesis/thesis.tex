@@ -28,23 +28,23 @@ empty
 %	0. Abstract
 %
 \section*{Abstract}
-In the \cite{fomin_golovach_panolan_2020} paper, the authors gave an exact parameterized 
-algorithm for the Binary r-Means clustering problem, parameterized by $k+r$, with the runtime of 
+In the \cite{fomin_golovach_panolan_2020} paper, the authors gave an exact parameterized
+algorithm for the Binary r-Means clustering problem, parameterized by $k+r$, with the runtime of
 $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$. The problem of Binary r-Means takes as input
-an $n \times m$ binary matrix \textbf{A} with columns ($\textbf{a}^1,...,\textbf{a}^n$), a positive 
-integer $\textbf{r}$ and a nonnegative integer $\textbf{k}$. 
-The task is then to decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq \textbf{r}$, 
-a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of $\{1,...,n\}$ and vectors 
-$(\textbf{c}^1,...,\textbf{c}^{r\sp{\prime}}) \in \{0,1\}^m$ such that 
+an $n \times m$ binary matrix \textbf{A} with columns ($\textbf{a}^1,...,\textbf{a}^n$), a positive
+integer $\textbf{r}$ and a nonnegative integer $\textbf{k}$.
+The task is then to decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq \textbf{r}$,
+a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of $\{1,...,n\}$ and vectors
+$(\textbf{c}^1,...,\textbf{c}^{r\sp{\prime}}) \in \{0,1\}^m$ such that
 $\sum_{i = 1}^{r\sp{\prime}} \sum_{j \in I_i} d_H(c^i, a^j) \leq k $.
 
 As the Binary r-Means problem is in the NP space, no other viable exact algorithm is currently known. Still due to
-the nature of NP-algorithms complexity, its performance as a practical implementation is not yet known. 
-A proof of concept version of the algorithm was therefore implemented and tested against randomly generated binary matrices, 
-as to measure its performance on a standard desk-top computer. 
+the nature of NP-algorithms complexity, its performance as a practical implementation is not yet known.
+A proof of concept version of the algorithm was therefore implemented and tested against randomly generated binary matrices,
+as to measure its performance on a standard desk-top computer.
 
-The results show that even a sub-optimal implementation is inconceivably better than a brute force, and 
-viable with small parameters, while for data-mining greater resources and time could open for more use cases. More 
+The results show that even a sub-optimal implementation is inconceivably better than a brute force, and
+viable with small parameters, while for data-mining greater resources and time could open for more use cases. More
 research is needed, but the results are promising.
 
 
@@ -191,21 +191,15 @@ runtime of $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$; placing the algorithm
 much closer to the runtime we might expect from normal computers.
 
 \subsection{Previous results}
-It has not come to the writers attention that there exist other work on any equal algorithms which produce an
-accurate clustering for binary vectors. There is however much research done on approximation algorithms on similar
-problems, as the problem of Binary r-means is reducible to a much more known problem of "k-means".
-The approximation algorithms does not produce an exact solution, they are very different both in runtime
-and results. However, it must be taken into account that if an exact solution is not needed, then an approximation
-algorithm may have a much faster running time.
-\cite{SimonovKirill2021ACoC,DanChen2015LRAo,zohar:k-means-viability,ibm:support:k-means:opinion}
+to be done
 
 \subsection{Overview}
 \Mref{sec:intro} has now presented the paper, and given an introduction to the main problem at hand and the
-motivation behind it. In \mref{sec:prelim} the most basic notations and definitions which will be used in 
-later sections are stated. Then \mref{sec:algo} introduces the algorithms implementation in three main parts, and 
-explains how they work in some detail. \Mref{sec:impl} presents all the tools used in this paper, and states which 
-custom objects were defined and used in the actual implementation. After that \mref{sec:testing} details how the 
-testing was designed and run, how the data was stored, processed and analysed, before detailing the results. Finally 
+motivation behind it. In \mref{sec:prelim} the most basic notations and definitions which will be used in
+later sections are stated. Then \mref{sec:algo} introduces the algorithms implementation in three main parts, and
+explains how they work in some detail. \Mref{sec:impl} presents all the tools used in this paper, and states which
+custom objects were defined and used in the actual implementation. After that \mref{sec:testing} details how the
+testing was designed and run, how the data was stored, processed and analysed, before detailing the results. Finally
 in \mref{sec:conclusion} we have the conclusion, and a suggestion for further work.
 
 % % % % % % % % % % % % % % % % %
@@ -266,7 +260,7 @@ basic notions.
 \begin{theoremdefinition}[Parameterized problem]{\cite[p.~12]{param_algo_book}}
     A \textit{parameterized problem} is a language $L \subseteq \Sigma^* \times \mathbb{N}$,
     where $\Sigma$ is a fixed, finite alphabet. For an instance $(x,k) \in \Sigma^* \times \mathbb{N}$,
-    $k$ is called the \textit{parameter}. 
+    $k$ is called the \textit{parameter}.
 \end{theoremdefinition}
 
 With the problem of r-means from \cite{fomin_golovach_panolan_2020}, we here consider it as such
@@ -287,7 +281,7 @@ proposed to be $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$.
 
 \begin{theoremdefinition}[Data reduction rule]{\cite[p.~18]{param_algo_book}}
     A \textit{data reduction rule}, of a parameterized problem $Q$ is a function
-    $\phi \Sigma^* \times \mathbb{N} \rightarrow \Sigma^* \times \mathbb{N}$ 
+    $\phi \Sigma^* \times \mathbb{N} \rightarrow \Sigma^* \times \mathbb{N}$
     that maps an instance $(I,k)$ of $Q$ to an equivalent
     instance $(I^\prime, k^\prime)$ of $Q$ such that $\phi$ is computable in polynomial time
     in $|I|$ and $k$. We say that two instances of $Q$ are \textit{equivalent} if the following
@@ -326,25 +320,25 @@ The goal of the preprocessing algorithm is to reduce the input matrix by followi
 based on the two parameters $k$ and $r$, running in polynomial time over the input size, here ($n \times m$).
 
 Designing the algorithm it should require an $n \times m$ binary matrix A. And the two parameters $r > 0$ limiting the
-maximum number of clusters, and $k \geq 0$ limiting the cost of all total distances. By \mref{def:kernelization}, it must 
+maximum number of clusters, and $k \geq 0$ limiting the cost of all total distances. By \mref{def:kernelization}, it must
 produce an equivalent problem, such that we should expect an output of a binary matrix $A^\prime$ and the parameters $k^\prime$
 and $r^\prime$.
 
-The first observation is that if there are more than $k+r$ distant columns, there can not be a solution, so we can simply return NO. 
-Therefore as a start we partition the columns into clusters of equal columns $I = {I_1, \dots, I_t}$ and test if $t \ge k+r$. 
-We will call this partitioning $I$ and its groups for the \textit{initial clusters}. Further we can assume that all initial 
-clusters will be clustered together, so if the size of such an initial cluster $|I_i|$ is larger than or equal to $k+1$, 
+The first observation is that if there are more than $k+r$ distant columns, there can not be a solution, so we can simply return NO.
+Therefore as a start we partition the columns into clusters of equal columns $I = {I_1, \dots, I_t}$ and test if $t \ge k+r$.
+We will call this partitioning $I$ and its groups for the \textit{initial clusters}. Further we can assume that all initial
+clusters will be clustered together, so if the size of such an initial cluster $|I_i|$ is larger than or equal to $k+1$,
 we assume that there must be a centre with zero distance to this cluster. Thus, any initial cluster of size $|I| \geq k+2$
 can be reduced down to $|I| = k+1$.
 
-Now, we can greedily group the initial clusters together, with any other cluster of distance $d_H(I_a,I_b) \leq k$ and call this new 
-partition $L$. From the way we constructed these clusters, we now have that the distance between any two columns from any to separate 
+Now, we can greedily group the initial clusters together, with any other cluster of distance $d_H(I_a,I_b) \leq k$ and call this new
+partition $L$. From the way we constructed these clusters, we now have that the distance between any two columns from any to separate
 clusters, is of a distance $d_H > k$, and cannot be clustered together within the cost of $k$.
 
 Instead of treating this as a single solution, we can process each of the clusters individually as its own matrix, henceforth
-a \textit{sub-matrix}. Now we can remove what we can call \textit{uniform rows}. A uniform row, is a row consisting 
+a \textit{sub-matrix}. Now we can remove what we can call \textit{uniform rows}. A uniform row, is a row consisting
 only of zeros or only ones. If we remove a uniform row, it will not have any impact on the final result as the optimal centre
-should keep the uniformity of the row for zero cost. Since all columns were clustered together with those of distance $d_h \leq k$, 
+should keep the uniformity of the row for zero cost. Since all columns were clustered together with those of distance $d_h \leq k$,
 the number of pairwise distant columns is at most $k+r$, and we can thus conclude that the number of non-uniform rows is bound.
 
 All this is in fact explained by the following lemma
@@ -368,9 +362,9 @@ All this is in fact explained by the following lemma
 \input{algorithms/kernel.tex}
 
 When reducing the initial matrix, the algorithm has now produced a list of sub-matrices $L$, which might seem to conflict with our expectations
-of $\mathcal{A}(A,k+r) \rightarrow (A^\prime,k^\prime+r^\prime)$. However, from \mref{lem:5} we know that a combination of the solutions of the 
+of $\mathcal{A}(A,k+r) \rightarrow (A^\prime,k^\prime+r^\prime)$. However, from \mref{lem:5} we know that a combination of the solutions of the
 individual sub-matrices in $L$ should produce a solution for the initial binary matrix $A$, thus we actually have a \mref{def:turing-kernelization}.
-The papers original pseudo-code \cite{fomin_golovach_panolan_2020} gives an algorithm to create a substitute matrix "gluing" together these clusters into 
+The papers original pseudo-code \cite{fomin_golovach_panolan_2020} gives an algorithm to create a substitute matrix "gluing" together these clusters into
 one single matrix, but as they can be processed individually, we will do so instead.
 
 \subsection{Branching Algorithm}
@@ -378,11 +372,11 @@ one single matrix, but as they can be processed individually, we will do so inst
 Now from the kernel in \mref{alg:kernel} we are given a list $L$ of sub-matrices, which can be processed individually. Here we
 shall look at the main step of the algorithm; the Binary r-Means, recursive branching algorithm.
 
-We should have an input in the form of a binary matrix $A$, or as we will only reference its columns, a set 
-$I \subset \{1,\dots,n\}$, assuming we can reference $A$ and any column $A^n$. We also need the parameters $k$ and $r$. 
-Since it is a recursive algorithm, we also need to send the partial solution, which will here be the set of selected 
-centres $S$. Since we do not have any selected centre, the initial value will therefore be the empty set for 
-$S := \emptyset$. Also, we should expect to see a change in the parameter $k$, so we will rename it to $d$ to represent the 
+We should have an input in the form of a binary matrix $A$, or as we will only reference its columns, a set
+$I \subset \{1,\dots,n\}$, assuming we can reference $A$ and any column $A^n$. We also need the parameters $k$ and $r$.
+Since it is a recursive algorithm, we also need to send the partial solution, which will here be the set of selected
+centres $S$. Since we do not have any selected centre, the initial value will therefore be the empty set for
+$S := \emptyset$. Also, we should expect to see a change in the parameter $k$, so we will rename it to $d$ to represent the
 current available cost, with the initial value $d := k$
 
 For each recursion, we must check weather the branch has either produced a solution, or exceeded the parameters allowed. We know that
@@ -390,9 +384,9 @@ we have a set of selected centres $S$, so if $S$ can cover all remaining columns
 If however we have $|S| = r$ then we have a NO-instance and return.
 
 If the algorithm can continue, we can conclude that the optimal solution given the set $S$ must have at least one more element. Thus
-we try to find centres of minimum distance less than $d$ to another column. We shall here call the currently selected minimum 
-distance $h$. We start from zero, and work $h$ up until $d$. Now any remaining columns, whose distance to any centre in $S$, 
-is less then $h$, will be closer to a column currently in $S$ than a new centre, and can therefore be covered by $S$, 
+we try to find centres of minimum distance less than $d$ to another column. We shall here call the currently selected minimum
+distance $h$. We start from zero, and work $h$ up until $d$. Now any remaining columns, whose distance to any centre in $S$,
+is less then $h$, will be closer to a column currently in $S$ than a new centre, and can therefore be covered by $S$,
 removed from $I$, while adjusting the remaining budget $d$ appropriately.
 
 Now, to find the new centre we can either branch or brute force. The efficiency of which is determined by the formula
@@ -405,9 +399,9 @@ for all clusters $j$ in a partition $J_j$ we find the optimal means $s^j$ for th
 a solution when adding $\{s^1,\dots,s^p\}$. If so, return $S$
 
 If however we cannot brute force, then we must branch. We must try all possible vectors $s \in \{0,1\}^m$ whose distance to a remaining column in $I$
-is equal to $h$. We iterate over all the vectors $s$, and recurse by calling r-Means with $S= S\cup\{s\}$. If we find a solution then return it. 
-\textit{Note: the original algorithm paper \cite{fomin_golovach_panolan_2020} specified that the branching should be on permutations using "Agrees with" 
-to limit branching slightly further, which was here skipped for practical reasons.}
+is equal to $h$. We iterate over all the vectors $s$, and recurse by calling r-Means with $S= S\cup\{s\}$. If we find a solution then return it.
+\textit{Note: the original algorithm paper \cite{fomin_golovach_panolan_2020} specified that the branching should be on permutations using "Agrees with"
+    to limit branching slightly further, which was here skipped for practical reasons.}
 
 If no solution is found, we must increase the minimum cost $h$. Though, if $h$ is no longer less than $d$ there cannot be any solution, and we return NO.
 
@@ -418,58 +412,94 @@ centres for each cluster. The sum of distances from any column in $A$ to the clo
 less than or equal to $d$, and the number of centres in $S$ should be less than or equal to $r$.
 
 \subsection{Dynamic programming}
-\label{sec:dynamic-result}
+\label{sec:algo:dynamic-result}
 The original r-means kernelization algorithm by \cite{fomin_golovach_panolan_2020}
-intended for the sub-matrices $L=A_1,\dots,A_s$ produced from the kernel in \mref{sec:algo:kernel} to be \textit{"glued"} together 
-into a single matrix before running the r-means algorithm. However as of \mref{lem:5} then instead of stitching the solution 
+intended for the sub-matrices $L=A_1,\dots,A_s$ produced from the kernel in \mref{sec:algo:kernel} to be \textit{"glued"} together
+into a single matrix before running the r-means algorithm. However as of \mref{lem:5} then instead of stitching the solution
 into a single matrix $A^\prime$ we can run the algorithm multiple times over $A_i$ with increasing parameter $k$,
 save the different possible solutions in a set $H$ \textit{(hypotheses)}, and stitch the solutions in the end. Thus saving
 memory space and allowing the sub-matrices to be run in parallel.
 
 This reconstruction can be described programmatically, but is better described functionally. We define the function $f(k)$ to find
-the a solution of 
+the a solution of
 
 \[ f(k) =
-  \begin{cases}
-    \text{NO - Instance}   & \quad \text{if } (r_1 + \hdots + r_s \geq r+1 ~|~ k_1, \hdots, k_s \leq k) \\
-    \text{YES - Instance}  & \quad \text{if } k \leq r
-  \end{cases}
+    \begin{cases}
+        \text{NO - Instance}  & \quad \text{if } (r_1 + \hdots + r_s \geq r+1 ~|~ k_1, \hdots, k_s \leq k) \\
+        \text{YES - Instance} & \quad \text{if } k \leq r
+    \end{cases}
 \]
 
 As for every $i \in \{1,\dots,s\}$ we have the cases
 \[ f_i(k^\prime) =
     \begin{cases}
-        \text{min \#clusters that can be obtained for} A_i \text{ using at most } k^\prime & \\
-        r+1,  & \quad \text{if \#clusters} > r
+        \text{min \#clusters that can be obtained for} A_i \text{ using at most } k^\prime &                                \\
+        r+1,                                                                               & \quad \text{if \#clusters} > r
     \end{cases}
 \]
 
-We have in \mref{sec:algo:branching} three given the algorithm for finding this with the parameters, hence 
-\[ 
+We have in \mref{sec:algo:branching} three given the algorithm for finding this with the parameters, hence
+\[
     f_i(k^\prime) = \text{Binary r-Means}(I=\{1,\dots, A_{i_n}\}, S = \emptyset, r^\prime, k^\prime).
 \]
 
-Now as equal calls will be made multiple times, we can store the values in a table, and even better, we can store the minimum \#clusters we can achieve in all clusters upp to $i$.
-\[ 
+Now as equal calls will be made multiple times, we can store the values in a table, and even better, we can store the minimum \#clusters we can achieve in all clusters up to $i$.
+\[
     T[i, k^\prime] \rightarrow \text{min \#clusters that can be obtained for the set } \{A_1, \dots, A_i\}, \text{ using at most } k^\prime
 \]
 
 which we can define with the functions $f_i(k^\prime)$ by
 \[
     \begin{tabular}{lcl}
-        $T[1, k^\prime]$ & $=$ & $f_1(k^\prime)$ \\
+        $T[1, k^\prime]$ & $=$ & $f_1(k^\prime)$                                                                                              \\
         $T[i, k^\prime]$ & $=$ & $min\{ min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}, r+1 \}$
     \end{tabular}
 \]
 
 With which we can simplify $f(k)$ into
 \[ f(k) =
-  \begin{cases}
-    \text{NO - Instance}   & \quad \text{if } T[s,k] \geq r+1 \\
-    \text{YES - Instance}  & \quad \text{if } T[s,k] \leq r
-  \end{cases}
+    \begin{cases}
+        \text{NO - Instance}  & \quad \text{if } T[s,k] \geq r+1 \\
+        \text{YES - Instance} & \quad \text{if } T[s,k] \leq r
+    \end{cases}
 \]
 
+\begin{proof}
+    As $r^\prime$ is a sub-solution, we can define it as $r^\prime = T[i, k^\prime]$, such that $r^\prime$ is the min \#clusters
+    that can be obtained for the set $\{A_1, \dots, A_i\}$, using at most $k^\prime$. This creates an inequality, as we know that
+    $T[i, k^\prime] \geq min\{\dots\}$.
+
+    \[
+        r^\prime = T[i, k^\prime] \geq min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}
+    \]
+
+    now given the partial optimal solution $r^\prime$ produced within the cost $k^\prime$, if we divide both variables into two parts
+    such that we have $r_1 + r_2 = r^\prime$ and $k_1 + k_2 = k^\prime$, then we can divide the partial problem in the same way
+    $(A_1,\dots,A_{i-i} + A_i)$, and say that $r_1$ is the minimal \#clusters for $(A_1,\dots,A_{i-i})$ using at most $k_1$, and that $r^\prime$
+    is the minimal \#clusters for $A_i$ by paying at most $k_2$
+
+    \begin{tabular}{rl}
+        $\rightarrow$ &                                                                                       \\
+                      & Thus we have $r_1 \geq T[i-1,k_1]$ and $r_2 \geq f_i(k_2)$. And we re-state that as   \\
+                      & $T[i,k^\prime] = r_1+r_2 \geq t[i-1,k_1]+f_i(k_2) \geq min\{\dots\}$                  \\
+        $\leftarrow$  &                                                                                       \\
+                      & Now using the same assumption that $k_1 + k_2 = k^\prime$ and $r_1 + r_2 = r^\prime$, \\
+                      & we will assume that there exists a solution $k_1,k_2$ such that                       \\
+                      & $min\{\dots\} = T[i-1,k_1] + f_i(k_2)$ which we can restate as                        \\
+                      & $T[i-1,k_1] + f_i(k_2) \geq r_1+r_2 | k_1+k_2 = k^\prime \geq T[i,k^\prime]$
+    \end{tabular}
+\end{proof}
+
+\subsection{Summary}
+Now lets summarize the complete algorithm. 
+
+As first we call the pre-processing algorithm (kernel) in \mref{sec:algo:kernel} 
+on the problem to hopefully reduce the input into smaller inputs $L$. 
+
+Then given these instances $L = \{A_1, \dots, A_i\}$ we can find the minimum solution for any 
+sub-matrix by calling the \textbf{Binary r-Means()} algorithm from \mref{sec:algo:branching}, from within the final 
+dynamic algorithm in \mref{sec:algo:dynamic-result}. The dynamic programming algorithm allows us to store each result, avoid calling 
+the hard method unnecessarily many times, also producing the result for the original initial binary matrix $A$
 
 % % % % % % % % % % % % % % % % %
 %
@@ -609,9 +639,9 @@ For the generation of a matrix used for testing we could use any complete random
 matrix, but to be able to control the result after the completion of the algorithm it is best
 to create more concentrated tests.
 
-By reversing the entire algorithm we can generate a set of \textit{initial vectors} $H$ of length $h$, 
+By reversing the entire algorithm we can generate a set of \textit{initial vectors} $H$ of length $h$,
 which will be the centres, and by picking random vectors from the set $H$ into a new set $S$,
-we will create a new random binary matrix $A$, with a solution of $k=0$, and $r=h$. 
+we will create a new random binary matrix $A$, with a solution of $k=0$, and $r=h$.
 
 By then flipping random bits, we can slightly modify the expected result, mainly
 the $k$ parameter. By flipping $d$ bits in $A$, we will still have a solvable matrix
@@ -667,10 +697,10 @@ also used to combine the running width and height to compare the runtimes of the
 First off, let us recall that we defined the variables as such
 \[
     \begin{tabular}{lll}
-        $h$ & $\rightarrow$ & \textit{\#initial clusters} used to generate the random binary matrices \\
+        $h$ & $\rightarrow$ & \textit{\#initial clusters} used to generate the random binary matrices         \\
         $d$ & $\rightarrow$ & \textit{\#random-bit-flips} performed on the randomly generated binary matrices \\
-        $r$ & $\rightarrow$ & the initial parameter $r$ that was given to the algorithm \\
-        $k$ & $\rightarrow$ & the initial parameter $k$ that was given to the algorithm \\
+        $r$ & $\rightarrow$ & the initial parameter $r$ that was given to the algorithm                       \\
+        $k$ & $\rightarrow$ & the initial parameter $k$ that was given to the algorithm                       \\
     \end{tabular}
 \]
 
@@ -804,7 +834,7 @@ By the performance seen during testing, it appears as if the algorithm behaves a
 dependency on the input-matrix, and a much greater dependency on the given parameters $r$ and $k$.
 
 However, it becomes apparent that this algorithm is in NP, as although inconceivably better than a brute-force
-implementation, it still has a noticeable runtime, which can stretch from several minutes to hours even for small instances. 
+implementation, it still has a noticeable runtime, which can stretch from several minutes to hours even for small instances.
 Thus the question of the algorithms viability still stands.
 
 As for minor implementations of small matrices with little noise, and small parameters, it can be used on smaller devices,
@@ -843,9 +873,9 @@ The hardware in the testing computers is of old technology. The average performa
 is promised by the manufacturer, and newer technology does on average have better performance. Also the writer
 was made aware during testing that there existed a dispute on the processor technology in use for \mref{sec:computer};
 namely the "AMD FX-8350" processor, where it was determined that it is in actuality not an 8-core, but 4-core.
-\cite{dickey_v._advanced_micro_devices:inc._2015,dickey_v._advanced_micro_devices:inc._2020,chaim_gartenberg_2019}. This 
-has most likely impacted the accuracy of the runtime somewhat, when more than 4 test were running simultaneously on 
-the affected machine. However isolating the machine shows much of the same trends, but unfortunately holds to few test-cases to 
+\cite{dickey_v._advanced_micro_devices:inc._2015,dickey_v._advanced_micro_devices:inc._2020,chaim_gartenberg_2019}. This
+has most likely impacted the accuracy of the runtime somewhat, when more than 4 test were running simultaneously on
+the affected machine. However isolating the machine shows much of the same trends, but unfortunately holds to few test-cases to
 be conclusive on it's own.
 
 While the algorithm and it's implementation could theoretically be improved, the dataset used for testing was only
