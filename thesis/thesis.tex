@@ -31,22 +31,21 @@ empty
 In the \cite{fomin_golovach_panolan_2020} paper, the authors gave an exact parameterized
 algorithm for the Binary r-Means clustering problem, parameterized by $k+r$, with the runtime of
 $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$. The problem of Binary r-Means takes as input
-an $n \times m$ binary matrix \textbf{A} with columns ($\textbf{a}^1,...,\textbf{a}^n$), a positive
-integer $\textbf{r}$ and a nonnegative integer $\textbf{k}$.
-The task is then to decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq \textbf{r}$,
-a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of $\{1,...,n\}$ and vectors
-$(\textbf{c}^1,...,\textbf{c}^{r\sp{\prime}}) \in \{0,1\}^m$ such that
-$\sum_{i = 1}^{r\sp{\prime}} \sum_{j \in I_i} d_H(c^i, a^j) \leq k $.
 
-As the Binary r-Means problem is in the NP space, no other viable exact algorithm is currently known. Still due to
-the nature of NP-algorithms complexity, its performance as a practical implementation is not yet known.
-A proof of concept version of the algorithm was therefore implemented and tested against randomly generated binary matrices,
-as to measure its performance on a standard desk-top computer.
+an $n \times m$ binary matrix \textbf{A} with columns ($\textbf{a}^1,...,\textbf{a}^n$), a positive 
+integer $\textbf{r}$ and a nonnegative integer $\textbf{k}$. 
+The task is then to decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq \textbf{r}$, 
+a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of $\{1,...,n\}$ and vectors 
+$(\textbf{c}^1,...,\textbf{c}^{r\sp{\prime}}) \in \{0,1\}^m$ such that 
+$\sum_{i = 1}^{r\sp{\prime}} \sum_{j \in I_i} d_H(c^i, a^j) \leq k $, where $d_H$ is the Hamming distance.
 
-The results show that even a sub-optimal implementation is inconceivably better than a brute force, and
-viable with small parameters, while for data-mining greater resources and time could open for more use cases. More
-research is needed, but the results are promising.
+As the Binary r-Means problem is NP-complete, we cannot expect an algorithm in polynomial time. Therefore its performance 
+as a practical implementation should be evaluated manually in detail, before we make any conclusions about it's viability.
+An implementation of the algorithm was therefore developed and tested against randomly generated binary matrices, 
+as to measure its performance on a standard desk-top computer. 
 
+The results show that even a sub-optimal implementation is inconceivably better than a brute force, and 
+viable with small parameters.
 
 \newpage
 
