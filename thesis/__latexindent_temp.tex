@@ -20,49 +20,7 @@
 %	Acknowledgements
 %
 \section*{Acknowledgements}
-There are no words that can express my appreciation to all those who has supported me during this thesis,
-and all the challenges the world has faced. I'd love to list every singe one by name, but I'm afraid I'd never
-finish if I did. You all know I have never been good with names, so please assume ignorance, not malice. And
-know, that no matter how long since we last spoke, I like to think my friends are for life, so please give me 
-a call.
-
-\hfill
-
-In no particular order;
-
-To all my friends and family, thank you for being my advisors, my fellow procrastinators, my personal trainers, 
-my live entertainers, and my private tutors.
-
-To my old favorite teachers, you're the reason I could even start my degree. You did so much for so many, and 
-you might not even remember, but you saw me for who I was, not just another student. Jorn Hafver, you taught 
-me once, how to find an interest in absolutely anything, and you told me all the secrets on how to manage and 
-customize my degree before I even knew what I wanted to do. Roy Olav Høynes, you once "threw" me out of class, 
-2 weeks before the exam. You said with a smile that I was "demotivating others" by "answering all the questions", 
-so you gave me a list of extra work, and told me not to be back before the exam. From that day, I knew what 
-I wanted to do.
-
-To all my collages in TF, and especially my team, so many times have you given me advice applicable to my 
-thesis without any idea that you did. Simply by working with you, you kept giving me ideas, 
-even before I knew I needed them. You have, what can only be described as an aura, of knowledge and information around you guys.
-
-To my previous colleagues in SBanken, you're a major reason I wanted to work for a higher degree in the first place,
-and so many of you advised me to continue studying, even with the temptation of a full-time position. 
-If you read this, you're allowed to say it, yes you did tell me so. No, you may not re-roll that stealth-check; 
-now everyone, roll initiative.
-
-To my unintentional "mini supervisor"; Martin Vatshelle. I do not know where you find the time, or how you manage
-to cover all the work you do, and still manage to tutor me in other courses. Somehow you always seem to have the time 
-to help anyone and everyone, your students or not, at work or late sundays. You can't possibly know, just how indispensable
-your help has been, and how much your time is appreciated.
-
-To my supervisor Petr A. Golovach; Even though supervision is an expected part of the job, there are simply some of you that 
-makes it seem like it's your true calling in life. You have been the single stable entity, the point of origin, keeping me on
-track, even when the entire world froze. You have always went out of your way, and have demonstrated a patience I would not 
-think humanly possible. You once asked me if I wanted a task to complete, or a task from which I would learn. I'm glad I did 
-choose the latter, because you helped me achieve, what I thought I could not.
-
-Lastly, to my better half and manager, Ingrid Johansen; You never seem to fail in making my days better.
-
+empty
 \newpage
 
 % % % % % % % % % % % % % % % % %
@@ -231,16 +189,8 @@ of the universe. The algorithm from the paper \cite{fomin_golovach_panolan_2020}
 runtime of $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$; placing the algorithm in the FPT class, which is
 much closer to the runtime we might expect from normal computers.
 
-\subsection{Related work}
-The Binary r-means problem was believed to be NP-complete and was proven to be so for 
-$r \geq 2$ in \cite{FeigeUriel2014Noh2}. Still some research has been done to find PTAS (Polynomial 
-time approximation schemes) for this, and much more so for the similar, well known problem of k-means clustering.
-The resent paper \cite{FominFedor2020ASfL}, provides a randomized linear time approximation scheme for clustering 
-binary vectors.
-
-In the paper \cite[Theorem 4]{fomin_golovach_panolan_2020}, they show that Binary r-means is FPT
-when parameterized only by $k$, but yields a runtime of $2^{\mathcal{O}(k log k)}*nm$.
-
+\subsection{Previous results}
+to be done
 
 \subsection{Overview}
 The thesis is organized as follows. In \mref{sec:prelim} the most basic notations and definitions which will be used in
@@ -474,62 +424,56 @@ For every $i \in \{1,\dots,s\}$ and $0 \leq k^\prime \leq k$, we define
     \end{cases}
 \]
 
-We have in \mref{sec:algo:branching} given the algorithm for finding the min \#clusters that can be obtained for $A_i$,
-using at most budget $k^\prime$. Thus $f_i(k^\prime)$ makes use of Binary r-Means()
-with $0 \leq d \leq k^\prime$, and $1 \leq r^\prime \leq r$.
-
-Using the tables of values from $f_i(k^\prime)$, we define the table $T[i,k^\prime]$, where the elements are defined as follows
+We have in \mref{sec:algo:branching} three given the algorithm for finding this with the parameters, hence
 \[
-    \begin{split}
-        T[i, k^\prime] \rightarrow \text{min \#clusters that can be obtained for the set of sub-matrices } \{A_1, \dots, A_i\}, \\
-        \text{ using at most budget } k^\prime
-    \end{split}
+    f_i(k^\prime) = \text{Binary r-Means}(I=\{1,\dots, A_{i_n}\}, S = \emptyset, r^\prime, k^\prime).
 \]
 
-Which we can define with the functions $f_i(k^\prime)$
+Now as equal calls will be made multiple times, we can store the values in a table, and even better, we can store the minimum \#clusters we can achieve in all clusters up to $i$.
 \[
-    \begin{tabular}{lclc}
-        $T[1, k^\prime]$ & $=$ & $f_1(k^\prime)$ &                                                                                              \\
-        $T[i, k^\prime]$ & $=$ & $min\{ min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}, r+1 \}$ & (1)
+    T[i, k^\prime] \rightarrow \text{min \#clusters that can be obtained for the set } \{A_1, \dots, A_i\}, \text{ using at most } k^\prime
+\]
+
+which we can define with the functions $f_i(k^\prime)$ by
+\[
+    \begin{tabular}{lcl}
+        $T[1, k^\prime]$ & $=$ & $f_1(k^\prime)$                                                                                              \\
+        $T[i, k^\prime]$ & $=$ & $min\{ min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}, r+1 \}$
     \end{tabular}
 \]
 
-As soon as the table $T[s,k]$ is complete, then $(A,k,r)$ is a YES instance if $T[s,k] \leq r$
+With which we can simplify $f(k)$ into
+\[ f(k) =
+    \begin{cases}
+        \text{NO - Instance}  & \quad \text{if } T[s,k] \geq r+1 \\
+        \text{YES - Instance} & \quad \text{if } T[s,k] \leq r
+    \end{cases}
+\]
 
-\begin{theoremlemma}{\label{lem:reconst}}
-    The recurrence in $(1)$ correctly computes the values of $T[i,k^\prime]$
-\end{theoremlemma}
+\begin{proof}
+    As $r^\prime$ is a sub-solution, we can define it as $r^\prime = T[i, k^\prime]$, such that $r^\prime$ is the min \#clusters
+    that can be obtained for the set $\{A_1, \dots, A_i\}$, using at most $k^\prime$. This creates an inequality, as we know that
+    $T[i, k^\prime] \geq min\{\dots\}$.
 
-\begin{proof}{(\Mref{lem:reconst})}
-    For $i=1$ (1) holds by the definition of $T[1,k^\prime]$ and $f_1(k^\prime)$
+    \[
+        r^\prime = T[i, k^\prime] \geq min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}
+    \]
 
-    Let then $i \geq 2$ and assume that (1) holds for all lesser values of $i$. We show $(1)$
-    by proving two inequalities. First we show that 
+    now given the partial optimal solution $r^\prime$ produced within the cost $k^\prime$, if we divide both variables into two parts
+    such that we have $r_1 + r_2 = r^\prime$ and $k_1 + k_2 = k^\prime$, then we can divide the partial problem in the same way
+    $(A_1,\dots,A_{i-i} + A_i)$, and say that $r_1$ is the minimal \#clusters for $(A_1,\dots,A_{i-i})$ using at most $k_1$, and that $r^\prime$
+    is the minimal \#clusters for $A_i$ by paying at most $k_2$
 
-    $T[i, k^\prime] \geq min\{ min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}, r+1 \}$
-    
-    then that
-
-    $T[i, k^\prime] \leq min\{ min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}, r+1 \}$
-
-    \hfill
-
-    For all $i$, let $l_i = \{A_1, ..., A_{i}\}$ be the set of sub-matrices from $1$ to $i$
-    
-    \noindent\rule{\textwidth}{1pt}
-    $T[i, k^\prime] \geq min\{\dots\}$
-
-    Let $r_1$ be a solution to $l_{i-1}$, $r_2$ be a solution to $A_i$, $k_1$ be the cost of $r_1$, and $k_2$ be the cost
-    of $r_2$.Thus we have $r_1 \geq T[i-1,k_1]$ and $r_2 \geq f_i(k_2)$ and thereby
-    $r^\prime = T[i,k^\prime] = r_1+r_2 \geq T[i-1,k_1] + f_i(k_2) | k_1+k_2 = k^\prime$
-    
-    \noindent\rule{\textwidth}{1pt}
-    $T[i, k^\prime] \leq min\{\dots\}$
-
-    Let $k_1$ be the cost of a solution $r_1$ for $l_{i-1}$, and $k_2$ be the cost of a solution to $A_i$. Then 
-    $r_1 = T[i-1,k_1]$ and $r_2 = f_i(k_2)$, from which we can conclude that
-    $T[i-1,k_1] + f_i(k_2) = r_1+r_2 \geq T[i,k^\prime] | k_1+k_2 = k^\prime$
-    
+    \begin{tabular}{rl}
+        $\rightarrow$ &                                                                                       \\
+                      & Thus we have $r_1 \geq T[i-1,k_1]$ and $r_2 \geq f_i(k_2)$. And we re-state that as   \\
+                      & $T[i,k^\prime] = r_1+r_2 \geq t[i-1,k_1]+f_i(k_2) \geq min\{\dots\}$                  \\
+        $\leftarrow$  &                                                                                       \\
+                      & Now using the same assumption that $k_1 + k_2 = k^\prime$ and $r_1 + r_2 = r^\prime$, \\
+                      & we will assume that there exists a solution $k_1,k_2$ such that                       \\
+                      & $min\{\dots\} = T[i-1,k_1] + f_i(k_2)$ which we can restate as                        \\
+                      & $T[i-1,k_1] + f_i(k_2) \geq r_1+r_2 | k_1+k_2 = k^\prime \geq T[i,k^\prime]$
+    \end{tabular}
 \end{proof}
 
 \subsection{Summary}
@@ -541,12 +485,7 @@ on the problem to hopefully reduce the input into smaller inputs $L$.
 Then given these instances $L = \{A_1, \dots, A_i\}$ we can find the minimum solution for any 
 sub-matrix by calling the \textbf{Binary r-Means()} algorithm from \mref{sec:algo:branching}, from within the final 
 dynamic algorithm in \mref{sec:algo:dynamic-result}. The dynamic programming algorithm allows us to store each result, avoid calling 
-the hard method unnecessarily many times, also producing the result for the original initial binary matrix $A$.
-
-From the following theorem we also have the complete algorithms runtime.
-\begin{theoremth}{\cite[Theorem 5]{fomin_golovach_panolan_2020}}
-    \\Binary r-Means is solvable in $2^\mathcal{O}(\sqrt{r k log(k+r) log r})* n m$ time.
-\end{theoremth}
+the hard method unnecessarily many times, also producing the result for the original initial binary matrix $A$
 
 % % % % % % % % % % % % % % % % %
 %
