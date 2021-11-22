@@ -56,12 +56,13 @@ to help anyone and everyone, your students or not, at work or late sundays. You 
 your help has been, and how much your time is appreciated.
 
 To my supervisor Petr A. Golovach; Even though supervision is an expected part of the job, there are simply some of you that 
-makes it seem like it's your true calling in life. You have been the single stable entity, the point of origin, keeping me on
+make it seem like it's your entire job. You have been the single stable entity, the point of origin, keeping me on
 track, even when the entire world froze. You have always went out of your way, and have demonstrated a patience I would not 
 think humanly possible. You once asked me if I wanted a task to complete, or a task from which I would learn. I'm glad I did 
 choose the latter, because you helped me achieve, what I thought I could not.
 
-Lastly, to my better half and manager, Ingrid Johansen; You never seem to fail in making my days better.
+Lastly, to my better half, life-manager, and girlfriend, Ingrid Johansen; You never seem to fail in making my days better. You have
+not shown me anything but utter support, and believed in me when I felt I could not. I can't imagine doing this without you.
 
 \newpage
 
@@ -233,14 +234,17 @@ much closer to the runtime we might expect from normal computers.
 
 \subsection{Related work}
 The Binary r-means problem was believed to be NP-complete and was proven to be so for 
-$r \geq 2$ in \cite{FeigeUriel2014Noh2}. Still some research has been done to find PTAS (Polynomial 
-time approximation schemes) for this, and much more so for the similar, well known problem of k-means clustering.
-The resent paper \cite{FominFedor2020ASfL}, provides a randomized linear time approximation scheme for clustering 
-binary vectors.
+$r \geq 2$ in \cite{FeigeUriel2014Noh2}. Research for exist PTAS (Polynomial 
+time approximation schemes) for this, and for a similar, well known problem called k-means clustering,
+as in \cite{KumarAmit2010Lasf}. The resent paper \cite{FominFedor2020ASfL}, provides for instance, 
+a randomized linear time approximation scheme for clustering binary vectors.
 
 In the paper \cite[Theorem 4]{fomin_golovach_panolan_2020}, they show that Binary r-means is FPT
-when parameterized only by $k$, but yields a runtime of $2^{\mathcal{O}(k log k)}*nm$.
+when parameterized only by $k$, but yields a runtime of $2^{\mathcal{O}(k log k)}*nm$, with other related 
+problems.
 
+Thus, excluding brute-force, it does not currently appear to be any exact algorithm for 
+Binary r-Means except those in \cite{fomin_golovach_panolan_2020}.
 
 \subsection{Overview}
 The thesis is organized as follows. In \mref{sec:prelim} the most basic notations and definitions which will be used in
@@ -248,7 +252,8 @@ later sections are stated. Then \mref{sec:algo} introduces the algorithms implem
 explains how they work in some detail. \Mref{sec:impl} presents all the tools used in this paper, and states which
 custom objects were defined and used in the actual implementation. After that \mref{sec:testing} details how the
 testing was designed and run, how the data was stored, processed and analysed, before detailing the results. Finally
-in \mref{sec:conclusion} we have the conclusion, and a suggestion for further work.
+in \mref{sec:conclusion} we have the conclusion, and a suggestion for further work. The entire work and results is 
+based on the code available at \cite{github:codebase}.
 
 % % % % % % % % % % % % % % % % %
 %
