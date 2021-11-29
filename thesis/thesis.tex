@@ -23,42 +23,42 @@
 There are no words that can express my appreciation to all those who has supported me during this thesis,
 and all the challenges the world has faced. I'd love to list every singe one by name, but I'm afraid I'd never
 finish if I did. You all know I have never been good with names, so please assume ignorance, not malice. And
-know, that no matter how long since we last spoke, I like to think my friends are for life, so please give me 
+know, that no matter how long since we last spoke, I like to think my friends are for life, so please give me
 a call.
 
 \hfill
 
 In no particular order;
 
-To all my friends and family, thank you for being my advisors, my fellow procrastinators, my personal trainers, 
+To all my friends and family, thank you for being my advisors, my fellow procrastinators, my personal trainers,
 my live entertainers, and my private tutors.
 
-To my old favorite teachers, you're the reason I could even start my degree. You did so much for so many, and 
-you might not even remember, but you saw me for who I was, not just another student. Jorn Hafver, you taught 
-me once, how to find an interest in absolutely anything, and you told me all the secrets on how to manage and 
-customize my degree before I even knew what I wanted to do. Roy Olav Høynes, you once "threw" me out of class, 
-2 weeks before the exam. You said with a smile that I was "demotivating others" by "answering all the questions", 
-so you gave me a list of extra work, and told me not to be back before the exam. From that day, I knew what 
+To my old favourite teachers, you're the reason I could even start my degree. You did so much for so many, and
+you might not even remember, but you saw me for who I was, not just another student. Jørn Hafver, you taught
+me once, how to find an interest in absolutely anything, and you told me all the secrets on how to manage and
+customize my degree before I even knew what I wanted to do. Roy Olav Høynes, you once "threw" me out of class,
+2 weeks before the exam. You said with a smile that I was "demotivating others" by "answering all the questions",
+so you gave me a list of extra work, and told me not to be back before the exam. From that day, I knew what
 I wanted to do.
 
-To all my collages in TF, and especially my team, so many times have you given me advice applicable to my 
-thesis without any idea that you did. Simply by working with you, you kept giving me ideas, 
+To all my collages in TF, and especially my team, so many times have you given me advice applicable to my
+thesis without any idea that you did. Simply by working with you, you kept giving me ideas,
 even before I knew I needed them. You have, what can only be described as an aura, of knowledge and information around you guys.
 
 To my previous colleagues in SBanken, you're a major reason I wanted to work for a higher degree in the first place,
-and so many of you advised me to continue studying, even with the temptation of a full-time position. 
-If you read this, you're allowed to say it, yes you did tell me so. No, you may not re-roll that stealth-check; 
+and so many of you advised me to continue studying, even with the temptation of a full-time position.
+If you read this, you're allowed to say it, yes you did tell me so. No, you may not re-roll that stealth-check;
 now everyone, roll initiative.
 
 To my unintentional "mini supervisor"; Martin Vatshelle. I do not know where you find the time, or how you manage
-to cover all the work you do, and still manage to tutor me in other courses. Somehow you always seem to have the time 
-to help anyone and everyone, your students or not, at work or late sundays. You can't possibly know, just how indispensable
+to cover all the work you do, and still manage to tutor me in other courses. Somehow you always seem to have the time
+to help anyone and everyone, your students or not, at work or late Sundays. You can't possibly know, just how indispensable
 your help has been, and how much your time is appreciated.
 
-To my supervisor Petr A. Golovach; Even though supervision is an expected part of the job, there are simply some of you that 
+To my supervisor Petr A. Golovach; Even though supervision is an expected part of the job, there are simply some of you that
 make it seem like it's your entire job. You have been the single stable entity, the point of origin, keeping me on
-track, even when the entire world froze. You have always went out of your way, and have demonstrated a patience I would not 
-think humanly possible. You once asked me if I wanted a task to complete, or a task from which I would learn. I'm glad I did 
+track, even when the entire world froze. You have always went out of your way, and have demonstrated a patience I would not
+think humanly possible. You once asked me if I wanted a task to complete, or a task from which I would learn. I'm glad I did
 choose the latter, because you helped me achieve, what I thought I could not.
 
 Lastly, to my better half, life-manager, and girlfriend, Ingrid Johansen; You never seem to fail in making my days better. You have
@@ -75,19 +75,19 @@ In the \cite{fomin_golovach_panolan_2020} paper, the authors gave an exact param
 algorithm for the Binary r-Means clustering problem, parameterized by $k+r$, with the runtime of
 $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$. The problem of Binary r-Means takes as input
 
-an $n \times m$ binary matrix \textbf{A} with columns ($\textbf{a}^1,...,\textbf{a}^n$), a positive 
-integer $\textbf{r}$ and a nonnegative integer $\textbf{k}$. 
-The task is then to decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq \textbf{r}$, 
-a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of $\{1,...,n\}$ and vectors 
-$(\textbf{c}^1,...,\textbf{c}^{r\sp{\prime}}) \in \{0,1\}^m$ such that 
+an $n \times m$ binary matrix \textbf{A} with columns ($\textbf{a}^1,...,\textbf{a}^n$), a positive
+integer $\textbf{r}$ and a nonnegative integer $\textbf{k}$.
+The task is then to decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq \textbf{r}$,
+a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of $\{1,...,n\}$ and vectors
+$(\textbf{c}^1,...,\textbf{c}^{r\sp{\prime}}) \in \{0,1\}^m$ such that
 $\sum_{i = 1}^{r\sp{\prime}} \sum_{j \in I_i} d_H(c^i, a^j) \leq k $, where $d_H$ is the Hamming distance.
 
-As the Binary r-Means problem is NP-complete, we cannot expect an algorithm in polynomial time. Therefore its performance 
+As the Binary r-Means problem is NP-complete, we cannot expect an algorithm in polynomial time. Therefore its performance
 as a practical implementation should be evaluated manually in detail, before we make any conclusions about it's viability.
-An implementation of the algorithm was therefore developed and tested against randomly generated binary matrices, 
-as to measure its performance on a standard desk-top computer. 
+An implementation of the algorithm was therefore developed and tested against randomly generated binary matrices,
+as to measure its performance on a standard desk-top computer.
 
-The results show that even a sub-optimal implementation is inconceivably better than a brute force, and 
+The results show that even a sub-optimal implementation is inconceivably better than a brute force, and
 viable with small parameters.
 
 \newpage
@@ -233,17 +233,17 @@ runtime of $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$; placing the algorithm
 much closer to the runtime we might expect from normal computers.
 
 \subsection{Related work}
-The Binary r-means problem was believed to be NP-complete and was proven to be so for 
-$r \geq 2$ in \cite{FeigeUriel2014Noh2}. Research for exist PTAS (Polynomial 
+The Binary r-means problem was believed to be NP-complete and was proven to be so for
+$r \geq 2$ in \cite{FeigeUriel2014Noh2}. Research for exist PTAS (Polynomial
 time approximation schemes) for this, and for a similar, well known problem called k-means clustering,
-as in \cite{KumarAmit2010Lasf}. The resent paper \cite{FominFedor2020ASfL}, provides for instance, 
+as in \cite{KumarAmit2010Lasf}. The resent paper \cite{FominFedor2020ASfL}, provides for instance,
 a randomized linear time approximation scheme for clustering binary vectors.
 
 In the paper \cite[Theorem 4]{fomin_golovach_panolan_2020}, they show that Binary r-means is FPT
-when parameterized only by $k$, but yields a runtime of $2^{\mathcal{O}(k log k)}*nm$, with other related 
+when parameterized only by $k$, but yields a runtime of $2^{\mathcal{O}(k log k)}*nm$, with other related
 problems.
 
-Thus, excluding brute-force, it does not currently appear to be any exact algorithm for 
+Thus, excluding brute-force, it does not currently appear to be any exact algorithm for
 Binary r-Means except those in \cite{fomin_golovach_panolan_2020}.
 
 \subsection{Overview}
@@ -252,7 +252,7 @@ later sections are stated. Then \mref{sec:algo} introduces the algorithms implem
 explains how they work in some detail. \Mref{sec:impl} presents all the tools used in this paper, and states which
 custom objects were defined and used in the actual implementation. After that \mref{sec:testing} details how the
 testing was designed and run, how the data was stored, processed and analysed, before detailing the results. Finally
-in \mref{sec:conclusion} we have the conclusion, and a suggestion for further work. The entire work and results is 
+in \mref{sec:conclusion} we have the conclusion, and a suggestion for further work. The entire work and results is
 based on the code available at \cite{github:codebase}.
 
 % % % % % % % % % % % % % % % % %
@@ -370,14 +370,14 @@ proposed to be $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$.
 
 \subsection{Kernelization}
 \label{sec:algo:kernel}
-The goal of the preprocessing algorithm is to reduce the input matrix by following certain reduction steps
+The goal of the pre processing algorithm is to reduce the input matrix by following certain reduction steps
 based on the two parameters $k$ and $r$, running in polynomial time over the input size, here ($n \times m$).
 
 Designing the algorithm it should require an $n \times m$ binary matrix A. And the two parameters $r > 0$ limiting the
 maximum number of clusters, and $k \geq 0$ limiting the cost of all total distances. By \mref{def:kernelization}, it must
-produce an equivalent problem. However, the way we will construct this algorithm, it instead outputs several small 
-matrices $L={A_1,\dots,A_s}$, which can be clustered separately, but whose separate solutions produce a combined solution if and only if the original 
-matrix $A$ has such a solution with the same $r$ and $k$. Hence acting like a turing kernel as in \mref{def:turing-kernelization}.
+produce an equivalent problem. However, the way we will construct this algorithm, it instead outputs several small
+matrices $L={A_1,\dots,A_s}$, which can be clustered separately, but whose separate solutions produce a combined solution if and only if the original
+matrix $A$ has such a solution with the same $r$ and $k$. Hence acting like a Turing kernel as in \mref{def:turing-kernelization}.
 
 The first observation is that if there are more than $k+r$ distinct columns, there can not be a solution, so we can simply return NO.
 Therefore as a start we partition the columns into clusters of equal columns $I = {I_1, \dots, I_t}$ and test if $t \ge k+r$.
@@ -417,7 +417,7 @@ All this is in fact explained by the following lemma
 \input{algorithms/kernel.tex}
 
 From \mref{lem:5} we know that a combination of the solutions of the
-individual sub-matrices in $L$ should produce a solution for the initial binary matrix $A$ if and only if $A$ has such a solution, 
+individual sub-matrices in $L$ should produce a solution for the initial binary matrix $A$ if and only if $A$ has such a solution,
 thus we actually have a \mref{def:turing-kernelization}.
 The papers original pseudo-code \cite{fomin_golovach_panolan_2020} gives an algorithm to create a substitute matrix "gluing" together these clusters into
 one single matrix, but as they can be processed individually, we will do that instead.
@@ -428,8 +428,8 @@ Now from the kernel in \mref{alg:kernel} we are given a list $L$ of sub-matrices
 shall look at the main step of the algorithm; the Binary r-Means, recursive branching algorithm.
 
 By the recursive nature, the input should consist of a set of indices $I \subseteq \{1,2,\dots,n\}$ referencing un-clustered
-columns from $A_i$, and a set $S$ with the already selected centres. We also need the parameters $k$ and $r$. Initially 
-$S := \emptyset$, and $I := \{1,2,\dots,n\}$. We also expect to see a change in the parameter $k$, so we will rename it to 
+columns from $A_i$, and a set $S$ with the already selected centres. We also need the parameters $k$ and $r$. Initially
+$S := \emptyset$, and $I := \{1,2,\dots,n\}$. We also expect to see a change in the parameter $k$, so we will rename it to
 $d$ as to represent the current available cost.
 
 For each recursion, we must check weather the branch has either produced a solution, or exceeded the parameters allowed. We know that
@@ -475,7 +475,7 @@ For every $i \in \{1,\dots,s\}$ and $0 \leq k^\prime \leq k$, we define
 \[ f_i(k^\prime) =
     \begin{cases}
         \text{min \#clusters that can be obtained for} A_i \text{ using at most budget } k^\prime &                                \\
-        r+1,                                                                               & \quad \text{if \#clusters} > r
+        r+1,                                                                                      & \quad \text{if \#clusters} > r
     \end{cases}
 \]
 
@@ -494,7 +494,7 @@ Using the tables of values from $f_i(k^\prime)$, we define the table $T[i,k^\pri
 Which we can define with the functions $f_i(k^\prime)$
 \[
     \begin{tabular}{lclc}
-        $T[1, k^\prime]$ & $=$ & $f_1(k^\prime)$ &                                                                                              \\
+        $T[1, k^\prime]$ & $=$ & $f_1(k^\prime)$                                                                                              &     \\
         $T[i, k^\prime]$ & $=$ & $min\{ min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}, r+1 \}$ & (1)
     \end{tabular}
 \]
@@ -509,10 +509,10 @@ As soon as the table $T[s,k]$ is complete, then $(A,k,r)$ is a YES instance if $
     For $i=1$ (1) holds by the definition of $T[1,k^\prime]$ and $f_1(k^\prime)$
 
     Let then $i \geq 2$ and assume that (1) holds for all lesser values of $i$. We show $(1)$
-    by proving two inequalities. First we show that 
+    by proving two inequalities. First we show that
 
     $T[i, k^\prime] \geq min\{ min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}, r+1 \}$
-    
+
     then that
 
     $T[i, k^\prime] \leq min\{ min\{ T[ i-1, k_1 ] + f_i(k_2) ~|~ k_1 + k_2 = k^\prime \text{~and~} k_1 \wedge k_2 \geq 0\}, r+1 \}$
@@ -520,32 +520,32 @@ As soon as the table $T[s,k]$ is complete, then $(A,k,r)$ is a YES instance if $
     \hfill
 
     For all $i$, let $l_i = \{A_1, ..., A_{i}\}$ be the set of sub-matrices from $1$ to $i$
-    
+
     \noindent\rule{\textwidth}{1pt}
     $T[i, k^\prime] \geq min\{\dots\}$
 
     Let $r_1$ be a solution to $l_{i-1}$, $r_2$ be a solution to $A_i$, $k_1$ be the cost of $r_1$, and $k_2$ be the cost
     of $r_2$.Thus we have $r_1 \geq T[i-1,k_1]$ and $r_2 \geq f_i(k_2)$ and thereby
     $r^\prime = T[i,k^\prime] = r_1+r_2 \geq T[i-1,k_1] + f_i(k_2) | k_1+k_2 = k^\prime$
-    
+
     \noindent\rule{\textwidth}{1pt}
     $T[i, k^\prime] \leq min\{\dots\}$
 
-    Let $k_1$ be the cost of a solution $r_1$ for $l_{i-1}$, and $k_2$ be the cost of a solution to $A_i$. Then 
+    Let $k_1$ be the cost of a solution $r_1$ for $l_{i-1}$, and $k_2$ be the cost of a solution to $A_i$. Then
     $r_1 = T[i-1,k_1]$ and $r_2 = f_i(k_2)$, from which we can conclude that
     $T[i-1,k_1] + f_i(k_2) = r_1+r_2 \geq T[i,k^\prime] | k_1+k_2 = k^\prime$
-    
+
 \end{proof}
 
 \subsection{Summary}
-Now lets summarize the complete algorithm. 
+Now lets summarize the complete algorithm.
 
-As first we call the pre-processing algorithm (kernel) in \mref{sec:algo:kernel} 
-on the problem to hopefully reduce the input into smaller inputs $L$. 
+As first we call the pre-processing algorithm (kernel) in \mref{sec:algo:kernel}
+on the problem to hopefully reduce the input into smaller inputs $L$.
 
-Then given these instances $L = \{A_1, \dots, A_i\}$ we can find the minimum solution for any 
-sub-matrix by calling the \textbf{Binary r-Means()} algorithm from \mref{sec:algo:branching}, from within the final 
-dynamic algorithm in \mref{sec:algo:dynamic-result}. The dynamic programming algorithm allows us to store each result, avoid calling 
+Then given these instances $L = \{A_1, \dots, A_i\}$ we can find the minimum solution for any
+sub-matrix by calling the \textbf{Binary r-Means()} algorithm from \mref{sec:algo:branching}, from within the final
+dynamic algorithm in \mref{sec:algo:dynamic-result}. The dynamic programming algorithm allows us to store each result, avoid calling
 the hard method unnecessarily many times, also producing the result for the original initial binary matrix $A$.
 
 From the following theorem we also have the complete algorithms runtime.
