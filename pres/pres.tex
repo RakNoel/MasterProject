@@ -9,18 +9,160 @@
 \begin{document}
 \frame{\titlepage}
 
-\begin{frame}
-  \frametitle{Demonstrating large fonts}
+\section{Introduction}
+\subsection{Clustering}
 
-  In this slide, some important text will be
-  \alert{highlighted} because it's important.
-  Please, don't abuse it.
+\begin{frame}
+  \begin{block}{Clustering}
+    Collecting objects into groups by, \textit{s.t.} each object is \textit{closer}
+    to the objects in the same group, than those in other groups, by some measure.
+  \end{block}
+
+  In itself, it is mainly a concept, and there exist several different types. Still
+  it is the main task in several forms of statistical data-analysis, data mining and
+  maybe most commonly known machine-learning.
+
+  Here we will be talking about a specific \alert{centroid-based clustering} algorithm.
 \end{frame}
 
 \begin{frame}
-  \begin{block}{Remark}
-    Sample text
+  \begin{block}{Centroid-based clustering}
+    A form of clustering where we produce or select a single object, not necessarily
+    from the original data-set, to represent each cluster.
   \end{block}
+
+  In other terms, instead of producing these groups \textit{(e.g. clusters)}, we will
+  from these groups find a \textit{center} or \textit{average}. Thus maybe even
+  ignoring the original data from that point on.
+\end{frame}
+
+\begin{frame}
+  \begin{figure}
+    \centering
+    \includegraphics[height=0.75\textheight]{figures/1024px-KMeans-density-data.svg.png}
+    \caption{By Chire - Own work, CC BY-SA 3.0, \url{https://commons.wikimedia.org/w/index.php?curid=17085333}}
+  \end{figure}
+\end{frame}
+
+\subsection{Binary data}
+\begin{frame}
+  The data we will be using is \alert{binary vectors}, which will be
+  clustered by their \alert{Hamming distance}, noted by $d_H(x,y)$.
+
+  \begin{block}{Hamming distance}
+    The Hamming distance between two binary vectors $x,y \in \{0,1\}^m$
+    where $x=(x_1,...,x_m)^T$ and $y=(y_1,...,y_m)^T$, is
+    \[
+      d_H(x,y)= \sum_{i = 1}^{m} |x_i - y_i|
+    \]
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}{Example}
+    Given a streaming services data on whether any user likes a given movie,
+    we might want to create a recommendation service for new users.
+    If we can classify our users into groups that share mostly the same taste in movies, then
+    the "average-user" or centres of the classifications would be a "super user" most likely to share the same movie
+    interest with any other user in the same classification.
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  From the example, it may be clear that the vectors can represent a
+  \alert{binary matrix}, in a clearer way. Thus further we will use columns of binary
+  matrices, as the main objects.
+
+  \begin{block}{Binary matrix}
+    \[
+      A_{m,n} =
+      \begin{pmatrix}
+        a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+        a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+        \vdots  & \vdots  & \ddots & \vdots  \\
+        a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+      \end{pmatrix}
+    \]
+  \end{block}
+\end{frame}
+
+\subsection{Example}
+
+\begin{frame}
+  \begin{block}{$8 \times 8$matrix example}
+    \[
+      \begin{matrix}
+        1 & 0 & 1 & 0 & 1 & 1 & 1 & 1 \\
+        0 & 1 & 0 & 1 & 1 & 1 & 1 & 0 \\
+        1 & 0 & 1 & 0 & 1 & 1 & 1 & 1 \\
+        1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+        0 & 1 & 0 & 1 & 0 & 0 & 1 & 1 \\
+        1 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+        0 & 1 & 0 & 0 & 0 & 1 & 1 & 1 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
+      \end{matrix}
+    \]
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}{$8 \times 8$matrix example}
+    \[
+      \begin{matrix}
+        1 & 0 & 1 & 0 & 1 & 1 & 1 & 1 \\
+        0 & 1 & 0 & 1 & 1 & 1 & 1 & 0 \\
+        1 & 0 & 1 & 0 & 1 & 1 & 1 & 1 \\
+        1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+        0 & 1 & 0 & 1 & 0 & 0 & 1 & 1 \\
+        1 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+        0 & 1 & 0 & 0 & 0 & 1 & 1 & 1 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
+      \end{matrix} \quad \rightarrow \quad \begin{matrix}
+        1 & 1 \\
+        0 & 1 \\
+        1 & 1 \\
+        1 & 1 \\
+        0 & 1 \\
+        0 & 1 \\
+        0 & 1 \\
+        0 & 0
+      \end{matrix}
+    \]
+  \end{block}
+\end{frame}
+
+\section{Problem statement}
+
+\subsection{Formal definition}
+\begin{frame}
+  \begin{block}{Binary r-Means}
+    \begin{tabular}{p{0.1\textwidth}p{0.8\textwidth}}
+      \textit{Input}: & An $n \times m$ binary matrix \textbf{A} with columns
+      ($\textbf{a}^1,...,\textbf{a}^n$), a positive integer $\textbf{r}$ and a nonnegative
+      integer $\textbf{k}$                                                                     \\
+
+      \textit{Task}:  & Decide whether there is a positive integer $\textbf{r}\sp{\prime} \leq
+        \textbf{r}$, a partition $\{I_1, ..., I_{r\sp{\prime}}\}$ of indices $\{1,...,n\}$ and vectors
+      $(\textbf{c}^1,...,\textbf{c}^{r\sp{\prime}}) \in \{0,1\}^m$ such that
+
+      \[
+        \sum_{i = 1}^{r\sp{\prime}} \sum_{j \in I_i} d_H(c^i, a^j) \leq k
+      \]
+    \end{tabular}
+  \end{block}
+\end{frame}
+
+\subsection{Task and motivation}
+\begin{frame}
+  \begin{block}{Task}
+    Not many algorithms for clustering binary vectors exactly. And due to the
+    nature of the existing algorithms, their practical implementation should be tested
+  \end{block}
+\end{frame}
+
+\section{The algorithm}
+\begin{frame}
+
 \end{frame}
 
 \end{document}
