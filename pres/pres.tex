@@ -93,23 +93,23 @@
   \begin{block}{$8 \times 8$matrix example}
     \[
       \begin{matrix}
-        1 & 0 & 1 & 0 & 1 & 1 & 1 & 1 \\
-        0 & 1 & 0 & 1 & 1 & 1 & 1 & 0 \\
-        1 & 0 & 1 & 0 & 1 & 1 & 1 & 1 \\
-        1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
-        0 & 1 & 0 & 1 & 0 & 0 & 1 & 1 \\
-        1 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
-        0 & 1 & 0 & 0 & 0 & 1 & 1 & 1 \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
+        \color{red} 1 & \color{cyan} 1 & \color{blue} 0 & \color{red} 1 & \color{cyan} 1 & \color{blue} 0 & \color{red} 1 & \color{cyan} 1 \\
+        \color{red} 0 & \color{cyan} 1 & \color{blue} 1 & \color{red} 0 & \color{cyan} 1 & \color{blue} 1 & \color{red} 1 & \color{cyan} 0 \\
+        \color{red} 1 & \color{cyan} 1 & \color{blue} 0 & \color{red} 1 & \color{cyan} 1 & \color{blue} 0 & \color{red} 1 & \color{cyan} 1 \\
+        \color{red} 1 & \color{cyan} 1 & \color{blue} 1 & \color{red} 1 & \color{cyan} 0 & \color{blue} 1 & \color{red} 1 & \color{cyan} 1 \\
+        \color{red} 0 & \color{cyan} 0 & \color{blue} 1 & \color{red} 0 & \color{cyan} 1 & \color{blue} 1 & \color{red} 0 & \color{cyan} 1 \\
+        \color{red} 1 & \color{cyan} 1 & \color{blue} 0 & \color{red} 0 & \color{cyan} 1 & \color{blue} 0 & \color{red} 1 & \color{cyan} 1 \\
+        \color{red} 0 & \color{cyan} 1 & \color{blue} 1 & \color{red} 0 & \color{cyan} 1 & \color{blue} 0 & \color{red} 0 & \color{cyan} 1 \\
+        \color{red} 0 & \color{cyan} 0 & \color{blue} 0 & \color{red} 0 & \color{cyan} 0 & \color{blue} 0 & \color{red} 0 & \color{cyan} 0
       \end{matrix} \quad \rightarrow \pause \quad \begin{matrix}
-        1 & 1 \\
-        0 & 1 \\
-        1 & 1 \\
-        1 & 1 \\
-        0 & 1 \\
-        0 & 1 \\
-        0 & 1 \\
-        0 & 0
+        \color{red} 1 & \color{cyan} 1 & \color{blue} 0 \\
+        \color{red} 0 & \color{cyan} 1 & \color{blue} 1 \\
+        \color{red} 1 & \color{cyan} 1 & \color{blue} 0 \\
+        \color{red} 1 & \color{cyan} 1 & \color{blue} 1 \\
+        \color{red} 0 & \color{cyan} 1 & \color{blue} 1 \\
+        \color{red} 1 & \color{cyan} 1 & \color{blue} 0 \\
+        \color{red} 0 & \color{cyan} 1 & \color{blue} 1 \\
+        \color{red} 0 & \color{cyan} 0 & \color{blue} 0
       \end{matrix}
     \]
   \end{block}
@@ -142,7 +142,11 @@
 \begin{frame}
   \begin{block}{Motivation}
     Not many algorithms for clustering binary vectors exactly. And due to the
-    nature of the existing algorithms, their practical implementation should be tested
+    nature of the existing algorithms, their practical implementation should be tested.
+    This problem has been proven NP-complete for $r \geq 2$
+    \\
+    In 2020 Fomin et al. gave such an algorithm \alert{Binary r-Means} clustering binary vectors,
+    in the runtime $2^{\mathcal{O} (\sqrt{rk log(k+r) logr})}*nm$, thus in FPT time.
   \end{block}
 
   \begin{block}{Task}
@@ -168,27 +172,13 @@
 
 \subsection{Kernel}
 \begin{frame}
-  As the first part is to act as a kernel, there are many requirements. All that is
-  explained by the following
+  \begin{block}{Kernel}
+    Informally, the main goal of a kernel, is simply to reduce an input to a smaller instance
+    in polynomial time.
+  \end{block}
 
-  \pause
-
-  \begin{theoremlemma}{\cite[Lemma 5]{fomin_golovach_panolan_2020}}
-    Given an instance $(A,r,k)$ of Binary r-Means, Algorithm 1 runs in $O(n^2m)$ time
-    and either correctly concludes that $(A,r,k)$ is a no-instance of Binary r-Means and
-    returns NO or returns $s \leq r$ matrices $A_1, \dots, A_s$ such that
-
-    \begin{itemize}
-      \item<3-> $(A,r,k)$ is a yes-instance of Binary r-Means if and only if there are positive
-      $r_1,\dots,r_s$ and nonnegative $k_1,\dots,k_s$ such that $(i)$ $r_1 + \dots + r_s \leq r$,
-      $(ii)$ $k_1 + \dots + k_s \leq k$, and $(iii)$ $(A_i,r_i,k_i)$ is a yes-instance of Binary
-      r-Means for every $i\in\{1,\dots,s\}$
-      \item<4-> for every $i\in\{1,\dots,s\}$, $A_i$ is $m_i \times n_i$ matrix with
-      $m_i \leq max\{(\ell_i - 1)k, 1\}$, where $\ell_i$ is the number of distinct columns
-      of $A_i$ and $n_1 + \dots + n_s \leq (k+1)(k+r)$
-      \item<5-> the total number of distinct columns in $A_1,\dots,A_s$ is at most $k+r$
-    \end{itemize}
-  \end{theoremlemma}
+  Here we will be producing several such smaller instances, which we can run separately,
+  and "glue" together at a later time. This can also be called a \alert{Turing-kernel}
 \end{frame}
 
 \begin{frame}
@@ -216,6 +206,25 @@
   \end{block}
 \end{frame}
 
+\begin{frame}
+  \begin{theoremlemma}{\cite[Lemma 5]{fomin_golovach_panolan_2020}}
+    Given an instance $(A,r,k)$ of Binary r-Means, Algorithm 1 runs in $O(n^2m)$ time
+    and either correctly concludes that $(A,r,k)$ is a no-instance of Binary r-Means and
+    returns NO or returns $s \leq r$ matrices $A_1, \dots, A_s$ such that
+
+    \begin{itemize}
+      \item<2-> $(A,r,k)$ is a yes-instance of Binary r-Means if and only if there are positive
+      $r_1,\dots,r_s$ and nonnegative $k_1,\dots,k_s$ such that $(i)$ $r_1 + \dots + r_s \leq r$,
+      $(ii)$ $k_1 + \dots + k_s \leq k$, and $(iii)$ $(A_i,r_i,k_i)$ is a yes-instance of Binary
+      r-Means for every $i\in\{1,\dots,s\}$
+      \item<3-> for every $i\in\{1,\dots,s\}$, $A_i$ is $m_i \times n_i$ matrix with
+      $m_i \leq max\{(\ell_i - 1)k, 1\}$, where $\ell_i$ is the number of distinct columns
+      of $A_i$ and $n_1 + \dots + n_s \leq (k+1)(k+r)$
+      \item<4-> the total number of distinct columns in $A_1,\dots,A_s$ is at most $k+r$
+    \end{itemize}
+  \end{theoremlemma}
+\end{frame}
+
 \subsection{Clustering}
 \begin{frame}
   \begin{block}{Binary r-Means}
@@ -227,17 +236,76 @@
     \end{tabular}
   \end{block}
 
+  As the paper \cite{fomin_golovach_panolan_2020} designed the algorithm as such, the same idea is
+  used here. This is an auxiliary function where we are given a partial solution, we will be
+  using indices of unprocessed columns, the current selected centres $S$, and the remaining cost $d$
 
+\end{frame}
+
+\begin{frame}
+  \begin{block}{Binary r-Means}
+    \begin{enumerate}
+      \item<1-> Test if $S$ is a solution
+      \item<2-> Check if we can continue with the current budget
+      \item<3-> Find new centre
+    \end{enumerate}
+  \end{block}
+
+  \begin{block}<4->{Find new centre}
+    We now try to find a new centre of minimum distance $h$ less than $d$ to another column in $I$. Thus
+    we start from zero, and work $h$ up until $d$.
+
+    \begin{enumerate}
+      \item<5-> Remove any column of $d_H$ to any column in $S$ is less than $h$, and adjust cost
+      \item<6-> if $d \geq 0 \wedge |I| \leq \sqrt{d r ~log(m) ~/ ~log(r)}$ we can brute force using the
+      majority rule.
+      \item<7-> else, we branch on all possible new centres $s$ with distance $d_H = h$ to another
+      column in $I$
+    \end{enumerate}
+  \end{block}
 \end{frame}
 
 \subsection{Reconstruction}
 \begin{frame}
+  The paper \cite{fomin_golovach_panolan_2020} designed the algorithm to glue the sub-matrices from
+  the kernel before the main algorithm, here instead, it is done at the end.
+
+  For each sub-matrix there may be several solutions depending on the parameters given. Thus we have
+  to construct a table for used cost over included matrices to find the minimum number of clusters
+  within the cost $k$. \pause Thus defining $f_i(k^\prime)$.
+
+  \begin{block}{For every $i \in \{1,\dots,s\}$ and $0 \leq k^\prime \leq k$, we define}
+    \[ f_i(k^\prime) =
+      \begin{cases}
+        \text{min \#clusters from} A_i \text{ using } k^\prime &                                \\
+        r+1,                                                   & \quad \text{if \#clusters} > r
+      \end{cases}
+    \]
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  Given this $f_i(k^\prime)$, we can construct the following table, which recursively finds the optimal 
+  solution. As soon as the table $T[s,k]$ is complete, then $(A,k,r)$ is a YES instance 
+  if $T[s,k] \leq r$
+
   \begin{block}{Reconstruction table $T[i,k^\prime]$}
     \begin{tabular}{lcl}
       $T[1, k^\prime]$ & $=$ & $f_1(k^\prime)$                                              \\
       $T[i, k^\prime]$ & $=$ & $min\{ min\{ T[ i-1, k_1 ] + f_i(k_2)$                       \\
                        &     & $|~ k_1 + k_2 = k^\prime, ~k_1 \wedge k_2 \geq 0\}, ~r+1 \}$
     \end{tabular}
+  \end{block}
+\end{frame}
+
+\section{Implementation}
+\begin{frame}
+  \begin{block}{Implementation}
+    \begin{itemize}
+      \item<1-> Java programming language, version 17
+      \item<2-> The Java standard library \alert{BitSet}
+      \item<3-> Object oriented, with complex structures
+    \end{itemize}
   \end{block}
 \end{frame}
 
@@ -355,6 +423,11 @@
       over the parameter $d$, using all data from all test-runs with all matrices from this report, grouped by
       the size of the matrices.}
   \end{figure}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}
+  Conclude TODO
 \end{frame}
 
 \section{Presentation references}
